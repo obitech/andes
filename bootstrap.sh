@@ -121,7 +121,7 @@ COMPOSE_VERSION=$COMPOSE_VERSION
 HOSTNAME=$HOSTNAME
 EMAIL=$EMAIL
 TLS_ENABLED=$TLS_ENABLED
-RESTART_ALWAYS=$RESTART_FLAG"
+RESTART_FLAG=$RESTART_FLAG"
 echo
 read -p "Continue (y/n)? " choice
 case "$choice" in 
@@ -146,15 +146,13 @@ echo "Welcome to Andes" > $ANDES_DIR/system/www/index.html
 sudo chown $USER:$USER -R $ANDES_DIR
 
 echo -e "$GREEN==> Removing deprecated Docker versions... $NC"
-sudo apt-get remove docker docker-engine docker.io -y
+sudo apt-get remove docker docker-engine docker.io -y || true
 
 echo -e "$GREEN==> Updating package index... $NC"
 sudo apt-get update -y
 
 echo -e "$GREEN==> Installing additional packages... $NC"
 sudo apt-get install -y \
-    linux-image-extra-$(uname -r) \
-    linux-image-extra-virtual \
     apt-transport-https \
     ca-certificates \
     curl \
@@ -170,7 +168,7 @@ sudo apt-key fingerprint 0EBFCD88
 
 echo -e "$GREEN==> Adding docker repository... $NC"
 sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
    $(lsb_release -cs) \
    stable"
 
@@ -249,3 +247,5 @@ sudo docker run \
   --restart=$RESTART_FLAG \
   -d \
   abiosoft/caddy
+
+echo -e "$GREEN==> Installation successful! Caddy is now running under $HOSTNAME:2015$NC"

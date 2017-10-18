@@ -2,7 +2,10 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "bento/ubuntu-16.04"
+  ubuntu = "bento/ubuntu-16.04"
+  debian = "bento/debian-9.1"
+
+  config.vm.box = "#{ubuntu}"
 
   config.vm.define :andes_dev, primary: true do |andes_dev_config|
     config.vm.provider "virtualbox" do |vb|
