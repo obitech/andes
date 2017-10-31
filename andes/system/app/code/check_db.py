@@ -7,5 +7,6 @@ print("Check users:")
 query = "SELECT * FROM users"
 for row in cursor.execute(query):
   print(row)
+print()
 
 connection.close()
