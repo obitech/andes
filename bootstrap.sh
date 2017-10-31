@@ -148,10 +148,9 @@ echo
 ############################ DOCKER INSTALLATION ############################
 #############################################################################
 
-echo -e "$GREEN==> Setting up folder structure in $ANDES_DIR... $NC"
-mkdir -p $ANDES_DIR/system/certs $ANDES_DIR/system/templates $ANDES_DIR/system/vhosts $ANDES_DIR/projects $ANDES_DIR/system/www
-echo "Welcome to Andes" > $ANDES_DIR/system/www/index.html
-sudo chown $USER:$USER -R $ANDES_DIR
+# TODO: Give possibility to install andes in different folder
+echo -e "$GREEN==> Changing user permissions on $ANDES_DIR... $NC"
+sudo chown $USER:$USER -R ./andes
 
 echo -e "$GREEN==> Removing deprecated Docker versions... $NC"
 sudo apt-get remove docker docker-engine docker.io -y || true

@@ -1,0 +1,6 @@
+localhost {
+  tls off
+  root /srv/www
+  log stdout
+  errors stdout
+}
