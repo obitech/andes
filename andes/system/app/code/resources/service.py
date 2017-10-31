@@ -13,46 +13,49 @@ class ServiceList(Resource):
 class ServiceCreate(Resource):
   parser = reqparse.RequestParser()
   parser.add_argument('name',
-    type=str,
-    required=True,
-    help="The name of your service (required)."
+    type = str,
+    required = True,
+    help = "The name of your service (required)."
   )
   parser.add_argument('image',
-    type=str,
-    required=True,
-    help="The image name is required.",
+    type = str,
+    required = True,
+    help = "The image name is required.",
   )
   # TODO: Fix this as list
   parser.add_argument('exposed_ports',
-    type=str,
-    required=True,
-    help="The exposed ports are required."
+    type = str,
+    required = True,
+    action = 'append',
+    help = "The exposed ports are required."
   )
   parser.add_argument('volumes',
-    type=str,
-    help="The volumes your service needs mounted."
+    type = str,
+    action = 'append',
+    help = "The volumes your service needs mounted."
   )
 
   @jwt_required()
   def post(self):
     data = self.parser.parse_args()
+    if data['volumes'] == None:
+      data['volumes'] = ''
 
     if ServiceModel.find_by_name(data['name']):
       return {
         'message': f"Service with name {data['name']} already exists."
       }, 400
 
-    if not ServiceModel.valid_ports(data['exposed_ports']):
+    if not ServiceModel.valid_volumes(data['volumes']) or not ServiceModel.valid_ports(data['exposed_ports']):
       return {
-        'message': "Invalid exposed_ports.", 
-        'exposed_ports': data['exposed_ports']
+        'message': "Invalid arguments."
       }, 400
 
-    if not ServiceModel.valid_volumes(data['volumes']):
-      return {
-        'message': "Invalid volumes.", 
-        'volumes': data['volumes']
-      }, 400
+    port_list = ",".join(data['exposed_ports'])
+    data['exposed_ports'] = port_list
+
+    volume_list = ",".join(data['volumes'])
+    data['volumes'] = volume_list
 
     service = ServiceModel(**data)
 
@@ -68,17 +71,21 @@ class ServiceCreate(Resource):
   @jwt_required()
   def put(self):
     data = self.parser.parse_args()
+    if data['volumes'] == None:
+      data['volumes'] = ''
+
+    if not ServiceModel.valid_volumes(data['volumes']) or not ServiceModel.valid_ports(data['exposed_ports']):
+      return {
+        'message': "Invalid arguments."
+      }, 400
+
     service = ServiceModel.find_by_name(data['name'])
 
-    if not ServiceModel.valid_ports(data['exposed_ports']):
-      return {
-        'message': "Invalid exposed_ports."
-      }, 400
+    port_list = ",".join(data['exposed_ports'])
+    data['exposed_ports'] = port_list
 
-    if not ServiceModel.valid_volumes(data['volumes']):
-      return {
-        'message': "Invalid volumes."
-      }, 400
+    volume_list = ",".join(data['volumes'])
+    data['volumes'] = volume_list
 
     if service:
       service.name = data['name']

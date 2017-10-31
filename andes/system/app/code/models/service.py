@@ -1,3 +1,5 @@
+import re
+
 from db import db
 
 class ServiceModel(db.Model):
@@ -10,7 +12,7 @@ class ServiceModel(db.Model):
   volumes = db.Column(db.String(1024))
 
   # TODO: make volumes optional
-  def __init__(self, name, image, exposed_ports, volumes):
+  def __init__(self, name, image, exposed_ports, volumes=''):
     self.name = name
     self.image = image
     self.exposed_ports = exposed_ports
@@ -29,20 +31,24 @@ class ServiceModel(db.Model):
   # TODO: validate if image exists
 
   @classmethod
-  def valid_volumes(cls, volume_string):
+  def valid_volumes(cls, volumes):
+    if volumes == ['']:
+      return True
+
     try:
-      for volume in volume_string.split(','):
-        if not volume.startswith('/'):
+      for volume in volumes:
+        if not re.compile("^(/[\w.]+/?)+$").match(volume):
           return False
+        
     except:
       return False
 
     return True
 
   @classmethod
-  def valid_ports(cls, port_string):
+  def valid_ports(cls, exposed_ports):
     try:
-      for port in port_string.split(','):
+      for port in exposed_ports:
         port = int(port)
         if port < 0 or port > 65535:
           return False
