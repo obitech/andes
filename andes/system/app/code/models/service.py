@@ -11,8 +11,7 @@ class ServiceModel(db.Model):
   exposed_ports = db.Column(db.String(255))
   volumes = db.Column(db.String(1024))
 
-  # TODO: make volumes optional
-  def __init__(self, name, image, exposed_ports, volumes=''):
+  def __init__(self, name, image, exposed_ports, volumes=""):
     self.name = name
     self.image = image
     self.exposed_ports = exposed_ports
@@ -32,7 +31,7 @@ class ServiceModel(db.Model):
 
   @classmethod
   def valid_volumes(cls, volumes):
-    if volumes == ['']:
+    if volumes == [''] or volumes == '':
       return True
 
     try:

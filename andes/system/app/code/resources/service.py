@@ -22,7 +22,6 @@ class ServiceCreate(Resource):
     required = True,
     help = "The image name is required.",
   )
-  # TODO: Fix this as list
   parser.add_argument('exposed_ports',
     type = str,
     required = True,
@@ -51,13 +50,11 @@ class ServiceCreate(Resource):
         'message': "Invalid arguments."
       }, 400
 
-    port_list = ",".join(data['exposed_ports'])
-    data['exposed_ports'] = port_list
-
-    volume_list = ",".join(data['volumes'])
-    data['volumes'] = volume_list
-
-    service = ServiceModel(**data)
+    service = ServiceModel(data['name'],
+      data['image'],
+      ",".join(data['exposed_ports']),
+      ",".join(data['volumes'])
+    )
 
     try:
       service.save_to_db()
@@ -81,19 +78,17 @@ class ServiceCreate(Resource):
 
     service = ServiceModel.find_by_name(data['name'])
 
-    port_list = ",".join(data['exposed_ports'])
-    data['exposed_ports'] = port_list
-
-    volume_list = ",".join(data['volumes'])
-    data['volumes'] = volume_list
-
     if service:
       service.name = data['name']
       service.image = data['image']
-      service.exposed_ports = data['exposed_ports']
-      service.volumes = data['volumes']
+      service.exposed_ports = ",".join(data['exposed_ports'])
+      service.volumes = ",".join(data['volumes'])
     else:
-      service = ServiceModel(**data)
+      service = ServiceModel(data['name'],
+        data['image'],
+        ",".join(data['exposed_ports']),
+        ",".join(data['volumes'])
+      )
 
     try:
       service.save_to_db()
