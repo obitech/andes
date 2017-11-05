@@ -1,15 +1,16 @@
-from db import db
-from datetime import datetime
 import re
+from datetime import datetime
+
+from db import db
 
 class StackModel(db.Model):
   __tablename__ = 'stacks'
 
   id = db.Column(db.Integer, primary_key = True)
   name = db.Column(db.String(32))
-  active = db.Column(db.Integer())
   description = db.Column(db.String(1024))
-  subdomain = db.Column(db.String(512))
+  subdomain = db.Column(db.String(512)) 
+  active = db.Column(db.Integer())
   created_at = db.Column(db.DateTime())
   last_changed = db.Column(db.DateTime())
   built_at = db.Column(db.DateTime())
@@ -32,15 +33,16 @@ class StackModel(db.Model):
     return {
       'id': self.id,
       'name': self.name,
-      'active': self.active,
       'description': self.description,
+      'subdomain': self.subdomain,
+      'active': self.active,
       'created_at': self.format_date(self.created_at),
       'last_changed': self.format_date(self.last_changed),
       'built_at': built
     }
 
   @classmethod
-  def validate_subdomain(cls, domain):
+  def valid_subdomain(cls, domain):
     """
     Stole this regex from here:
     https://stackoverflow.com/questions/10306690/domain-name-validation-with-regex
@@ -53,7 +55,8 @@ class StackModel(db.Model):
 
     return False
 
-  def format_date(self, date):
+  @classmethod
+  def format_date(cls, date):
     try:
       return date.isoformat()
     except:

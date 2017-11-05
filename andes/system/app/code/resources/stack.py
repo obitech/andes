@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 from datetime import datetime
+
 from models.stack import StackModel
 
 class StackList(Resource):
@@ -32,7 +33,12 @@ class StackCreate(Resource):
 
     if StackModel.find_by_name(data['name']):
       return {
-        'message': f"Stack with name {data['name']} already exists."
+        'error': f"Stack with name {data['name']} already exists."
+      }, 400
+
+    if data['subdomain'] and not StackModel.valid_subdomain(data['subdomain']):
+      return {
+        'error': f"Invalid subdomain {data['subdomain']}"
       }, 400
 
     stack = StackModel(**data)
@@ -48,7 +54,32 @@ class StackCreate(Resource):
 
   @jwt_required()
   def put(self):
-    pass
+    data = self.parser.parse_args()
+
+    if data['subdomain'] and not StackModel.valid_subdomain(data['subdomain']):
+      return {
+        'error': f"Invalid subdomain {data['subdomain']}"
+      }, 400  
+
+    stack = StackModel.find_by_name(data['name'])
+
+    if stack:
+      stack.name = data['name']
+      stack.description = data['description']
+      stack.subdomain = data['subdomain']
+      stack.last_changed = datetime.now()
+    else:
+      stack = StackModel(**data)
+
+    print(f"Stack: {stack.json()}")
+    try:
+      stack.save_to_db()
+    except:
+      return {
+        'error': f"An error occured while trying to save new stack."
+      }, 500
+
+    return stack.json(), 201
 
 class Stack(Resource):
   @jwt_required()

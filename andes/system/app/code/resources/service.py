@@ -35,7 +35,6 @@ class ServiceCreate(Resource):
   )
 
   def check_volumes(self, data):
-    print(f"received: data['volumes']={data['volumes']}")
     try:
       if data['volumes'] in [None, [""], [], [None]]:
         pass
@@ -52,12 +51,12 @@ class ServiceCreate(Resource):
 
     if ServiceModel.find_by_name(data['name']):
       return {
-        'message': f"Service with name {data['name']} already exists."
+        'error': f"Service with name {data['name']} already exists."
       }, 400
 
     if not ServiceModel.valid_volumes(data['volumes']) or not ServiceModel.valid_ports(data['exposed_ports']):
       return {
-        'message': "Invalid arguments."
+        'error': "Invalid arguments."
       }, 400
 
     volumes = self.check_volumes(data)
@@ -83,7 +82,7 @@ class ServiceCreate(Resource):
 
     if not ServiceModel.valid_volumes(data['volumes']) or not ServiceModel.valid_ports(data['exposed_ports']):
       return {
-        'message': "Invalid arguments."
+        'error': "Invalid arguments."
       }, 400
 
     service = ServiceModel.find_by_name(data['name'])
@@ -125,8 +124,8 @@ class Service(Resource):
       return service.json()
 
     return {
-      'message': f"Service with ID {_id} does not exist."
-    }
+      'error': f"Service with ID {_id} does not exist."
+    }, 400
 
   @jwt_required()
   def delete(self, _id):
@@ -144,5 +143,5 @@ class Service(Resource):
       }
 
     return {
-      'message': f"Service with ID {_id} does not exist."
-    }
+      'error': f"Service with ID {_id} does not exist."
+    }, 400
