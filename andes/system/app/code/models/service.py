@@ -12,31 +12,37 @@ class ServiceModel(db.Model):
   exposed_ports = db.Column(db.String(255))
   volumes = db.Column(db.String(1024))
 
-  def __init__(self, name, image, exposed_ports, volumes=""):
+  def __init__(self, name, image, exposed_ports, volumes=None):
     self.name = name
     self.image = image
     self.exposed_ports = exposed_ports
     self.volumes = volumes
 
   def json(self):
+    if self.volumes:
+      volumes = self.volumes.split(',')
+    else:
+      volumes = self.volumes
+
     return {
       'id': self.id,
       'name': self.name,
       'image': self.image,
       'exposed_ports': self.exposed_ports.split(','),
-      'volumes': self.volumes.split(',')
+      'volumes': volumes
     }
 
-  # TODO: Test those functions
   # TODO: validate if image exists
 
   @classmethod
   def valid_volumes(cls, volumes):
-    if volumes == [''] or volumes == '' or volumes == []:
+    print(f"received {volumes}")
+
+    if volumes in [None, [""], [], [None]]:
       return True
 
-    if not volumes:
-      return True
+    if type(volumes) is not list:
+      return False
 
     try:
       for volume in volumes:

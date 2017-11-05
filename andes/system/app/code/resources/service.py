@@ -34,11 +34,21 @@ class ServiceCreate(Resource):
     help = "The volumes your service needs mounted."
   )
 
+  def check_volumes(self, data):
+    print(f"received: data['volumes']={data['volumes']}")
+    try:
+      if data['volumes'] in [None, [""], [], [None]]:
+        pass
+      else:
+        return ','.join(data['volumes'])
+    except:
+      pass
+
+    return None
+
   @jwt_required()
   def post(self):
     data = self.parser.parse_args()
-    if not data['volumes']:
-      data['volumes'] = ""
 
     if ServiceModel.find_by_name(data['name']):
       return {
@@ -50,10 +60,12 @@ class ServiceCreate(Resource):
         'message': "Invalid arguments."
       }, 400
 
+    volumes = self.check_volumes(data)
+
     service = ServiceModel(data['name'],
       data['image'],
       ",".join(data['exposed_ports']),
-      ",".join(data['volumes'])
+      volumes
     )
 
     try:
@@ -68,8 +80,6 @@ class ServiceCreate(Resource):
   @jwt_required()
   def put(self):
     data = self.parser.parse_args()
-    if not data['volumes']:
-      data['volumes'] = ""
 
     if not ServiceModel.valid_volumes(data['volumes']) or not ServiceModel.valid_ports(data['exposed_ports']):
       return {
@@ -78,16 +88,18 @@ class ServiceCreate(Resource):
 
     service = ServiceModel.find_by_name(data['name'])
 
+    volumes = self.check_volumes(data)
+
     if service:
       service.name = data['name']
       service.image = data['image']
       service.exposed_ports = ",".join(data['exposed_ports'])
-      service.volumes = ",".join(data['volumes'])
+      service.volumes = volumes
     else:
       service = ServiceModel(data['name'],
         data['image'],
         ",".join(data['exposed_ports']),
-        ",".join(data['volumes'])
+        volumes
       )
 
     try:
