@@ -7,6 +7,7 @@ from security import authenticate, identity
 
 from resources.user import UserRegister
 from resources.service import Service, ServiceCreate, ServiceList
+from resources.stack import StackList, StackCreate
 
 
 app = Flask(__name__)
@@ -18,7 +19,6 @@ app.secret_key = "DEVELOPMENT_KEY"
 api = Api(app)
 jwt = JWT(app, authenticate, identity)
 
-
 @app.before_first_request
 def create_tables():
   db.create_all()
@@ -26,6 +26,9 @@ def create_tables():
 api.add_resource(UserRegister, '/register')
 api.add_resource(ServiceCreate, '/service/create')
 api.add_resource(ServiceList, '/services')
+api.add_resource(Service, '/service/<int:_id>')
+api.add_resource(StackList, '/stacks')
+api.add_resource(StackCreate, '/stack/create')
 
 if __name__ == "__main__":
   from db import db

@@ -5,6 +5,7 @@ from db import db
 class ServiceModel(db.Model):
   __tablename__ = 'services'
 
+  # TODO: Include tag ???
   id = db.Column(db.Integer, primary_key = True)
   name = db.Column(db.String(32))
   image = db.Column(db.String(64))
@@ -31,12 +32,15 @@ class ServiceModel(db.Model):
 
   @classmethod
   def valid_volumes(cls, volumes):
-    if volumes == [''] or volumes == '':
+    if volumes == [''] or volumes == '' or volumes == []:
+      return True
+
+    if not volumes:
       return True
 
     try:
       for volume in volumes:
-        if not re.compile("^(/[\w.]+/?)+$").match(volume):
+        if not re.compile("^(/[\w.]*/?)*$").match(volume):
           return False
         
     except:

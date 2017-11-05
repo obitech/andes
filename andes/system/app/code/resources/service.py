@@ -37,8 +37,8 @@ class ServiceCreate(Resource):
   @jwt_required()
   def post(self):
     data = self.parser.parse_args()
-    if data['volumes'] == None:
-      data['volumes'] = ''
+    if not data['volumes']:
+      data['volumes'] = ""
 
     if ServiceModel.find_by_name(data['name']):
       return {
@@ -68,8 +68,8 @@ class ServiceCreate(Resource):
   @jwt_required()
   def put(self):
     data = self.parser.parse_args()
-    if data['volumes'] == None:
-      data['volumes'] = ''
+    if not data['volumes']:
+      data['volumes'] = ""
 
     if not ServiceModel.valid_volumes(data['volumes']) or not ServiceModel.valid_ports(data['exposed_ports']):
       return {
@@ -100,4 +100,37 @@ class ServiceCreate(Resource):
     return service.json(), 201
 
 class Service(Resource):
-  pass
+  @jwt_required()
+  def get(self, _id):
+    try:
+      service = ServiceModel.find_by_id(_id)
+    except:
+      return {
+        'error': f"An error occured while trying to retrieve service."
+      }, 500
+
+    if service:
+      return service.json()
+
+    return {
+      'message': f"Service with ID {_id} does not exist."
+    }
+
+  @jwt_required()
+  def delete(self, _id):
+    try:
+      service = ServiceModel.find_by_id(_id)
+    except:
+      return {
+        'error': f"An error occured while trying to retrieve service."
+      }, 500
+
+    if service:
+      service.delete_from_db()
+      return {
+        'message': f"Item with id {_id} has been deleted."
+      }
+
+    return {
+      'message': f"Service with ID {_id} does not exist."
+    }
