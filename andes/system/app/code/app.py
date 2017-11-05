@@ -6,8 +6,8 @@ from datetime import timedelta
 from security import authenticate, identity
 
 from resources.user import UserRegister
-from resources.service import Service, ServiceCreate, ServiceList
-from resources.stack import StackList, StackCreate
+from resources.service import ServiceList, ServiceCreate, Service
+from resources.stack import StackList, StackCreate, Stack
 
 
 app = Flask(__name__)
@@ -24,11 +24,14 @@ def create_tables():
   db.create_all()
 
 api.add_resource(UserRegister, '/register')
-api.add_resource(ServiceCreate, '/service/create')
+
 api.add_resource(ServiceList, '/services')
+api.add_resource(ServiceCreate, '/service/create')
 api.add_resource(Service, '/service/<int:_id>')
+
 api.add_resource(StackList, '/stacks')
 api.add_resource(StackCreate, '/stack/create')
+api.add_resource(Stack, '/stack/<int:_id>')
 
 if __name__ == "__main__":
   from db import db

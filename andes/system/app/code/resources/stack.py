@@ -83,9 +83,36 @@ class StackCreate(Resource):
 
 class Stack(Resource):
   @jwt_required()
-  def get(sef):
-    pass
+  def get(sef, _id):
+    try:
+      stack = StackModel.find_by_id(_id)
+    except:
+      return {
+        'error': f"An error occured while trying to retrieve stack."
+      }, 500
+
+    if stack:
+      return stack.json()
+
+    return {
+      'error': f"Stack with ID {_id} does not exist."
+    }, 400
 
   @jwt_required()
-  def delete(self):
-    pass
+  def delete(self, _id):
+    try:
+      stack = StackModel.find_by_id(_id)
+    except:
+      return {
+        'error': f"An error occured while trying to retrieve stack."
+      }, 500
+
+    if stack:
+      stack.delete_from_db()
+      return {
+        'message': f"Stack with id {_id} has been deleted."
+      }
+
+    return {
+      'error': f"Stack with ID {_id} does not exist."
+    }, 400

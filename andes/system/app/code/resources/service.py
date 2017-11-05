@@ -139,7 +139,7 @@ class Service(Resource):
     if service:
       service.delete_from_db()
       return {
-        'message': f"Item with id {_id} has been deleted."
+        'message': f"Service with id {_id} has been deleted."
       }
 
     return {
