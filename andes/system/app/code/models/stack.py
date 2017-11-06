@@ -8,12 +8,16 @@ class StackModel(db.Model):
 
   id = db.Column(db.Integer, primary_key = True)
   name = db.Column(db.String(32))
-  description = db.Column(db.String(1024))
+  description = db.Column(db.String(512))
   subdomain = db.Column(db.String(512)) 
   active = db.Column(db.Integer())
   created_at = db.Column(db.DateTime())
   last_changed = db.Column(db.DateTime())
   built_at = db.Column(db.DateTime())
+
+  # TODO: Link up with ServiceModel
+
+  # TODO: Link up with NetworkModel
 
   def __init__(self, name, description=None, subdomain=None):
     self.name = name

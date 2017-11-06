@@ -8,6 +8,7 @@ from security import authenticate, identity
 from resources.user import UserRegister
 from resources.service import ServiceList, ServiceCreate, Service
 from resources.stack import StackList, StackCreate, Stack
+from resources.network import NetworkList, NetworkCreate, Network
 
 
 app = Flask(__name__)
@@ -32,6 +33,10 @@ api.add_resource(Service, '/service/<int:_id>')
 api.add_resource(StackList, '/stacks')
 api.add_resource(StackCreate, '/stack/create')
 api.add_resource(Stack, '/stack/<int:_id>')
+
+api.add_resource(NetworkList, '/networks')
+#api.add_resource(NetworkCreate, '/network/create')
+#api.add_resource(Network, '/network/<int:_id')
 
 if __name__ == "__main__":
   from db import db

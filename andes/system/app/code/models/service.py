@@ -12,6 +12,8 @@ class ServiceModel(db.Model):
   exposed_ports = db.Column(db.String(255))
   volumes = db.Column(db.String(1024))
 
+  # TODO: Link up with StackModel
+
   def __init__(self, name, image, exposed_ports, volumes=None):
     self.name = name
     self.image = image
