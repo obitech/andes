@@ -16,16 +16,13 @@ class StackCreate(Resource):
   parser.add_argument('name',
     type = str,
     required = True,
-    help = "The name of the stack is required."
-  )
+    help = "The name of the stack is required.")
   parser.add_argument('description',
     type = str,
-    help = "The description of the stack."
-  )
+    help = "The description of the stack.")
   parser.add_argument('subdomain',
     type = str,
-    help = "The subdomain this stack should reside under."
-  )
+    help = "The subdomain this stack should reside under.")
 
   @jwt_required()
   def post(self):
@@ -50,7 +47,7 @@ class StackCreate(Resource):
         'error': f"An error occured while trying to save new stack."
       }, 500
 
-    return stack.json()
+    return stack.json(), 201
 
   @jwt_required()
   def put(self):
@@ -76,7 +73,7 @@ class StackCreate(Resource):
       stack.save_to_db()
     except:
       return {
-        'error': f"An error occured while trying to save new stack."
+        'error': f"An error occured while trying to save stack."
       }, 500
 
     return stack.json(), 201

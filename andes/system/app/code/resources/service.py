@@ -15,26 +15,22 @@ class ServiceCreate(Resource):
   parser.add_argument('name',
     type = str,
     required = True,
-    help = "The name of your service (required)."
-  )
+    help = "The name of your service (required).")
   parser.add_argument('image',
     type = str,
     required = True,
-    help = "The image name is required.",
-  )
+    help = "The image name is required.",)
   parser.add_argument('exposed_ports',
     type = str,
     required = True,
     action = 'append',
-    help = "The exposed ports are required."
-  )
+    help = "The exposed ports are required.")
   parser.add_argument('volumes',
     type = str,
     action = 'append',
-    help = "The volumes your service needs mounted."
-  )
+    help = "The volumes your service needs mounted.")
 
-  def check_volumes(self, data):
+  def split_volume_string(self, data):
     try:
       if data['volumes'] in [None, [""], [], [None]]:
         pass
@@ -59,7 +55,7 @@ class ServiceCreate(Resource):
         'error': "Invalid arguments."
       }, 400
 
-    volumes = self.check_volumes(data)
+    volumes = self.split_volume_string(data)
 
     service = ServiceModel(data['name'],
       data['image'],
@@ -71,7 +67,7 @@ class ServiceCreate(Resource):
       service.save_to_db()
     except:
       return {
-        'error': f"An error occured while trying to save new service."
+        'error': f"An error occured while trying to save service."
       }, 500
 
     return service.json(), 201
@@ -87,7 +83,7 @@ class ServiceCreate(Resource):
 
     service = ServiceModel.find_by_name(data['name'])
 
-    volumes = self.check_volumes(data)
+    volumes = self.split_volume_string(data)
 
     if service:
       service.name = data['name']
@@ -96,16 +92,15 @@ class ServiceCreate(Resource):
       service.volumes = volumes
     else:
       service = ServiceModel(data['name'],
-        data['image'],
-        ",".join(data['exposed_ports']),
-        volumes
-      )
+                             data['image'],
+                             ",".join(data['exposed_ports']),
+                             volumes)
 
     try:
       service.save_to_db()
     except:
       return {
-        'error': f"An error occured while trying to save new service."
+        'error': f"An error occured while trying to save service."
       }, 500
 
     return service.json(), 201

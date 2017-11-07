@@ -1,4 +1,6 @@
 import re
+from ipaddress import ip_address, ip_network, IPv4Network
+
 from db import db
 
 class NetworkModel(db.Model):
@@ -37,9 +39,26 @@ class NetworkModel(db.Model):
     https://stackoverflow.com/questions/4890789/regex-for-an-ip-address
     """
     try:
-      return re.compile("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$").match(ip)
+      if re.compile("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$").match(ip):
+        return True
     except:
-      return False
+      pass
+
+    return False
+
+  @classmethod
+  def valid_network(cls, network):
+    try:
+      if re.compile("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}0\/([\d]|[1-2]\d|3[012])$").match(network):
+        return True
+    except:
+      pass
+
+    return False
+
+  @classmethod
+  def network_overlap(cls, net1, net2):
+    return IPv4Network(net1).overlaps(IPv4Network(net2))
 
   @classmethod
   def find_by_name(cls, name):
@@ -48,3 +67,11 @@ class NetworkModel(db.Model):
   @classmethod
   def find_by_id(cls, _id):
     return cls.query.filter_by(id=_id).first()
+
+  def save_to_db(self):
+    db.session.add(self)
+    db.session.commit()
+
+  def delete_from_db(self):
+    db.session.delete(self)
+    db.session.commit()
