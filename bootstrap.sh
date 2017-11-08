@@ -20,6 +20,8 @@ ANDES_DIR=/home/$USER/andes
 COMPOSE_VERSION=1.16.1
 EMAIL=
 CA_STAGING=true
+# TODO: Enable caddy setup
+CADDY_SETUP=false
 
 echo -e "$GREEN---- Andes bootstrap script. Execute with -h to see options. $NC"
 
@@ -209,78 +211,79 @@ echo -e "$GREEN==> Docker installed successfully, source .bashrc for bash-comple
 ############################ CADDY SETUP ############################
 #####################################################################
 
-#
-echo -e "$GREEN==> Creating Caddyfile in $ANDES_DIR/andes/system:$NC"
-if $TLS_ENABLED ; then
-echo "import 
-  $HOSTNAME {
-  tls $EMAIL
-  root /srv/www
-  log stdout
-  errors stdout
-}"  > $ANDES_DIR/system/Caddyfile
-else
-echo "$HOSTNAME {
-  tls off
-  root /srv/www
-  log stdout
-  errors stdout
-}" > $ANDES_DIR/system/Caddyfile
+if [[ CADDY_SETUP ]]; then
+  echo -e "$GREEN==> Creating Caddyfile in $ANDES_DIR/andes/system:$NC"
+  if $TLS_ENABLED ; then
+  echo "import 
+    $HOSTNAME {
+    tls $EMAIL
+    root /srv/www
+    log stdout
+    errors stdout
+  }"  > $ANDES_DIR/system/Caddyfile
+  else
+  echo "$HOSTNAME {
+    tls off
+    root /srv/www
+    log stdout
+    errors stdout
+  }" > $ANDES_DIR/system/Caddyfile
+  fi
+  cat $ANDES_DIR/system/Caddyfile
+
+  echo -e "$GREEN==> Pulling Caddy container from abiosoft/caddy...$NC"
+  sudo docker pull abiosoft/caddy
+
+  echo -e "$GREEN==> Starting Caddy container with parameters...
+  Name:
+    - caddy
+  Forwarding ports:
+    - 80:80
+    - 443:443
+    - 2015:2015
+  Mounting volumes:
+    - $ANDES_DIR/system/Caddyfile:/etc/caddy/Caddyfile
+    - $ANDES_DIR/system/vhosts:/etc/caddy/sites-enabled
+    - $ANDES_DIR/system/certs:/home/root/.caddy
+    - $ANDES_DIR/system/www:/srv/www
+  Restart:
+    - $RESTART_FLAG $NC"
+
+  # TODO: Variable for CA, default/live
+  #  --ca https://acme-staging.api.letsencrypt.org/directory
+  # default: https://acme-staging.api.letsencrypt.org/directory (staging)
+  # live: custom
+  if [[ TLS_ENABLED && CA_STAGING ]]; then
+    sudo docker run \
+      --name caddy \
+      -p 80:80 \
+      -p 443:443 \
+      -p 2015:2015 \
+      -v "$ANDES_DIR/system/Caddyfile:/etc/caddy/Caddyfile" \
+      -v "$ANDES_DIR/system/vhosts:/etc/caddy/sites-enabled" \
+      -v "$ANDES_DIR/system/certs:/home/root/.caddy" \
+      -v "$ANDES_DIR/system/www:/srv/www" \
+      --restart=$RESTART_FLAG \
+      -d \
+      abiosoft/caddy \
+      --conf /etc/caddy/Caddyfile \
+      --ca https://acme-staging.api.letsencrypt.org/directory
+  else
+    sudo docker run \
+      --name caddy \
+      -p 80:80 \
+      -p 443:443 \
+      -p 2015:2015 \
+      -v "$ANDES_DIR/system/Caddyfile:/etc/caddy/Caddyfile" \
+      -v "$ANDES_DIR/system/vhosts:/etc/caddy/sites-enabled" \
+      -v "$ANDES_DIR/system/certs:/home/root/.caddy" \
+      -v "$ANDES_DIR/system/www:/srv/www" \
+      --restart=$RESTART_FLAG \
+      -d \
+      abiosoft/caddy \
+      --conf /etc/caddy/Caddyfile
+  fi
+
+  echo
+  echo -e "$GREEN==> Installation successful! Caddy is now running under $HOSTNAME:2015. You should logout and login again.$NC"
 fi
-cat $ANDES_DIR/system/Caddyfile
-
-echo -e "$GREEN==> Pulling Caddy container from abiosoft/caddy...$NC"
-sudo docker pull abiosoft/caddy
-
-echo -e "$GREEN==> Starting Caddy container with parameters...
-Name:
-  - caddy
-Forwarding ports:
-  - 80:80
-  - 443:443
-  - 2015:2015
-Mounting volumes:
-  - $ANDES_DIR/system/Caddyfile:/etc/caddy/Caddyfile
-  - $ANDES_DIR/system/vhosts:/etc/caddy/sites-enabled
-  - $ANDES_DIR/system/certs:/home/root/.caddy
-  - $ANDES_DIR/system/www:/srv/www
-Restart:
-  - $RESTART_FLAG $NC"
-
-# TODO: Variable for CA, default/live
-#  --ca https://acme-staging.api.letsencrypt.org/directory
-# default: https://acme-staging.api.letsencrypt.org/directory (staging)
-# live: custom
-if [[ TLS_ENABLED && CA_STAGING ]]; then
-  sudo docker run \
-    --name caddy \
-    -p 80:80 \
-    -p 443:443 \
-    -p 2015:2015 \
-    -v "$ANDES_DIR/system/Caddyfile:/etc/caddy/Caddyfile" \
-    -v "$ANDES_DIR/system/vhosts:/etc/caddy/sites-enabled" \
-    -v "$ANDES_DIR/system/certs:/home/root/.caddy" \
-    -v "$ANDES_DIR/system/www:/srv/www" \
-    --restart=$RESTART_FLAG \
-    -d \
-    abiosoft/caddy \
-    --conf /etc/caddy/Caddyfile \
-    --ca https://acme-staging.api.letsencrypt.org/directory
-else
-  sudo docker run \
-    --name caddy \
-    -p 80:80 \
-    -p 443:443 \
-    -p 2015:2015 \
-    -v "$ANDES_DIR/system/Caddyfile:/etc/caddy/Caddyfile" \
-    -v "$ANDES_DIR/system/vhosts:/etc/caddy/sites-enabled" \
-    -v "$ANDES_DIR/system/certs:/home/root/.caddy" \
-    -v "$ANDES_DIR/system/www:/srv/www" \
-    --restart=$RESTART_FLAG \
-    -d \
-    abiosoft/caddy \
-    --conf /etc/caddy/Caddyfile
-fi
-
-echo
-echo -e "$GREEN==> Installation successful! Caddy is now running under $HOSTNAME:2015. You should logout and login again.$NC"
