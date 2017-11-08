@@ -42,4 +42,4 @@ api.add_resource(Network, '/network/<int:_id>')
 if __name__ == "__main__":
   from db import db
   db.init_app(app)
-  app.run(port=5000, debug=True)
+  app.run(host='127.0.0.1', port=5000, debug=True)
