@@ -2,4 +2,4 @@ Flask
 Flask-RESTful
 Flask-JWT
 Flask-SQLAlchemy
-requests
+Sphinx
