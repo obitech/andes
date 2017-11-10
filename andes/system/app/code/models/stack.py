@@ -8,12 +8,12 @@ class StackModel(db.Model):
 
   id = db.Column(db.Integer, primary_key = True)
   name = db.Column(db.String(32))
-  description = db.Column(db.String(512))
-  subdomain = db.Column(db.String(512)) 
-  active = db.Column(db.Integer())
-  created_at = db.Column(db.DateTime())
-  last_changed = db.Column(db.DateTime())
-  built_at = db.Column(db.DateTime())
+  description = db.Column(db.String(256))
+  subdomain = db.Column(db.String(128)) 
+  active = db.Column(db.Boolean)
+  created_at = db.Column(db.DateTime, default=datetime.now())
+  last_changed = db.Column(db.DateTime, default=datetime.now())
+  built_at = db.Column(db.DateTime, default=None)
 
   # TODO: Link up with ServiceModel
 
@@ -21,7 +21,7 @@ class StackModel(db.Model):
 
   def __init__(self, name, description=None, subdomain=None):
     self.name = name
-    self.active = 0
+    self.active = False
     self.description = description
     self.subdomain = subdomain
     self.created_at = datetime.now()

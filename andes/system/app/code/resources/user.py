@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.user import UserModel
+from models.response import response
 
 class UserRegister(Resource):
   parser = reqparse.RequestParser()
@@ -17,11 +18,13 @@ class UserRegister(Resource):
   def post(self):
     data = UserRegister.parser.parse_args()
 
-    # Check if user exists
     if UserModel.find_by_username(data['username']):
-      return {'message': f"Error: User {data['username']} already exists."}, 400
+      return response(400, None, f"User {data['username']} already exists.", None), 400
 
     user = UserModel(**data)
-    user.save_to_db()
+    try:
+      user.save_to_db()
+    except:
+      return response(500, None, f"An error occured while trying to create user {data['username']}.", None), 500
 
-    return {'message': f"User {data['username']} has been created."}, 201
+    return response(201, f"User {data['username']} has been created.", None, None), 201

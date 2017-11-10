@@ -5,41 +5,80 @@ from db import db
 class ServiceModel(db.Model):
   __tablename__ = 'services'
 
-  # TODO: Include tag ???
+  # TODO: Implement tag
   id = db.Column(db.Integer, primary_key = True)
   name = db.Column(db.String(32))
+  description = db.Column(db.String(256))
   image = db.Column(db.String(64))
-  exposed_ports = db.Column(db.String(255))
-  volumes = db.Column(db.String(1024))
+  exposed_ports = db.Column(db.String(128))
+  volumes = db.Column(db.String(512))
+  env = db.Column(db.String(512))
 
   # TODO: Link up with StackModel
 
-  def __init__(self, name, image, exposed_ports, volumes=None):
+  def __init__(self, name, image, exposed_ports, description=None, volumes=None, env=None):
     self.name = name
+    self.description = description
     self.image = image
     self.exposed_ports = exposed_ports
     self.volumes = volumes
+    self.env = env
 
   def json(self):
     if self.volumes:
       volumes = self.volumes.split(',')
     else:
-      volumes = self.volumes
+      volumes = None
+
+    if self.env:
+      env = self.env.split(',')
+    else:
+      env = None
 
     return {
       'id': self.id,
       'name': self.name,
+      'description': self.description,
       'image': self.image,
       'exposed_ports': self.exposed_ports.split(','),
-      'volumes': volumes
+      'volumes': volumes,
+      'env': env
     }
 
   # TODO: validate if image exists
 
   @classmethod
-  def valid_volumes(cls, volumes):
-    print(f"received {volumes}")
+  def valid_env(cls, env):
+    if env in [None, [""], [], [None]]:
+      return True
 
+    if type(env) is not list:
+      return False    
+
+    try:
+      for var in env:
+        if not re.compile("^[\w_\.]+=[\w_\.]+$").match(var):
+          return False
+    except:
+      return False
+
+    return True
+
+  @classmethod
+  def join_env_string(cls, data):
+    try:
+      if data['env'] in [None, [""], [], [None]]:
+        pass
+      else:
+        return ','.join(data['env'])
+    except:
+      pass
+
+    return None  
+
+
+  @classmethod
+  def valid_volumes(cls, volumes):
     if volumes in [None, [""], [], [None]]:
       return True
 
@@ -55,6 +94,18 @@ class ServiceModel(db.Model):
       return False
 
     return True
+
+  @classmethod
+  def join_volume_string(cls, data):
+    try:
+      if data['volumes'] in [None, [""], [], [None]]:
+        pass
+      else:
+        return ','.join(data['volumes'])
+    except:
+      pass
+
+    return None
 
   @classmethod
   def valid_ports(cls, exposed_ports):

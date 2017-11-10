@@ -8,7 +8,7 @@ class NetworkModel(db.Model):
 
   id = db.Column(db.Integer, primary_key = True)
   name = db.Column(db.String(32))
-  description = db.Column(db.String(512))
+  description = db.Column(db.String(256))
   driver = db.Column(db.String(12))
   subnet = db.Column(db.String(18))
   iprange = db.Column(db.String(18))
@@ -48,13 +48,13 @@ class NetworkModel(db.Model):
 
   @classmethod
   def valid_network(cls, network):
-    try:
-      if re.compile("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}0\/([\d]|[1-2]\d|3[012])$").match(network):
-        return True
+    # re.compile("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}0\/([\d]|[1-2]\d|3[012])$").match(network)
+    try: 
+      IPv4Network(network)
     except:
-      pass
-
-    return False
+      return False
+    
+    return True
 
   @classmethod
   def network_overlap(cls, net1, net2):
