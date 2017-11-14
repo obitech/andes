@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 from datetime import datetime
 
+from models.service import ServiceModel
 from models.stack import StackModel
 from util.response import response
 
@@ -22,6 +23,10 @@ class StackCreate(Resource):
   parser.add_argument('subdomain',
     type = str,
     help = "The subdomain this stack should reside under.")
+  parser.add_argument('services',
+    type = int,
+    action = 'append',
+    help = "Service IDs are optional.")
 
   @jwt_required()
   def post(self):
@@ -34,6 +39,12 @@ class StackCreate(Resource):
       return response(400, None, f"Invalid subdomain {data['subdomain']}", None), 400
 
     stack = StackModel(**data)
+
+    if data['services']:
+      for x in data['services']:
+        print(x)
+        service = ServiceModel.find_by_id(x)
+        stack.services.append(service)
 
     try:
       stack.save_to_db()
@@ -51,6 +62,7 @@ class StackCreate(Resource):
 
     stack = StackModel.find_by_name(data['name'])
 
+    # TODO: Add/Edit service (many-to-many)
     if stack:
       stack.name = data['name']
       stack.description = data['description']
@@ -78,6 +90,7 @@ class Stack(Resource):
 
     return response(404, None, f"Stack with id {_id} does not exist.", None), 404
 
+  # TODO: Delete stack = remove from table?
   @jwt_required()
   def delete(self, _id):
     try:

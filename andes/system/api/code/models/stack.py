@@ -3,6 +3,10 @@ from datetime import datetime
 
 from db import db
 
+stack_service_table = db.Table('stack_service_table',
+  db.Column('stack_id', db.Integer, db.ForeignKey('stacks.id'), primary_key=True),
+  db.Column('service_id', db.Integer, db.ForeignKey('services.id'), primary_key=True))
+
 class StackModel(db.Model):
   __tablename__ = 'stacks'
 
@@ -15,9 +19,7 @@ class StackModel(db.Model):
   last_changed = db.Column(db.DateTime, default=datetime.now())
   built_at = db.Column(db.DateTime, default=None)
   network = db.relationship('NetworkModel', uselist=False, backref='stacks', lazy=True)
-  
-  # TODO: Link up with ServiceModel
-
+  services = db.relationship('ServiceModel', secondary=stack_service_table, backref="stacks")
 
   def __init__(self, name, description=None, subdomain=None):
     self.name = name
@@ -45,6 +47,7 @@ class StackModel(db.Model):
       'description': self.description,
       'subdomain': self.subdomain,
       'network': network,
+      'services': [x.id for x in self.services],
       'active': self.active,
       'created_at': self.format_date(self.created_at),
       'last_changed': self.format_date(self.last_changed),

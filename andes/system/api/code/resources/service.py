@@ -50,6 +50,7 @@ class ServiceCreate(Resource):
 
     return {'code': 200}  
 
+  # TODO: stack relationship
   @jwt_required()
   def post(self):
     data = self.parser.parse_args()
@@ -128,6 +129,7 @@ class Service(Resource):
       'error': f"Service with ID {_id} does not exist."
     }, 400
 
+  # TODO: stack relationship delete
   @jwt_required()
   def delete(self, _id):
     try:
