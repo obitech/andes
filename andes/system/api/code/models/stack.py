@@ -6,7 +6,7 @@ from db import db
 class StackModel(db.Model):
   __tablename__ = 'stacks'
 
-  id = db.Column(db.Integer, primary_key = True)
+  id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(32))
   description = db.Column(db.String(256))
   subdomain = db.Column(db.String(128)) 
@@ -14,10 +14,10 @@ class StackModel(db.Model):
   created_at = db.Column(db.DateTime, default=datetime.now())
   last_changed = db.Column(db.DateTime, default=datetime.now())
   built_at = db.Column(db.DateTime, default=None)
-
+  network = db.relationship('NetworkModel', uselist=False, backref='stacks', lazy=True)
+  
   # TODO: Link up with ServiceModel
 
-  # TODO: Link up with NetworkModel
 
   def __init__(self, name, description=None, subdomain=None):
     self.name = name
@@ -34,11 +34,17 @@ class StackModel(db.Model):
     else:
       built = self.format_date(self.built_at)
 
+    if not self.network:
+      network = None
+    else:
+      network = self.network.json()
+
     return {
       'id': self.id,
       'name': self.name,
       'description': self.description,
       'subdomain': self.subdomain,
+      'network': network,
       'active': self.active,
       'created_at': self.format_date(self.created_at),
       'last_changed': self.format_date(self.last_changed),

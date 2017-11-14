@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 
 from models.service import ServiceModel
-from models.response import response
+from util.response import response
 
 class ServiceList(Resource):
   @jwt_required()

@@ -12,15 +12,15 @@ class NetworkModel(db.Model):
   driver = db.Column(db.String(12))
   subnet = db.Column(db.String(18))
   iprange = db.Column(db.String(18))
+  stack_id = db.Column(db.Integer, db.ForeignKey('stacks.id'), unique=True)
 
-  # TODO: Link up with StackModel
-
-  def __init__(self, name, description=None, subnet=None, iprange=None):
+  def __init__(self, name, stack_id, description=None, subnet=None, iprange=None):
     self.name = name
     self.driver = 'bridge'
     self.description = description
     self.subnet = subnet
     self.iprange = iprange
+    self.stack_id = stack_id
 
   def json(self):
     return {
@@ -29,7 +29,8 @@ class NetworkModel(db.Model):
       'description': self.description,
       'driver': self.driver,
       'subnet': self.subnet,
-      'iprange': self.iprange
+      'iprange': self.iprange,
+      'stack_id': self.stack_id
     }
 
   @classmethod
@@ -67,6 +68,16 @@ class NetworkModel(db.Model):
   @classmethod
   def find_by_id(cls, _id):
     return cls.query.filter_by(id=_id).first()
+
+  @classmethod
+  def stack_id_exists(cls, _id):
+    try:
+      if cls.query.filter_by(stack_id=_id).first():
+        return True
+    except:
+      pass
+
+    return False
 
   def save_to_db(self):
     db.session.add(self)

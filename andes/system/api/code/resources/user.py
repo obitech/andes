@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.user import UserModel
-from models.response import response
+from util.response import response
 
 class UserRegister(Resource):
   parser = reqparse.RequestParser()

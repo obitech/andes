@@ -1,8 +1,9 @@
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 
+from models.stack import StackModel
 from models.network import NetworkModel
-from models.response import response
+from util.response import response
 
 class NetworkList(Resource):
   @jwt_required()
@@ -15,6 +16,10 @@ class NetworkCreate(Resource):
     type = str,
     required = True,
     help = "The network name is required.")
+  parser.add_argument('stack_id',
+    type = int,
+    required = True,
+    help = "The stack id is required")
   parser.add_argument('description',
     type = str,
     help = "Network description is optional")
@@ -45,9 +50,13 @@ class NetworkCreate(Resource):
             'subnet': data['subnet'],
             'iprange': data['iprange']}
 
+
   @jwt_required()
   def post(self):
     data = self.parser.parse_args()
+
+    if NetworkModel.stack_id_exists(data['stack_id']):
+      return response(400, None, f"ID {data['stack_id']} already assigned to stack {StackModel.find_by_id(data['stack_id']).name}", None), 400
 
     if NetworkModel.find_by_name(data['name']):
       return response(400, None, f"Network with name {data['name']} already exitst.", None), 400
@@ -68,6 +77,10 @@ class NetworkCreate(Resource):
   def put(self):
     data = self.parser.parse_args()
     sub = self.check_subnet(data)
+
+    if NetworkModel.stack_id_exists(data['stack_id']):
+      return response(400, None, f"ID {data['stack_id']} already assigned to stack {StackModel.find_by_id(data['stack_id']).name}", None), 400
+
     if sub['code'] is not 200:
       return response (sub['code'], None, sub['error'], None), sub['code']
 
@@ -77,8 +90,9 @@ class NetworkCreate(Resource):
       network.description = data['description']
       network.subnet = sub['subnet']
       network.iprange = sub['iprange']
+      network.stack_id = data['stack_id']
     else:
-      network = NetworkModel(data['name'], data['description'],
+      network = NetworkModel(data['name'], data['stack_id'], data['description'],
                              sub['subnet'], sub['iprange'])
 
     try:
@@ -116,6 +130,6 @@ class Network(Resource):
       except:
         return response(500, None, f"An error occured while trying to delete {network.name}.", None), 500
       
-      return response(200, f"Network {network.name} has been deleted.", None), 200
+      return response(200, f"Network {network.name} has been deleted.", None, None), 200
 
     return response(404, None, f"Network with ID {_id} does not exist.", None), 404

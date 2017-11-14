@@ -3,7 +3,7 @@ from flask_jwt import jwt_required
 from datetime import datetime
 
 from models.stack import StackModel
-from models.response import response
+from util.response import response
 
 class StackList(Resource):
   @jwt_required()
@@ -59,7 +59,6 @@ class StackCreate(Resource):
     else:
       stack = StackModel(**data)
 
-    print(f"Stack: {stack.json()}")
     try:
       stack.save_to_db()
     except:
