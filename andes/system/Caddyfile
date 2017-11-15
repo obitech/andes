@@ -1,4 +1,4 @@
-localhost {
+:80 {
   tls off
   root /srv/www
   log stdout
