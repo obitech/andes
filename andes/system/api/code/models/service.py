@@ -14,8 +14,6 @@ class ServiceModel(db.Model):
   volumes = db.Column(db.String(512))
   env = db.Column(db.String(512))
 
-  # TODO: Link up with StackModel
-
   def __init__(self, name, image, exposed_ports, description=None, volumes=None, env=None):
     self.name = name
     self.description = description

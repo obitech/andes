@@ -132,7 +132,6 @@ class Stack(Resource):
 
     return response(404, None, f"Stack with id {_id} does not exist.", None), 404
 
-  # TODO: Delete stack = remove from table?
   @jwt_required()
   def delete(self, _id):
     try:

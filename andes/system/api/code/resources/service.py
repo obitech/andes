@@ -21,7 +21,6 @@ class ServiceCreate(Resource):
     type = str,
     required = True,
     help = "The image name is required.",)
-  # TODO: pass ports as int
   parser.add_argument('exposed_ports',
     type = int,
     required = True,
