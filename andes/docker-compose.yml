@@ -1,0 +1,41 @@
+version: '3'
+services:
+  andes:
+    image: obitech/andes-api:test-slim
+    expose:
+      - "5000"
+      - "5001"
+    volumes:
+      - "./system/api/data:/api/data"
+    networks:
+      net_default:
+        ipv4_address: 172.42.0.1
+    restart: always
+  web:
+    cap_add:
+      - NET_ADMIN
+    image: abiosoft:caddy
+    expose:
+      - "80"
+      - "443"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./system/Caddyfile:/etc/Caddyfile"
+      - "./system/certs:/root/.caddy"
+      - "./system/vhosts:/etc/caddy/sites-enabled"
+      - "./system/www:/srv"
+    links:
+      - andes
+    networks:
+      net_default:
+        ipv4_address: 172.42.0.2
+    restart: always
+networks:
+  net_default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.42.0.0/24
