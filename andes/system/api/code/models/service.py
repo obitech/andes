@@ -41,7 +41,7 @@ class ServiceModel(db.Model):
       'description': self.description,
       'image': self.image,
       'stacks': [x.id for x in self.stacks],
-      'exposed_ports': self.exposed_ports.split(','),
+      'exposed_ports': [int(x) for x in self.exposed_ports.split(',')],
       'volumes': volumes,
       'env': env
     }
@@ -112,13 +112,24 @@ class ServiceModel(db.Model):
   def valid_ports(cls, exposed_ports):
     try:
       for port in exposed_ports:
-        port = int(port)
         if port < 0 or port > 65535:
           return False
     except:
       return False
 
     return True
+
+  @classmethod
+  def join_port_string(cls, data):
+    try:
+      if data['exposed_ports'] in [None, [""], [], [None]]:
+        pass
+      else:
+        return ','.join([str(x) for x in data['exposed_ports']])
+    except:
+      pass
+
+    return None
 
   @classmethod
   def find_by_name(cls, name):

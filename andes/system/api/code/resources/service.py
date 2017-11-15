@@ -23,7 +23,7 @@ class ServiceCreate(Resource):
     help = "The image name is required.",)
   # TODO: pass ports as int
   parser.add_argument('exposed_ports',
-    type = str,
+    type = int,
     required = True,
     action = 'append',
     help = "The exposed ports are required.")
@@ -76,7 +76,7 @@ class ServiceCreate(Resource):
 
     service = ServiceModel(data['name'],
       data['image'],
-      ",".join(data['exposed_ports']),
+      ServiceModel.join_port_string(data['exposed_ports']),
       volumes,
       env)
 
@@ -108,7 +108,7 @@ class ServiceCreate(Resource):
     if service:
       service.name = data['name']
       service.image = data['image']
-      service.exposed_ports = ",".join(data['exposed_ports'])
+      service.exposed_ports = ServiceModel.join_port_string(data['exposed_ports'])
       service.volumes = volumes
       service.env = env
 
@@ -133,7 +133,7 @@ class ServiceCreate(Resource):
     else:
       service = ServiceModel(data['name'],
                              data['image'],
-                             ",".join(data['exposed_ports']),
+                             ServiceModel.join_port_string(data['exposed_ports']),
                              volumes,
                              env)
 
