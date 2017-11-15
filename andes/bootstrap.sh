@@ -13,7 +13,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 TLS_ENABLED=false
-# TODO: Variable restart flag (on-failure:3)
+# TODO: throw out
 RESTART_FLAG=on-failure:3
 HOSTNAME=localhost
 ANDES_DIR=/home/$USER/andes
@@ -210,7 +210,7 @@ echo -e "$GREEN==> Docker installed successfully, source .bashrc for bash-comple
 #####################################################################
 ############################ CADDY SETUP ############################
 #####################################################################
-
+# TODO: Just bring up docker-compose
 if [[ CADDY_SETUP ]]; then
   echo -e "$GREEN==> Creating Caddyfile in $ANDES_DIR/andes/system:$NC"
   if $TLS_ENABLED ; then

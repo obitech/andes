@@ -11,7 +11,7 @@ class StackModel(db.Model):
   __tablename__ = 'stacks'
 
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(32))
+  name = db.Column(db.String(32), nullable=False)
   description = db.Column(db.String(256))
   subdomain = db.Column(db.String(128)) 
   active = db.Column(db.Boolean)

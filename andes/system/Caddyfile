@@ -3,6 +3,7 @@
   root /srv/www
   proxy /api andes:5000 {
     transparent
+    without /api
   }
   log stdout
   errors stderr

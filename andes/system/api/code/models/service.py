@@ -7,10 +7,10 @@ class ServiceModel(db.Model):
 
   # TODO: Implement tag
   id = db.Column(db.Integer, primary_key = True)
-  name = db.Column(db.String(32))
+  name = db.Column(db.String(32), nullable=False)
   description = db.Column(db.String(256))
   image = db.Column(db.String(64))
-  exposed_ports = db.Column(db.String(128))
+  exposed_ports = db.Column(db.String(128), nullable=False)
   volumes = db.Column(db.String(512))
   env = db.Column(db.String(512))
 

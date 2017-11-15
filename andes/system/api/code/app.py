@@ -27,16 +27,16 @@ def create_tables():
 api.add_resource(UserRegister, '/register')
 
 api.add_resource(ServiceList, '/services')
-api.add_resource(ServiceCreate, '/service/create')
-api.add_resource(Service, '/service/<int:_id>')
+api.add_resource(ServiceCreate, '/services/create')
+api.add_resource(Service, '/services/<int:_id>')
 
 api.add_resource(StackList, '/stacks')
-api.add_resource(StackCreate, '/stack/create')
-api.add_resource(Stack, '/stack/<int:_id>')
+api.add_resource(StackCreate, '/stacks/create')
+api.add_resource(Stack, '/stacks/<int:_id>')
 
 api.add_resource(NetworkList, '/networks')
-api.add_resource(NetworkCreate, '/network/create')
-api.add_resource(Network, '/network/<int:_id>')
+api.add_resource(NetworkCreate, '/networks/create')
+api.add_resource(Network, '/networks/<int:_id>')
 
 if __name__ == "__main__":
   from db import db

@@ -7,7 +7,7 @@ class NetworkModel(db.Model):
   __tablename__ = "networks"
 
   id = db.Column(db.Integer, primary_key = True)
-  name = db.Column(db.String(32))
+  name = db.Column(db.String(32), nullable=False)
   description = db.Column(db.String(256))
   driver = db.Column(db.String(12))
   subnet = db.Column(db.String(18))
@@ -33,25 +33,29 @@ class NetworkModel(db.Model):
       'stack_id': self.stack_id
     }
 
+  # TODO: cannot be 172.42.0.2 - x.x.x.10
   @classmethod
   def valid_ip(cls, ip):
-    """
-    Regex from here: 
-    https://stackoverflow.com/questions/4890789/regex-for-an-ip-address
-    """
     try:
-      if re.compile("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$").match(ip):
-        return True
+      ip_address(ip)
+
+      ip_list = ip.split('.')
+      if 2 <= int(ip_list[0]) <= 10:
+        return False
+
     except:
-      pass
+      return False
 
-    return False
+    return True
 
+  # TODO: cannot be 172.42.0.0/16
   @classmethod
   def valid_network(cls, network):
-    # re.compile("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}0\/([\d]|[1-2]\d|3[012])$").match(network)
     try: 
       IPv4Network(network)
+
+      if IPv4Network(network) == IPv4Network("172.42.0.0/16"):
+        return False
     except:
       return False
     
