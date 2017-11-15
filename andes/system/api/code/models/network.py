@@ -39,9 +39,9 @@ class NetworkModel(db.Model):
     try:
       ip_address(ip)
 
-      ip_list = ip.split('.')
-      if 2 <= int(ip_list[0]) <= 10:
-        return False
+      # ip_list = ip.split('.')
+      # if 2 <= int(ip_list[0]) <= 10:
+      #   return False
 
     except:
       return False
@@ -54,8 +54,8 @@ class NetworkModel(db.Model):
     try: 
       IPv4Network(network)
 
-      if IPv4Network(network) == IPv4Network("172.42.0.0/16"):
-        return False
+      # if IPv4Network(network) == IPv4Network("172.42.0.0/16"):
+      #   return False
     except:
       return False
     

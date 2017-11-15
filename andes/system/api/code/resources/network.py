@@ -50,11 +50,11 @@ class NetworkCreate(Resource):
             'subnet': data['subnet'],
             'iprange': data['iprange']}
 
-
   @jwt_required()
   def post(self):
     data = self.parser.parse_args()
 
+    # TODO: Bug?
     if NetworkModel.stack_id_exists(data['stack_id']):
       return response(400, None, f"ID {data['stack_id']} already assigned to stack {StackModel.find_by_id(data['stack_id']).name}", None), 400
 
@@ -63,7 +63,7 @@ class NetworkCreate(Resource):
 
     sub = self.check_subnet(data)
     if sub['code'] is not 200:
-      return response (sub['code'], None, sub['error'], None), sub['code']
+      return response(sub['code'], None, sub['error'], None), sub['code']
 
     network = NetworkModel(**data)
     try:
