@@ -14,7 +14,7 @@ services:
   web:
     cap_add:
       - NET_ADMIN
-    image: abiosoft:caddy
+    image: abiosoft/caddy
     expose:
       - "80"
       - "443"
