@@ -19,7 +19,7 @@ class StackModel(db.Model):
   last_changed = db.Column(db.DateTime, default=datetime.now())
   built_at = db.Column(db.DateTime, default=None)
   network = db.relationship('NetworkModel', uselist=False, backref='stacks', lazy=True)
-  services = db.relationship('ServiceModel', secondary=stack_service_table, backref="stacks")
+  services = db.relationship('ServiceModel', secondary=stack_service_table, backref="stacks", lazy=True)
 
   def __init__(self, name, description=None, subdomain=None):
     self.name = name

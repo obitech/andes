@@ -38,13 +38,17 @@ class StackCreate(Resource):
     if data['subdomain'] and not StackModel.valid_subdomain(data['subdomain']):
       return response(400, None, f"Invalid subdomain {data['subdomain']}", None), 400
 
-    stack = StackModel(**data)
+    stack = StackModel(data['name'],
+                       data['description'],
+                       data['subdomain'])
 
     if data['services']:
       for x in data['services']:
-        print(x)
-        service = ServiceModel.find_by_id(x)
-        stack.services.append(service)
+          service = ServiceModel.find_by_id(x)
+          if service:
+            stack.services.append(service)
+          else:
+            return response(400, None, f"Service with ID {x} cannot be found.", None), 400
 
     try:
       stack.save_to_db()
@@ -62,14 +66,43 @@ class StackCreate(Resource):
 
     stack = StackModel.find_by_name(data['name'])
 
-    # TODO: Add/Edit service (many-to-many)
     if stack:
       stack.name = data['name']
       stack.description = data['description']
       stack.subdomain = data['subdomain']
       stack.last_changed = datetime.now()
+
+      if data['services']:
+        # Get sets of services which need to be updated and deleted
+        old = {x.id for x in stack.services}
+        new = set(data['services'])
+        to_update = new - old
+        to_delete = old - new
+        
+        # Remove old services
+        for x in to_delete:
+          stack.services.remove(ServiceModel.find_by_id(x))
+
+        # Add new services
+        for x in to_update:
+          service = ServiceModel.find_by_id(x)
+          if service:
+            stack.services.append(service)
+          else:
+            return response(400, None, f"Service with ID {x} cannot be found.", None), 400
+
     else:
-      stack = StackModel(**data)
+      stack = StackModel(data['name'],
+                         data['description'],
+                         data['subdomain'])
+
+      if data['services']:
+        for x in data['services']:
+          service = ServiceModel.find_by_id(x)
+          if service:
+            stack.services.append(service)
+          else:
+            return response(400, None, f"Service with ID {x} cannot be found.", None), 400
 
     try:
       stack.save_to_db()
