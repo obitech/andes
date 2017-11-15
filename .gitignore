@@ -1,6 +1,7 @@
 .DS_Store
 .vagrant
 *.db
+.idea/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
