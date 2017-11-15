@@ -91,10 +91,10 @@
   Vue.use(VueResource)
   Vue.use(VueRouter)
   Vue.http.options.root = '/api/'
-  /*Vue.http.interceptors.push((request, next) => {
+  Vue.http.interceptors.push((request, next) => {
     request.url += (request.url.indexOf('?') > 0 ? '&' : '?') + `cb=${new Date().getTime()}`
     next()
-  })*/
+  })
   Vue.http.interceptors.push((request, next) => {
     const token = localStorage.getItem('andes_token');
     const hasAuthHeader = request.headers.has('Authorization')
