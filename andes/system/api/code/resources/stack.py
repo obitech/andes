@@ -11,6 +11,7 @@ class StackList(Resource):
   def get(self):
     return response(200, "Stacks have been retrieved.", None, [stack.json() for stack in StackModel.query.all()]), 200
 
+
 class StackCreate(Resource):
   parser = reqparse.RequestParser()
   parser.add_argument('name',
@@ -28,6 +29,8 @@ class StackCreate(Resource):
     action = 'append',
     help = "Service IDs are optional.")
 
+  # TODO: check args here
+
   @jwt_required()
   def post(self):
     data = self.parser.parse_args()
@@ -42,7 +45,7 @@ class StackCreate(Resource):
                        data['description'],
                        data['subdomain'])
 
-    if data['services']:
+    if data['services'] and data['services'] != [None]:
       for x in data['services']:
           service = ServiceModel.find_by_id(x)
           if service:
@@ -72,7 +75,9 @@ class StackCreate(Resource):
       stack.subdomain = data['subdomain']
       stack.last_changed = datetime.now()
 
-      if data['services']:
+      
+      if data['services'] and data['services'] != [None]:
+        print(data['services'])
         # Get sets of services which need to be updated and deleted
         old = {x.id for x in stack.services}
         new = set(data['services'])
@@ -90,13 +95,16 @@ class StackCreate(Resource):
             stack.services.append(service)
           else:
             return response(400, None, f"Service with ID {x} cannot be found.", None), 400
+      else:
+        for x in [y.id for y in stack.services]:
+          stack.services.remove(ServiceModel.find_by_id(x))
 
     else:
       stack = StackModel(data['name'],
                          data['description'],
                          data['subdomain'])
 
-      if data['services']:
+      if data['services'] and data['services'] != [None]:
         for x in data['services']:
           service = ServiceModel.find_by_id(x)
           if service:
@@ -110,6 +118,7 @@ class StackCreate(Resource):
       return response(500, None, f"An error occured while trying to update stack {data['name']}.", None), 500
 
     return response(201, f"Stack {data['name']} has been updated.", None, stack.json()), 201
+
 
 class Stack(Resource):
   @jwt_required()

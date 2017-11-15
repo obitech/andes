@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 
+from models.stack import StackModel
 from models.service import ServiceModel
 from util.response import response
 
@@ -8,6 +9,7 @@ class ServiceList(Resource):
   @jwt_required()
   def get(self):
     return response(200, "Services have been retrieved.", None, [service.json() for service in ServiceModel.query.all()]), 200
+
 
 class ServiceCreate(Resource):
   parser = reqparse.RequestParser()
@@ -19,6 +21,7 @@ class ServiceCreate(Resource):
     type = str,
     required = True,
     help = "The image name is required.",)
+  # TODO: pass ports as int
   parser.add_argument('exposed_ports',
     type = str,
     required = True,
@@ -32,25 +35,31 @@ class ServiceCreate(Resource):
     type= str,
     action= 'append',
     help = "Environment variables are optional.")
+  parser.add_argument('stacks',
+    type = int,
+    action = 'append',
+    help = "Stacks are optional.")  
 
   def check_args(self, data):
     if data['volumes']:
       if not ServiceModel.valid_volumes(data['volumes']):
-        return {'code': 400,
-                'error': f"Invalid volumes"}
+        return {'code': 400, 'error': f"Invalid volumes"}
 
     if data['exposed_ports']:
       if not ServiceModel.valid_ports(data['exposed_ports']):
-        return {'code': 400,
-                'error': f"Invalid exposed_ports."}    
+        return {'code': 400, 'error': f"Invalid exposed_ports."}    
 
+    if data['env']:
       if not ServiceModel.valid_env(data['env']):
-        return {'code': 400,
-                'error': f"Invalid environment variables."}    
+        return {'code': 400, 'error': f"Invalid environment variables."}
+
+    if data['stacks'] and data['stacks'] != [None]:
+      for x in data['stacks']:
+        if not StackModel.find_by_id(x):
+          return {'code': 400, 'error': f"Stack with ID {x} cannot be found."}   
 
     return {'code': 200}  
 
-  # TODO: stack relationship
   @jwt_required()
   def post(self):
     data = self.parser.parse_args()
@@ -69,8 +78,12 @@ class ServiceCreate(Resource):
       data['image'],
       ",".join(data['exposed_ports']),
       volumes,
-      env
-    )
+      env)
+
+    if data['stacks'] and data['stacks'] != [None]:
+      for x in data['stacks']:
+        stack = StackModel.find_by_id(x)
+        service.stacks.append(stack)
 
     try:
       service.save_to_db()
@@ -98,6 +111,25 @@ class ServiceCreate(Resource):
       service.exposed_ports = ",".join(data['exposed_ports'])
       service.volumes = volumes
       service.env = env
+
+      if data['stacks'] and data['stacks'] != [None]:
+        # Get sets of stacks which need to be updated or deleted
+        old = {x.id for x in service.stacks}
+        new = set(data['stacks'])
+        to_update = new - old
+        to_delete = old - new
+
+        # Remove old stacks
+        for x in to_delete:
+          service.stacks.remove(StackModel.find_by_id(x))
+
+        # Add new services
+        for x in to_update:
+          service.stacks.append(StackModel.find_by_id(x))
+      else:
+        for x in [y.id for y in service.stacks]:
+          service.stacks.remove(StackModel.find_by_id(x))
+
     else:
       service = ServiceModel(data['name'],
                              data['image'],
@@ -105,12 +137,18 @@ class ServiceCreate(Resource):
                              volumes,
                              env)
 
+      if data['stacks'] and data['stacks'] != [None]:
+        for x in data['stacks']:
+          stack = StackModel.find_by_id(x)
+          service.stacks.append(stack)
+
     try:
       service.save_to_db()
     except:
       return response(500, None, f"An error occured while trying to update service {data['name']}.", None), 500
 
     return response(201, f"Service {data['name']} has been updated.", None, service.json()), 201
+
 
 class Service(Resource):
   @jwt_required()
@@ -129,7 +167,6 @@ class Service(Resource):
       'error': f"Service with ID {_id} does not exist."
     }, 400
 
-  # TODO: stack relationship delete
   @jwt_required()
   def delete(self, _id):
     try:

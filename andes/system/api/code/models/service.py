@@ -40,6 +40,7 @@ class ServiceModel(db.Model):
       'name': self.name,
       'description': self.description,
       'image': self.image,
+      'stacks': [x.id for x in self.stacks],
       'exposed_ports': self.exposed_ports.split(','),
       'volumes': volumes,
       'env': env
