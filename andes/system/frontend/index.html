@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+  <meta name="mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#3a66cc">
+  <meta name="mobile-web-app-title" content="Andes">
+
+  <title>Welcome to Andes</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+        integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://unpkg.com/vue"></script>
+  <script src="https://unpkg.com/vue-resource"></script>
+  <script src="https://unpkg.com/vue-router"></script>
+  <style>
+    body > .wrapper {
+      height: 100vh;
+      padding-top: 80px;
+    }
+
+    .form-signin {
+      max-width: 330px;
+      padding: 15px;
+      margin: 0 auto;
+    }
+
+    .form-signin .form-signin-heading {
+      margin-bottom: 10px;
+    }
+
+    .form-signin .form-control {
+      position: relative;
+      box-sizing: border-box;
+      height: auto;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .form-signin .form-control:focus {
+      z-index: 2;
+    }
+
+    .form-signin input[type="email"] {
+      margin-bottom: -1px;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    .form-signin input[type="password"] {
+      margin-bottom: 10px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid wrapper">
+  <div id="app">
+    <transition name="slide">
+      <router-view></router-view>
+    </transition>
+  </div>
+</div>
+
+<script>
+  window.store = {
+    jwt: null,
+    username: null
+  }
+  window.state = {
+    loading: true
+  }
+  window.api = {
+    stacks: {
+      get () {}
+    },
+    services: {
+      get () {}
+    }
+  }
+
+  function dd () {
+    if (typeof console === 'object' && typeof console.log === 'function') {
+      console.log.apply(this, arguments)
+    }
+  }
+
+  Vue.use(VueResource)
+  Vue.use(VueRouter)
+  Vue.http.options.root = '/api/'
+  /*Vue.http.interceptors.push((request, next) => {
+    request.url += (request.url.indexOf('?') > 0 ? '&' : '?') + `cb=${new Date().getTime()}`
+    next()
+  })*/
+  Vue.http.interceptors.push((request, next) => {
+    const token = localStorage.getItem('andes_token');
+    const hasAuthHeader = request.headers.has('Authorization')
+    if (token && !hasAuthHeader) {
+      request.headers.set('Authorization', 'Bearer ' + token)
+    }
+    next((response) => {
+      if (response.status === 401 && response.data.error === 'invalid_token') {
+        // Create this function below to get the new token and store
+        // it in localStorage and then retries the original request.
+//        return refreshToken(request)
+        alert('token refresh not yet implemented')
+      }
+    })
+  })
+
+  Vue.component('menu-link', {
+    template: '<router-link class="nav-item" active-class="active" :to="to" :exact="exact" tag="li"><a class="nav-link"><slot></slot></a></router-link>',
+    props: ['to', 'exact']
+  })
+  Vue.component('nav-bar', {
+    template: '<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">\n' +
+    '      <a class="navbar-brand" href="#">Andes</a>\n' +
+    '      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">\n' +
+    '        <span class="navbar-toggler-icon"></span>\n' +
+    '      </button>\n' +
+    '      <div class="collapse navbar-collapse" id="navbarsExampleDefault">\n' +
+    '        <ul class="navbar-nav mr-auto">' +
+    '         <menu-link exact to="/">Home</menu-link>\n' +
+    '         <menu-link to="stacks">Stacks</menu-link>\n' +
+    '         <menu-link to="services">Services</menu-link>\n' +
+    '          <li class="nav-item">\n' +
+    '            <a class="nav-link disabled" href="#">Disabled</a>\n' +
+    '          </li>\n' +
+    '          <li class="nav-item dropdown">\n' +
+    '            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>\n' +
+    '            <div class="dropdown-menu" aria-labelledby="dropdown01">\n' +
+    '              <a class="dropdown-item" href="#">Action</a>\n' +
+    '              <a class="dropdown-item" href="#">Another action</a>\n' +
+    '              <a class="dropdown-item" href="#">Something else here</a>\n' +
+    '            </div>\n' +
+    '          </li>\n' +
+    '        </ul>\n' +
+    '        <ul class="navbar-nav">' +
+    '          <li class="nav-item dropdown" v-if="loggedIn">' +
+    '            <a class="nav-link dropdown-toggle" style="min-width: 160px;text-align:right" href="#" id="dropdownUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ username }}</a>' +
+    '            <div class="dropdown-menu" aria-labelledby="dropdownUser">' +
+    '              <a class="dropdown-item" href="#/logout">Logout</a>' +
+    '            </div>' +
+    '          </li>' +
+    '        </ul>\n' +
+    '      </div>\n' +
+    '    </nav>',
+    data () {
+      return window.store
+    },
+    computed: {
+      loggedIn () {
+        return (typeof window.store.jwt === 'string')
+      },
+    },
+    mounted () {
+      if (!this.loggedIn) {
+        this.$router.push({name: 'login'})
+      } else {
+        if (typeof window.store.username !== 'string') {
+          // get user from backend @todo get users id from jwt
+          window.api.users.get({id: 1}).then(response => {
+            response.json().then(data => {
+              window.store.username = data.username
+              dd(data)
+            }, () => alert('json error on users'))
+          }, () => {
+            alert('api error on users')
+          })
+        }
+      }
+    }
+  })
+  Vue.component('resource-index', {
+    template: '<div>' +
+    '  <p class="small" v-if="collection.length > 0">Found {{ collection.length }} elements of type {{ label }}</p>' +
+    '  <div class="table-responsive" v-if="collection.length > 0">' +
+    '  <table class="table table-striped table-condensed table-bordered">' +
+    '    <thead>' +
+    '      <tr>' +
+    '        <th v-for="field in fields">{{ field.toUpperCase() }}</th>' +
+    '        <th class="actions"></th>' +
+    '      </tr>' +
+    '    </thead>' +
+    '    <tbody>' +
+    '      <tr v-for="model in collection">' +
+    '        <td v-for="field in fields">{{ model[field] }}</td>' +
+    '        <td class="actions text-right">' +
+    '          <router-link :to="name + \'/\' + model.id" class="btn btn-sm btn-primary">' +
+    '            <i class="fa fa-eye"></i>' +
+    '          </router-link>' +
+    '        </td>' +
+    '      </tr>' +
+    '    </tbody>' +
+    '  </table>' +
+    '  </div>' +
+    '  <p class="jumbotron text-center" v-if="collection.length < 1">Nothing found</p>' +
+    '</div>',
+    data () {
+      return {
+        api: window.api,
+        collection: []
+      }
+    },
+    props: {
+      fields: Array,
+      name: String,
+      label: String,
+    },
+    methods: {
+      getAll () {
+        this.api[this.name].get().then(response => {
+          response.json().then(data => this.collection = data, () => alert('json error'))
+        }, response => alert('api error in ' + this.name))
+      }
+    },
+    mounted () {
+      this.getAll()
+    }
+  })
+
+  const Home = {
+    template: '<div class="row"><div class="col-md-8"><nav-bar></nav-bar><h1>Hello {{ username }}</h1>' +
+    '<a href="#/login">test</a></div></div>',
+    data () {return {}},
+    computed: {
+      username () {
+        return (typeof window.store !== 'undefined') ? window.store.username : 'Guest'
+      },
+    },
+    mounted () {
+      if (typeof this.$route.params.username === 'string') {
+        window.store.username = this.$route.params.username
+      }
+    },
+  }
+  const Logout = {
+    template: '<div class="row justify-content-center"><div class="col-md-6"><h1>Logged out</h1>' +
+    '<a href="#/login">Log in again</a></div></div>',
+    data () {return {}},
+    computed: {},
+    mounted () {
+      window.store.username = null
+      window.store.jwt = null
+      localStorage.removeItem('andes_token')
+    },
+  }
+  const Login = {
+    template: '<div class="row justify-content-center"><div class="col-md-6"><form class="form-signin" action="javascript:;" @submit="login" >\n' +
+    '    <h2 class="form-signin-heading">Please sign in</h2>\n' +
+    '    <label for="inputEmail" class="sr-only">Email address/Username</label>\n' +
+    '    <input type="text" id="inputEmail" class="form-control" placeholder="Email address/Username" required autofocus\n' +
+    '           v-model="username" :disabled="loading">\n' +
+    '    <label for="inputPassword" class="sr-only">Password</label>\n' +
+    '    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required v-model="password"\n' +
+    '           :disabled="loading">\n' +
+    '    <button class="btn btn-lg btn-primary btn-block" :disabled="loading">\n' +
+    '      {{loading? \'Please wait...\' : \'Sign in\'}}\n' +
+    '    </button>\n' +
+    '  </form></div></div>',
+    data () {
+      return {
+        username: '',
+        password: '',
+        loading: true
+      }
+    },
+    methods: {
+      login () {
+        this.loading = true
+        this.$http.get('/api/auth', {responseType: 'json'}).then(response => {
+          if (typeof response.body.access_token === 'string') {
+            window.store.jwt = response.body.access_token
+            localStorage.setItem('andes_token', response.body.access_token)
+          }
+          this.loading = false
+          this.$router.push({name: 'home', params: {username: this.username}})
+        }, response => {
+          // error handling, for now, just reload
+          dd(response)
+          location.reload()
+        })
+      },
+      isLoading () {
+        return window.state.loading
+      }
+    },
+    mounted () {
+      if (!window.store.jwt) {
+        this.loading = false
+      } else {
+        this.$router.push({name: 'home'})
+      }
+    }
+  }
+  const Stacks = {
+    template: '<div class="row"><div class="col-md-12"><nav-bar></nav-bar><h1>Stacks</h1>' +
+    ' <resource-index name="stacks" label="Stacks" :fields="[\'id\',\'name\']"></resource-index>' +
+    '</div></div>',
+  }
+  const Services = {
+    template: '<div class="row"><div class="col-md-12"><nav-bar></nav-bar><h1>Services</h1>' +
+    ' <resource-index name="services" label="Services" :fields="[\'id\',\'name\']"></resource-index>' +
+    '</div></div>',
+  }
+
+  const routes = [
+    {
+      name: 'home',
+      path: '/',
+      component: Home
+    },
+    {
+      name: 'stacks',
+      path: '/stacks',
+      component: Stacks
+    },
+    {
+      name: 'services',
+      path: '/services',
+      component: Services
+    },
+    {
+      name: 'login',
+      path: '/login',
+      component: Login
+    },
+    {
+      name: 'logout',
+      path: '/logout',
+      component: Logout
+    },
+  ]
+  const router = new VueRouter({
+    routes
+  })
+
+  const app = new Vue({
+    router,
+    template: '<router-view></router-view>',
+    data: {
+      store: {jwt: null, username: null},
+      state: {loading: false},
+      api: {},
+    },
+    computed: {
+      authenticated () {
+        return (typeof this.store.jwt === 'string')
+      }
+    },
+    methods: {},
+    created () {
+      // do we have som jwt in localstorage?
+      this.store.jwt = localStorage.getItem('andes_token')
+      this.api = {
+        stacks: this.$resource('stacks{/id}'),
+        services: this.$resource('services{/id}'),
+        users: this.$resource('users{/id}'),
+      }
+      window.store = this.store
+      window.state = this.state
+      window.api = this.api
+    }
+  }).$mount('#app')
+
+</script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+        integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+        integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+</body>
+</html>
