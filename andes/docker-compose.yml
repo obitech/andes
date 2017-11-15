@@ -9,7 +9,7 @@ services:
       - "./system/api/data:/api/data"
     networks:
       net_default:
-        ipv4_address: 172.42.0.1
+        ipv4_address: 172.42.0.2
     restart: always
   web:
     cap_add:
@@ -25,12 +25,12 @@ services:
       - "./system/Caddyfile:/etc/Caddyfile"
       - "./system/certs:/root/.caddy"
       - "./system/vhosts:/etc/caddy/sites-enabled"
-      - "./system/www:/srv"
+      - "./system/frontend:/srv/www"
     links:
       - andes
     networks:
       net_default:
-        ipv4_address: 172.42.0.2
+        ipv4_address: 172.42.0.3
     restart: always
 networks:
   net_default:
@@ -38,4 +38,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.42.0.0/24
+        - subnet: 172.42.0.0/16
