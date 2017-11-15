@@ -1,6 +1,9 @@
-localhost {
+:80 {
   tls off
   root /srv/www
+  proxy /api andes:5000 {
+    transparent
+  }
   log stdout
-  errors stdout
+  errors stderr
 }
