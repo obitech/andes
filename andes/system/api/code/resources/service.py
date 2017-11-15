@@ -72,10 +72,11 @@ class ServiceCreate(Resource):
 
     volumes = ServiceModel.join_volume_string(data)
     env = ServiceModel.join_env_string(data)
+    ports = ServiceModel.join_port_string(data)
 
     service = ServiceModel(data['name'],
       data['image'],
-      ServiceModel.join_port_string(data['exposed_ports']),
+      ports,
       volumes,
       env)
 
@@ -107,7 +108,7 @@ class ServiceCreate(Resource):
     if service:
       service.name = data['name']
       service.image = data['image']
-      service.exposed_ports = ServiceModel.join_port_string(data['exposed_ports'])
+      service.exposed_ports = ServiceModel.join_port_string(data)
       service.volumes = volumes
       service.env = env
 
@@ -132,7 +133,7 @@ class ServiceCreate(Resource):
     else:
       service = ServiceModel(data['name'],
                              data['image'],
-                             ServiceModel.join_port_string(data['exposed_ports']),
+                             ServiceModel.join_port_string(data),
                              volumes,
                              env)
 
