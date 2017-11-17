@@ -48,14 +48,10 @@ class NetworkModel(db.Model):
 
     return True
 
-  # TODO: cannot be 172.42.0.0/16
   @classmethod
   def valid_network(cls, network):
     try: 
       IPv4Network(network)
-
-      # if IPv4Network(network) == IPv4Network("172.42.0.0/16"):
-      #   return False
     except:
       return False
     
@@ -74,7 +70,10 @@ class NetworkModel(db.Model):
     return cls.query.filter_by(id=_id).first()
 
   @classmethod
-  def stack_id_exists(cls, _id):
+  def assigned_to_stack(cls, _id):
+    """
+    Checks if a network is already assigned to a stack
+    """
     try:
       if cls.query.filter_by(stack_id=_id).first():
         return True
