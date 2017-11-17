@@ -54,9 +54,12 @@ class NetworkCreate(Resource):
   def post(self):
     data = self.parser.parse_args()
 
-    # TODO: Bug?
-    if NetworkModel.stack_id_exists(data['stack_id']):
-      return response(400, None, f"ID {data['stack_id']} already assigned to stack {StackModel.find_by_id(data['stack_id']).name}", None), 400
+    if data['stack_id']:
+      if not StackModel.find_by_id(data['stack_id']):
+        return response(400, None, f"Stack {data['stack_id']} doesn't exist.", None), 400
+
+      if NetworkModel.assigned_to_stack(data['stack_id']):
+        return response(400, None, f"ID {data['stack_id']} already assigned to stack {StackModel.find_by_id(data['stack_id']).name}", None), 400
 
     if NetworkModel.find_by_name(data['name']):
       return response(400, None, f"Network with name {data['name']} already exitst.", None), 400
@@ -78,8 +81,12 @@ class NetworkCreate(Resource):
     data = self.parser.parse_args()
     sub = self.check_subnet(data)
 
-    if NetworkModel.stack_id_exists(data['stack_id']):
-      return response(400, None, f"ID {data['stack_id']} already assigned to stack {StackModel.find_by_id(data['stack_id']).name}", None), 400
+    if data['stack_id']:
+      if not StackModel.find_by_id(data['stack_id']):
+        return response(400, None, f"Stack {data['stack_id']} doesn't exist.", None), 400
+
+      if NetworkModel.assigned_to_stack(data['stack_id']):
+        return response(400, None, f"ID {data['stack_id']} already assigned to stack {StackModel.find_by_id(data['stack_id']).name}", None), 400
 
     if sub['code'] is not 200:
       return response (sub['code'], None, sub['error'], None), sub['code']

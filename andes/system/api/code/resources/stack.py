@@ -29,8 +29,6 @@ class StackCreate(Resource):
     action = 'append',
     help = "Service IDs are optional.")
 
-  # TODO: check args here
-
   @jwt_required()
   def post(self):
     data = self.parser.parse_args()
