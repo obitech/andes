@@ -17,15 +17,16 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     add-apt-repository ppa:jonathonf/python-3.6 -y
     apt-get update -y
-    apt-get install vim python3.6 -y
-    curl https://bootstrap.pypa.io/get-pip.py | sudo python3.6
     apt-get upgrade -y
-    pip3 install -r /home/vagrant/andes/andes/system/app/requirements.txt
+    # apt-get install vim python3.6 -y
+    # curl https://bootstrap.pypa.io/get-pip.py | sudo python3.6
+    # apt-get upgrade -y
+    # pip3 install -r /home/vagrant/andes/andes/system/app/requirements.txt
   SHELL
 
   # Sync this folder to ~ inside VM and disable standard syncing
-  config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.synced_folder ".", "/home/vagrant/andes"
+  # config.vm.synced_folder ".", "/vagrant", disabled: true
+  # config.vm.synced_folder ".", "/home/vagrant/andes"
 
   # VirtualBox settings
   config.vm.define :andes_dev, primary: true do |andes_dev_config|

@@ -13,15 +13,11 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 TLS_ENABLED=false
-# TODO: throw out
-RESTART_FLAG=on-failure:3
 HOSTNAME=localhost
 ANDES_DIR=/home/$USER/andes
 COMPOSE_VERSION=1.16.1
 EMAIL=
-CA_STAGING=true
-# TODO: Enable caddy setup
-CADDY_SETUP=false
+CADDY_SETUP=true
 
 echo -e "$GREEN---- Andes bootstrap script. Execute with -h to see options. $NC"
 
@@ -30,17 +26,15 @@ usage() {
     $ bash bootstrap.sh [OPTIONS]
   
   Options:
-    -h                     Display this help.
+    -h                     Display this help
+    -d                     Skip Caddy install, only setup Docker
     -H <hostname>          Specify hostname for caddy to be reached under. Defaults to localhost
     -e <email>             Your email address needed for TLS certificates. If omitted, Caddy will run without TLS
-    -d <directory>         Specify directory for Andes to be installed in. Defaults to /home/$USER/andes
-    -V <version>           Docker-compose version. Defaults to 1.16.1
-    -r                     Caddy container will always be restarted. Will set '--restart always' flag (Default: --restart on-failure:3)
-    -c                     Set default CA to Let's Encrypt's staging cert. Use this for testing! Will only work with TLS enabled"
+    -V <version>           Docker-compose version. Defaults to 1.16.1"
 
 }
 
-while getopts ":hrcH:d:V:e:" o; do
+while getopts ":hdH:V:e:" o; do
   case "${o}" in
     h )
       usage
@@ -49,20 +43,14 @@ while getopts ":hrcH:d:V:e:" o; do
     H )
       IP=${OPTARG}
       ;;
-    d )
-      DIR=${OPTARG}
-      ;;
     V )
       CV=${OPTARG}
       ;;
     e )
       EM=${OPTARG}
       ;;
-    r )
-      RESTART_FLAG=always
-      ;;
-    c )
-      CA_STAGING=true
+    d )
+      CADDY_SETUP=false
       ;;
     \? )
       echo -e "$RED==> Error: Unknown option -$OPTARG $NC"
@@ -86,19 +74,6 @@ shift $(($OPTIND - 1))
 # Assign hostname
 if [[ -n $IP ]]; then
   HOSTNAME=$IP
-fi
-
-# TODO: Assign port, check w/ regex
-
-# Check if passed directory exists
-if [[ -n $DIR && -d $DIR ]]; then
-  ANDES_DIR=$DIR/andes
-elif [[ -z $DIR ]]; then
-  DIR=$ANDES_DIR
-else
-  echo -e "$RED==> Error: Specified directory '$DIR' doesn't exist. $NC" 1>&2
-  usage
-  exit 1
 fi
 
 # Check for passed docker-compose version
@@ -132,9 +107,10 @@ COMPOSE_VERSION=$COMPOSE_VERSION
 HOSTNAME=$HOSTNAME
 EMAIL=$EMAIL
 TLS_ENABLED=$TLS_ENABLED
-CA_STAGING=$CA_STAGING
-RESTART_FLAG=$RESTART_FLAG"
+CADDY_SETUP=$CADDY_SETUP"
+
 echo
+
 read -p "Continue (Y/n)? " choice
 case "$choice" in 
   n|N|no|No )
@@ -149,10 +125,6 @@ echo
 #############################################################################
 ############################ DOCKER INSTALLATION ############################
 #############################################################################
-
-# TODO: Give possibility to install andes in different folder
-echo -e "$GREEN==> Changing user permissions on $ANDES_DIR... $NC"
-sudo chown $USER:$USER -R ./andes
 
 echo -e "$GREEN==> Removing deprecated Docker versions... $NC"
 sudo apt-get remove docker docker-engine docker.io -y || true
@@ -210,79 +182,23 @@ echo -e "$GREEN==> Docker installed successfully, source .bashrc for bash-comple
 #####################################################################
 ############################ CADDY SETUP ############################
 #####################################################################
-# TODO: Just bring up docker-compose
+
 if [[ CADDY_SETUP ]]; then
-  echo -e "$GREEN==> Creating Caddyfile in $ANDES_DIR/andes/system:$NC"
-  if $TLS_ENABLED ; then
-  echo "import 
-    $HOSTNAME {
-    tls $EMAIL
-    root /srv/www
-    log stdout
-    errors stdout
-  }"  > $ANDES_DIR/system/Caddyfile
-  else
-  echo "$HOSTNAME {
-    tls off
-    root /srv/www
-    log stdout
-    errors stdout
-  }" > $ANDES_DIR/system/Caddyfile
+  # Changing hostname
+  if [[ "$HOSTNAME" != "localhost" ]]; then
+    sed -i "s/localhost/$HOSTNAME/g" ./system/Caddyfile
   fi
-  cat $ANDES_DIR/system/Caddyfile
 
-  echo -e "$GREEN==> Pulling Caddy container from abiosoft/caddy...$NC"
-  sudo docker pull abiosoft/caddy
-
-  echo -e "$GREEN==> Starting Caddy container with parameters...
-  Name:
-    - caddy
-  Forwarding ports:
-    - 80:80
-    - 443:443
-    - 2015:2015
-  Mounting volumes:
-    - $ANDES_DIR/system/Caddyfile:/etc/caddy/Caddyfile
-    - $ANDES_DIR/system/vhosts:/etc/caddy/sites-enabled
-    - $ANDES_DIR/system/certs:/home/root/.caddy
-    - $ANDES_DIR/system/www:/srv/www
-  Restart:
-    - $RESTART_FLAG $NC"
-
-  # TODO: Variable for CA, default/live
-  #  --ca https://acme-staging.api.letsencrypt.org/directory
-  # default: https://acme-staging.api.letsencrypt.org/directory (staging)
-  # live: custom
-  if [[ TLS_ENABLED && CA_STAGING ]]; then
-    sudo docker run \
-      --name caddy \
-      -p 80:80 \
-      -p 443:443 \
-      -p 2015:2015 \
-      -v "$ANDES_DIR/system/Caddyfile:/etc/caddy/Caddyfile" \
-      -v "$ANDES_DIR/system/vhosts:/etc/caddy/sites-enabled" \
-      -v "$ANDES_DIR/system/certs:/home/root/.caddy" \
-      -v "$ANDES_DIR/system/www:/srv/www" \
-      --restart=$RESTART_FLAG \
-      -d \
-      abiosoft/caddy \
-      --conf /etc/caddy/Caddyfile \
-      --ca https://acme-staging.api.letsencrypt.org/directory
-  else
-    sudo docker run \
-      --name caddy \
-      -p 80:80 \
-      -p 443:443 \
-      -p 2015:2015 \
-      -v "$ANDES_DIR/system/Caddyfile:/etc/caddy/Caddyfile" \
-      -v "$ANDES_DIR/system/vhosts:/etc/caddy/sites-enabled" \
-      -v "$ANDES_DIR/system/certs:/home/root/.caddy" \
-      -v "$ANDES_DIR/system/www:/srv/www" \
-      --restart=$RESTART_FLAG \
-      -d \
-      abiosoft/caddy \
-      --conf /etc/caddy/Caddyfile
+  # Setting TLS
+  # TODO: fix this
+  if [[ EMAIL != '' ]]; then
+    sed -i "s/tls off/tls $EMAIL/g" ./system/Caddyfile
   fi
+
+  cat ./system/Caddyfile
+
+  echo -e "$GREEN==> Starting Andes...$NC"
+  sudo docker-compose up -d
 
   echo
   echo -e "$GREEN==> Installation successful! Caddy is now running under $HOSTNAME:2015. You should logout and login again.$NC"
