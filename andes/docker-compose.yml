@@ -1,7 +1,7 @@
 version: '3'
 services:
   andes:
-    image: obitech/andes-api:test-slim
+    image: obitech/andes-api:test2-slim
     expose:
       - "5000"
       - "5001"
@@ -38,4 +38,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.42.0.0/16
+        - subnet: 172.42.0.0/24
