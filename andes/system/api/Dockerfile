@@ -1,4 +1,4 @@
-FROM python:3.6-jessie
+FROM python:3.6-slim
 
 EXPOSE 5000 5001
 
@@ -8,8 +8,9 @@ COPY *.ini /api
 
 WORKDIR /api
 
-RUN apt-get update -y \
+RUN apt-get update \
     && apt-get upgrade -y \
+    && apt-get install build-essential -y \
     && pip3 install -r requirements.txt \
     && apt-get clean
 
