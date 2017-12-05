@@ -55,6 +55,10 @@ class BlueprintModel(db.Model):
     return cls.query.filter_by(name=name).first()
 
   @classmethod
+  def find_by_image(cls, image):
+    return cls.query.filter_by(image=image).first()  
+
+  @classmethod
   def find_by_id(cls, _id):
     return cls.query.filter_by(id=_id).first()
 

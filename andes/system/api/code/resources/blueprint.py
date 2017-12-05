@@ -39,6 +39,10 @@ class BlueprintCreate(Resource):
   @jwt_required()
   def post(self):
     data = self.parser.parse_args()
+
+    if BlueprintModel.find_by_image(data['image']):
+      return response(400, None, f"Blueprint with image {data['image']} already exists.", None), 400
+
     args = self.check_args(data)
     if args['code'] is not 200:
       return response(args['code'], None, args['error'], None), args['code']
@@ -48,7 +52,6 @@ class BlueprintCreate(Resource):
                                image = data['image'],
                                exposed_ports = BlueprintModel.join_port_string(data))
 
-    print(blueprint.id, blueprint.name, blueprint.description, blueprint.exposed_ports, blueprint.image)
     try:
       blueprint.save_to_db()
     except:
@@ -58,9 +61,49 @@ class BlueprintCreate(Resource):
 
   @jwt_required()
   def put(self):
-    pass
+    data = self.parser.parse_args()
+
+    args = self.check_args(data)
+    if args['code'] is not 200:
+      return response(args['code'], None, args['error'], None), args['code']
+
+    blueprint = BlueprintModel.find_by_image(data['image'])
+    if blueprint:
+      blueprint.name = data['name']
+      blueprint.image = data['image']
+      blueprint.description = data['description']
+      blueprint.exposed_ports = BlueprintModel.join_port_string(data)
+    else:
+      blueprint = BlueprintModel(name = data['name'],
+                                 description = data['description'],
+                                 image = data['image'],
+                                 exposed_ports = BlueprintModel.join_port_string(data))
+
+    try:
+      blueprint.save_to_db()
+    except:
+      return response(500, None, f"An error occured while trying to update blueprint {data['name']}.", None), 500
+
+    return response(201, f"Blueprint {data['name']} has been updated.", None, blueprint.json()), 201
+
 
 class Blueprint(Resource):
+  @jwt_required()
+  def get(self, _id):
+    try:
+      blueprint = BlueprintModel.find_by_id(_id)
+    except:
+      return {
+        'error': f"An error occured while trying to retrieve blueprint."
+      }, 500
+
+    if blueprint:
+      return response(201, f"Blueprint {blueprint.name} has been retrieved.", None, blueprint.json()), 201
+
+    return {
+      'error': f"Blueprint with ID {_id} does not exist."
+    }, 400
+
   @jwt_required()
   def delete(self, _id):
     try:
