@@ -5,6 +5,7 @@ from db import db
 class ServiceModel(db.Model):
   __tablename__ = 'services'
 
+  # TODO: rework according to blueprint
   # TODO: Implement tag
   # TODO: mapped ports
   # TODO: Network needs to be 172.42.x.x
@@ -45,8 +46,6 @@ class ServiceModel(db.Model):
       'volumes': volumes,
       'env': env
     }
-
-  # TODO: validate if image exists
 
   @classmethod
   def valid_env(cls, env):

@@ -6,6 +6,7 @@ from datetime import timedelta
 from security import authenticate, identity
 
 from resources.user import UserRegister
+from resources.blueprint import BlueprintList
 from resources.service import ServiceList, ServiceCreate, Service
 from resources.stack import StackList, StackCreate, Stack
 from resources.network import NetworkList, NetworkCreate, Network
@@ -25,6 +26,8 @@ def create_tables():
   db.create_all()
 
 api.add_resource(UserRegister, '/register')
+
+api.add_resource(BlueprintList, '/blueprints')
 
 api.add_resource(ServiceList, '/services')
 api.add_resource(ServiceCreate, '/services/create')

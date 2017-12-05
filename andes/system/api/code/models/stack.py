@@ -10,7 +10,7 @@ stack_service_table = db.Table('stack_service_table',
 class StackModel(db.Model):
   __tablename__ = 'stacks'
 
-  # TODO: IP Mapping to services
+  # TODO: IP will be handled by services
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(32), nullable=False)
   description = db.Column(db.String(256))
@@ -19,7 +19,6 @@ class StackModel(db.Model):
   created_at = db.Column(db.DateTime, default=datetime.now())
   last_changed = db.Column(db.DateTime, default=datetime.now())
   built_at = db.Column(db.DateTime, default=None)
-  network = db.relationship('NetworkModel', uselist=False, backref='stacks', lazy=True)
   services = db.relationship('ServiceModel', secondary=stack_service_table, backref="stacks", lazy=True)
 
   def __init__(self, name, description=None, subdomain=None):
