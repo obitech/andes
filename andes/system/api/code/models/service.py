@@ -6,6 +6,8 @@ class ServiceModel(db.Model):
   __tablename__ = 'services'
 
   # TODO: Implement tag
+  # TODO: mapped ports
+  # TODO: Network needs to be 172.42.x.x
   id = db.Column(db.Integer, primary_key = True)
   name = db.Column(db.String(32), nullable=False)
   description = db.Column(db.String(256))

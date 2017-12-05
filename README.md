@@ -1,11 +1,11 @@
 # Andes
 
-The ``master`` branch is used for development, until I've implemented a Python Docker container, there are two ways to run it: locally or with Vagrant.
+The ``master`` branch is used for development, however you can already run it as a container.
 
 ## Using Vagrant
 For this you will need [Vagrant](https://www.vagrantup.com/downloads.html) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed.
 
-### Setup the repo
+### Clone the repo
 ```
 git clone https://github.com/obitech/andes.git
 cd andes/
@@ -15,35 +15,31 @@ cd andes/
 vagrant up
 vagrant ssh
 ```
-Inside the Vagrant machine, navigate into the folder:
+### Run the bootstrap script
+Inside your virtual machine do:
+
 ```
-cd ~/andes/andes/systems/app/code
+cd /vagrant/andes
+bash bootstrap.sh
 ```
-### Start Flask
-First open ``app.py`` and set ``app.run(host='0.0.0.0', port=5000, debug=True)``, then you can start the app with
-```
-python3.6 app.py
-```
-Andes will then be reachable inside your guest VM and on your host via ``127.0.0.1:50000``
+### Acess andes
+The frontend will then be available via ``192.168.70.10`` and the api via ``192.168.70.10/api``
 
 ## Running locally
-For this you will need **Python 3.6** installed. Using virtualenv is recommended.
+If you just want to try it out, do the following:
 
-### Setup the repo
+### Clone the repo
 ```
 git clone https://github.com/obitech/andes.git
 ``` 
 
-### Set up virtualenv
+### Run the bootstrap script
+```
+cd andes/andes/system
+bash bootstrap.sh
+```
 
-```
-cd andes/andes/system/app/
-virtualenv -p /usr/bin/python3.6 venv
-source venv/bin/activate
-pip3 install -r requirements.txt
-cd code/
-python3.6 app.py
-```
+Verify with ``docker ps`` if the Caddy and andes container are running. You can then access the frontend via ``localhost`` and the api via ``localhost/api``.
 
 ## Taking requests
 All endpoints take JSON requests, you can use [Postman](https://www.getpostman.com/) or good old curl for testing.

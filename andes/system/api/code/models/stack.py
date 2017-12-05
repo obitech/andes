@@ -10,6 +10,7 @@ stack_service_table = db.Table('stack_service_table',
 class StackModel(db.Model):
   __tablename__ = 'stacks'
 
+  # TODO: IP Mapping to services
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(32), nullable=False)
   description = db.Column(db.String(256))
