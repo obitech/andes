@@ -14,30 +14,29 @@ class ServiceList(Resource):
 class ServiceCreate(Resource):
   parser = reqparse.RequestParser()
   parser.add_argument('name',
-    type = str,
-    required = True,
-    help = "The name of your service is required")
+                      type = str,
+                      required = True,
+                      help = "The name of your service is required")
   parser.add_argument('image',
-    type = str,
-    required = True,
-    help = "The image name is required.",)
+                      type = str,
+                      required = True,
+                      help = "The image name is required.",)
   parser.add_argument('exposed_ports',
-    type = int,
-    required = True,
-    action = 'append',
-    help = "The exposed ports are required.")
+                      type = int,
+                      required = True,
+                      action = 'append',
+                      help = "The exposed ports are required.")
   parser.add_argument('volumes',
-    type = str,
-    action = 'append',
-    help = "The volumes your service needs mounted are option")
+                      type = str,
+                      action = 'append',
+                      help = "The volumes your service needs mounted are option")
   parser.add_argument('env',
-    type= str,
-    action= 'append',
-    help = "Environment variables are optional.")
+                      type= str,
+                      action= 'append',
+                      help = "Environment variables are optional.")
   parser.add_argument('stacks',
-    type = int,
-    action = 'append',
-    help = "Stacks are optional.")  
+                      type = int,
+                      help = "Stacks are optional.")  
 
   def check_args(self, data):
     if data['volumes']:
@@ -80,6 +79,7 @@ class ServiceCreate(Resource):
       volumes,
       env)
 
+    # Add stack to service table
     if data['stacks'] and data['stacks'] != [None]:
       for x in data['stacks']:
         stack = StackModel.find_by_id(x)
