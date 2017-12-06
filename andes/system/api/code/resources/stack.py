@@ -39,9 +39,9 @@ class StackCreate(Resource):
     if data['subdomain'] and not StackModel.valid_subdomain(data['subdomain']):
       return response(400, None, f"Invalid subdomain {data['subdomain']}", None), 400
 
-    stack = StackModel(data['name'],
-                       data['description'],
-                       data['subdomain'])
+    stack = StackModel(name = data['name'],
+                       description = data['description'],
+                       subdokmain = data['subdomain'])
 
     if data['services'] and data['services'] != [None]:
       for x in data['services']:
@@ -98,9 +98,9 @@ class StackCreate(Resource):
           stack.services.remove(ServiceModel.find_by_id(x))
 
     else:
-      stack = StackModel(data['name'],
-                         data['description'],
-                         data['subdomain'])
+      stack = StackModel(name = data['name'],
+                         description = data['description'],
+                         subdomain = data['subdomain'])
 
       if data['services'] and data['services'] != [None]:
         for x in data['services']:

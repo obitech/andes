@@ -3,6 +3,7 @@ from flask_jwt import jwt_required
 
 from models.stack import StackModel
 from models.service import ServiceModel
+from models.blueprint import BlueprintModel
 from util.response import response
 
 class ServiceList(Resource):
@@ -21,6 +22,10 @@ class ServiceCreate(Resource):
                       type = str,
                       required = True,
                       help = "The image name is required.",)
+  parser.add_argument('blueprint',
+                      type = int,
+                      required = True,
+                      help = "The blueprint id is required.",)
   parser.add_argument('exposed_ports',
                       type = int,
                       required = True,
@@ -39,6 +44,10 @@ class ServiceCreate(Resource):
                       help = "Stacks are optional.")  
 
   def check_args(self, data):
+    if data['blueprint']:
+      if not BlueprintModel.find_by_id(data['blueprint']):
+        return {'code': 400, 'error': f"Blueprint with ID {data['blueprint']} hasn't been found."}
+
     if data['volumes']:
       if not ServiceModel.valid_volumes(data['volumes']):
         return {'code': 400, 'error': f"Invalid volumes"}
@@ -73,11 +82,12 @@ class ServiceCreate(Resource):
     env = ServiceModel.join_env_string(data)
     ports = ServiceModel.join_port_string(data)
 
-    service = ServiceModel(data['name'],
-      data['image'],
-      ports,
-      volumes,
-      env)
+    service = ServiceModel(name = data['name'],
+                           blueprint = data['blueprint'],
+                           image = data['image'],
+                           exposed_ports = ports,
+                           volumes = volumes,
+                           env = env)
 
     # Add stack to service table
     if data['stacks'] and data['stacks'] != [None]:
@@ -131,11 +141,11 @@ class ServiceCreate(Resource):
           service.stacks.remove(StackModel.find_by_id(x))
 
     else:
-      service = ServiceModel(data['name'],
-                             data['image'],
-                             ServiceModel.join_port_string(data),
-                             volumes,
-                             env)
+      service = ServiceModel(name = data['name'],
+                             image = data['image'],
+                             exposed_ports = ServiceModel.join_port_string(data),
+                             volumes = volumes,
+                             env = env)
 
       if data['stacks'] and data['stacks'] != [None]:
         for x in data['stacks']:

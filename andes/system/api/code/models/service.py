@@ -7,23 +7,32 @@ class ServiceModel(db.Model):
 
   # TODO: rework according to blueprint
   # TODO: Implement tag
-  # TODO: mapped ports
   # TODO: Network needs to be 172.42.x.x
   id = db.Column(db.Integer, primary_key = True)
   name = db.Column(db.String(32), nullable=False)
   description = db.Column(db.String(256))
+
+  # TODO: grab image from blueprint
   image = db.Column(db.String(64))
+
+  # TODO: Grab from blueprint
   exposed_ports = db.Column(db.String(128), nullable=False)
+
+  # TODO: mapped ports according to exposed_ports
+
   volumes = db.Column(db.String(512))
   env = db.Column(db.String(512))
 
-  def __init__(self, name, image, exposed_ports, description=None, volumes=None, env=None):
+  blueprint_id = db.Column(db.Integer, db.ForeignKey('blueprints.id'), nullable=False)
+
+  def __init__(self, name, blueprint, image, exposed_ports, description=None, volumes=None, env=None):
     self.name = name
     self.description = description
     self.image = image
     self.exposed_ports = exposed_ports
     self.volumes = volumes
     self.env = env
+    self.blueprint_id = blueprint
 
   def json(self):
     if self.volumes:
@@ -38,6 +47,7 @@ class ServiceModel(db.Model):
 
     return {
       'id': self.id,
+      'blueprint': self.blueprint_id,
       'name': self.name,
       'description': self.description,
       'image': self.image,
@@ -87,7 +97,7 @@ class ServiceModel(db.Model):
 
     try:
       for volume in volumes:
-        if not re.compile("^(/[\w.]*/?)*$").match(volume):
+        if not re.compile("^(/[\w.]*/?)+:(/[\w.]*/?)+$").match(volume):
           return False
         
     except:
