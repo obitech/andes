@@ -50,7 +50,7 @@ class BlueprintCreate(Resource):
     blueprint = BlueprintModel(name = data['name'],
                                description = data['description'],
                                image = data['image'],
-                               exposed_ports = BlueprintModel.join_port_string(data))
+                               exposed_ports = BlueprintModel.join_port_string(data['exposed_ports']))
 
     try:
       blueprint.save_to_db()
@@ -72,12 +72,12 @@ class BlueprintCreate(Resource):
       blueprint.name = data['name']
       blueprint.image = data['image']
       blueprint.description = data['description']
-      blueprint.exposed_ports = BlueprintModel.join_port_string(data)
+      blueprint.exposed_ports = BlueprintModel.join_port_string(data['exposed_ports'])
     else:
       blueprint = BlueprintModel(name = data['name'],
                                  description = data['description'],
                                  image = data['image'],
-                                 exposed_ports = BlueprintModel.join_port_string(data))
+                                 exposed_ports = BlueprintModel.join_port_string(data['exposed_ports']))
 
     try:
       blueprint.save_to_db()

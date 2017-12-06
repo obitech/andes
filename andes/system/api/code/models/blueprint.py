@@ -40,12 +40,22 @@ class BlueprintModel(db.Model):
     return True
 
   @classmethod
-  def join_port_string(cls, data):
+  def ports_mappable(cls, ports, exposed_ports):
+    """
+    Checks if passed ports are mappable to exposed ports of blueprint.
+    Passed ports need to be list
+    """
+
+    for port in ports:
+      if port not in exposed_ports:
+        return False
+
+    return True
+
+  @classmethod
+  def join_port_string(cls, exposed_ports):
     try:
-      if data['exposed_ports'] in [None, [""], [], [None]]:
-        pass
-      else:
-        return ','.join([str(x) for x in data['exposed_ports']])
+      return ','.join([str(x) for x in exposed_ports])
     except:
       pass
 

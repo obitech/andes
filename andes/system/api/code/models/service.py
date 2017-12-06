@@ -11,50 +11,39 @@ class ServiceModel(db.Model):
   id = db.Column(db.Integer, primary_key = True)
   name = db.Column(db.String(32), nullable=False)
   description = db.Column(db.String(256))
-
-  # TODO: grab image from blueprint
-  image = db.Column(db.String(64))
-
-  # TODO: Grab from blueprint
-  exposed_ports = db.Column(db.String(128), nullable=False)
-
-  # TODO: mapped ports according to exposed_ports
-
+  exposed_ports = db.Column(db.String(512))
+  mapped_ports = db.Column(db.String(512))
   volumes = db.Column(db.String(512))
   env = db.Column(db.String(512))
 
   blueprint_id = db.Column(db.Integer, db.ForeignKey('blueprints.id'), nullable=False)
 
-  def __init__(self, name, blueprint, image, exposed_ports, description=None, volumes=None, env=None):
+  def __init__(self, name, blueprint, exposed_ports, mapped_ports, description=None, volumes=None, env=None):
     self.name = name
     self.description = description
-    self.image = image
+    self.mapped_ports = mapped_ports
     self.exposed_ports = exposed_ports
     self.volumes = volumes
     self.env = env
     self.blueprint_id = blueprint
 
   def json(self):
-    if self.volumes:
-      volumes = self.volumes.split(',')
-    else:
-      volumes = None
-
-    if self.env:
-      env = self.env.split(',')
-    else:
-      env = None
+    def split_stuff(stuff):
+      try:
+        return stuff.split(',')
+      except:
+        return None
 
     return {
       'id': self.id,
       'blueprint': self.blueprint_id,
       'name': self.name,
       'description': self.description,
-      'image': self.image,
       'stacks': [x.id for x in self.stacks],
       'exposed_ports': [int(x) for x in self.exposed_ports.split(',')],
-      'volumes': volumes,
-      'env': env
+      'mapped_ports': split_stuff(self.mapped_ports),
+      'volumes': split_stuff(self.volumes),
+      'env': split_stuff(self.env)
     }
 
   @classmethod
@@ -118,27 +107,27 @@ class ServiceModel(db.Model):
     return None
 
   @classmethod
-  def valid_ports(cls, exposed_ports):
-    try:
-      for port in exposed_ports:
-        if port < 0 or port > 65535:
-          return False
-    except:
-      return False
+  def valid_mapped_ports(cls, ports):
+    """
+    Ports passed as list of strings: ['80:80','123:456']
+    """
+    for entry in ports:
+      # Regex check if general form is correct
+      if not re.compile("^(\d+:\d+)$").match(entry):
+        return False
+
+      # tmp = ['80', ':', '80']
+      tmp = entry.split(':')
+      # Check if passed ports are valid ports
+      for x in tmp:
+        if x != ':':
+          try:
+            if int(x) < 0 or int(x) > 65535:
+              return False
+          except:
+            return False
 
     return True
-
-  @classmethod
-  def join_port_string(cls, data):
-    try:
-      if data['exposed_ports'] in [None, [""], [], [None]]:
-        pass
-      else:
-        return ','.join([str(x) for x in data['exposed_ports']])
-    except:
-      pass
-
-    return None
 
   @classmethod
   def find_by_name(cls, name):

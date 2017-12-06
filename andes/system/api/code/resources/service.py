@@ -31,6 +31,10 @@ class ServiceCreate(Resource):
                       required = True,
                       action = 'append',
                       help = "The exposed ports are required.")
+  parser.add_argument('mapped_ports',
+                      type = str,
+                      action = 'append',
+                      help = "The mapped ports are optional.")
   parser.add_argument('volumes',
                       type = str,
                       action = 'append',
@@ -44,18 +48,44 @@ class ServiceCreate(Resource):
                       help = "Stacks are optional.")  
 
   def check_args(self, data):
-    if data['blueprint']:
-      if not BlueprintModel.find_by_id(data['blueprint']):
-        return {'code': 400, 'error': f"Blueprint with ID {data['blueprint']} hasn't been found."}
+    # Check if blueprint exists
+    if not BlueprintModel.find_by_id(data['blueprint']):
+      return {'code': 400, 'error': f"Blueprint with ID {data['blueprint']} hasn't been found."}
 
+    # Regex check if passed exposed_ports are correct
+    if not BlueprintModel.valid_ports(data['exposed_ports']):
+      return {'code': 400, 'error': f"Invalid exposed_ports."}
+
+    # Check if service.exposed_ports are part of blueprint's exposed_ports
+    if not BlueprintModel.ports_mappable(ports = [int(x) for x in BlueprintModel.find_by_id(data['blueprint']).exposed_ports.split(',')],
+                                    exposed_ports = data['exposed_ports']):
+      return {'code': 400, 'error': f"Passed exposed_ports are not exposable, double check with values in blueprint."}
+
+    # Check if service.mapped_ports are part of blueprint's exposed_ports
+    if data['mapped_ports']:
+      # Regex check if mapped_ports are correct, those are passed as string like '80:80,8080:8080'
+      if not ServiceModel.valid_mapped_ports(data['mapped_ports']):
+        return {'code': 400, 'error': f"Invalid mapped_ports."}
+
+      # Check each entry of ['80:80', '8080:8080']
+      for entry in data['mapped_ports']:
+        container_ports = []
+        # Split up mapped_ports ['80:80'] -> ['80', ':', '80']
+        tmp = entry.split(':')
+        container_ports.append(int(tmp[1]))
+
+        print(data['exposed_ports'], container_ports)
+        # Check container port if part exposed_ports
+        if not BlueprintModel.ports_mappable(ports = container_ports,
+                                             exposed_ports = data['exposed_ports']):
+          return {'code': 400, 'error': f"Passed mapped_ports are not mappable, check if they are exposed."}
+
+    # Regex check if volumes are correct
     if data['volumes']:
       if not ServiceModel.valid_volumes(data['volumes']):
-        return {'code': 400, 'error': f"Invalid volumes"}
+        return {'code': 400, 'error': f"Invalid volumes"} 
 
-    if data['exposed_ports']:
-      if not ServiceModel.valid_ports(data['exposed_ports']):
-        return {'code': 400, 'error': f"Invalid exposed_ports."}    
-
+    # Regex check if environment variables are correct
     if data['env']:
       if not ServiceModel.valid_env(data['env']):
         return {'code': 400, 'error': f"Invalid environment variables."}
@@ -80,12 +110,13 @@ class ServiceCreate(Resource):
 
     volumes = ServiceModel.join_volume_string(data)
     env = ServiceModel.join_env_string(data)
-    ports = ServiceModel.join_port_string(data)
+    exposed_ports = BlueprintModel.join_port_string(data['exposed_ports'])
+    mapped_ports = BlueprintModel.join_port_string(data['mapped_ports'])
 
     service = ServiceModel(name = data['name'],
                            blueprint = data['blueprint'],
-                           image = data['image'],
-                           exposed_ports = ports,
+                           exposed_ports = exposed_ports,
+                           mapped_ports = mapped_ports,
                            volumes = volumes,
                            env = env)
 
@@ -114,11 +145,13 @@ class ServiceCreate(Resource):
 
     volumes = ServiceModel.join_volume_string(data)
     env = ServiceModel.join_env_string(data)
+    exposed_ports = BlueprintModel.join_port_string(data['exposed_ports'])
+    mapped_ports = BlueprintModel.join_port_string(data['mapped_ports'])
     
     if service:
       service.name = data['name']
-      service.image = data['image']
-      service.exposed_ports = ServiceModel.join_port_string(data)
+      service.exposed_ports = exposed_ports
+      service.mapped_ports = mapped_ports
       service.volumes = volumes
       service.env = env
 
@@ -142,8 +175,8 @@ class ServiceCreate(Resource):
 
     else:
       service = ServiceModel(name = data['name'],
-                             image = data['image'],
-                             exposed_ports = ServiceModel.join_port_string(data),
+                             exposed_ports = exposed_ports,
+                             mapped_ports = mapped_ports,
                              volumes = volumes,
                              env = env)
 
