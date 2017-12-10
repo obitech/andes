@@ -5,16 +5,14 @@ from db import db
 class ServiceModel(db.Model):
   __tablename__ = 'services'
 
-  # TODO: rework according to blueprint
-  # TODO: Implement tag
-  # TODO: Network needs to be 172.42.x.x
-  id = db.Column(db.Integer, primary_key = True)
+  id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(32), nullable=False)
   description = db.Column(db.String(256))
   exposed_ports = db.Column(db.String(512))
   mapped_ports = db.Column(db.String(512))
   volumes = db.Column(db.String(512))
   env = db.Column(db.String(512))
+  ip = db.Column(db.String(15))
 
   blueprint_id = db.Column(db.Integer, db.ForeignKey('blueprints.id'), nullable=False)
 
@@ -26,6 +24,7 @@ class ServiceModel(db.Model):
     self.volumes = volumes
     self.env = env
     self.blueprint_id = blueprint
+    self.ip = None
 
   def json(self):
     def split_stuff(stuff):
@@ -33,6 +32,8 @@ class ServiceModel(db.Model):
         return stuff.split(',')
       except:
         return None
+
+      return None
 
     return {
       'id': self.id,
@@ -43,7 +44,8 @@ class ServiceModel(db.Model):
       'exposed_ports': [int(x) for x in self.exposed_ports.split(',')],
       'mapped_ports': split_stuff(self.mapped_ports),
       'volumes': split_stuff(self.volumes),
-      'env': split_stuff(self.env)
+      'env': split_stuff(self.env),
+      'ip': self.ip
     }
 
   @classmethod
@@ -128,6 +130,12 @@ class ServiceModel(db.Model):
             return False
 
     return True
+
+  @classmethod
+  def get_ip(self, _id):
+    # +10 because x.x.0.0 - 10 are reserved for andes containers
+    tmp = _id + 10
+    return f"172.42.{tmp // 255}.{tmp % 255}"
 
   @classmethod
   def find_by_name(cls, name):

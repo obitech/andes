@@ -128,6 +128,8 @@ class ServiceCreate(Resource):
 
     try:
       service.save_to_db()
+      service.ip = service.get_ip(service.id)
+      service.save_to_db()
     except:
       return response(500, None, f"An error occured while trying to update service {data['name']}.", None), 500
 
@@ -179,6 +181,7 @@ class ServiceCreate(Resource):
                              mapped_ports = mapped_ports,
                              volumes = volumes,
                              env = env)
+      service.ip = service.get_ip(service.id)
 
       if data['stacks'] and data['stacks'] != [None]:
         for x in data['stacks']:
@@ -186,6 +189,8 @@ class ServiceCreate(Resource):
           service.stacks.append(stack)
 
     try:
+      service.save_to_db()
+      service.ip = service.get_ip(service.id)
       service.save_to_db()
     except:
       return response(500, None, f"An error occured while trying to update service {data['name']}.", None), 500
