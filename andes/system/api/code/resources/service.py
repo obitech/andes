@@ -49,7 +49,9 @@ class ServiceCreate(Resource):
     if not BlueprintModel.find_by_id(data['blueprint']):
       return {'code': 400, 'error': f"Blueprint with ID {data['blueprint']} hasn't been found."}
 
-    # TODO: Naming restrictions
+    # Regex check for name
+    if not StackModel.valid_name(data['name']):
+      return {'code': 400, 'error': f"Invalid service name {data['name']}."}
     
     # Regex check if passed exposed_ports are correct
     if not BlueprintModel.valid_ports(data['exposed_ports']):

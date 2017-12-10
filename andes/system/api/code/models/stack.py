@@ -10,7 +10,6 @@ stack_service_table = db.Table('stack_service_table',
 class StackModel(db.Model):
   __tablename__ = 'stacks'
 
-  # TODO: IP will be handled by services
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(32), nullable=False)
   description = db.Column(db.String(256))
@@ -56,6 +55,19 @@ class StackModel(db.Model):
     """
     try:
       if re.compile("^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}$").match(domain):
+        return True
+    except:
+      pass
+
+    return False
+
+  @classmethod
+  def valid_name(cls, name):
+    """
+    Checks if the name is valid
+    """
+    try:
+      if re.compile("^\w+$").match(name):
         return True
     except:
       pass

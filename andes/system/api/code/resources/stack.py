@@ -35,6 +35,17 @@ class StackCreate(Resource):
     action = 'append',
     help = "Service IDs are optional.")
 
+  def check_args(self, data):
+    # Regex check for subdomain
+    if data['subdomain'] and not StackModel.valid_subdomain(data['subdomain']):
+      return {'code': 400, 'error': f"Invalid subdomain {data['subdomain']}"}
+
+    # Regex check for name
+    if not StackModel.valid_name(data['name']):
+      return {'code': 400, 'error': f"Invalid stack name {data['name']}."}
+
+    return {'code': 200}
+
   @jwt_required()
   def post(self):
     data = self.parser.parse_args()
@@ -42,8 +53,10 @@ class StackCreate(Resource):
     if StackModel.find_by_name(data['name']):
       return response(400, None, f"Stack with name {data['name']} already exists.", None), 400
 
-    if data['subdomain'] and not StackModel.valid_subdomain(data['subdomain']):
-      return response(400, None, f"Invalid subdomain {data['subdomain']}", None), 400
+    # Argument check
+    args = self.check_args(data)
+    if args['code'] is not 200:
+      return response(args['code'], None, args['error'], None), args['code']
 
     stack = StackModel(name = data['name'],
                        description = data['description'],
@@ -68,8 +81,10 @@ class StackCreate(Resource):
   def put(self):
     data = self.parser.parse_args()
 
-    if data['subdomain'] and not StackModel.valid_subdomain(data['subdomain']):
-      return response(400, None, f"Invalid subdomain {data['subdomain']}", None), 400
+    # Argument check
+    args = self.check_args(data)
+    if args['code'] is not 200:
+      return response(args['code'], None, args['error'], None), args['code']
 
     stack = StackModel.find_by_name(data['name'])
 

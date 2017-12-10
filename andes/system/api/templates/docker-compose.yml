@@ -33,6 +33,8 @@ services:
       {% endif %}
       {% endfor %}
     {% endif %}
+    external_links:
+      - caddy
     networks:
       andes_default:
         - ipv4_address: {{ service.ip }}
