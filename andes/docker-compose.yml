@@ -7,8 +7,9 @@ services:
       - "5001"
     volumes:
       - "./system/api/data:/api/data"
+      - "./projects:/projects"
     networks:
-      net_default:
+      andes_default:
         ipv4_address: 172.42.0.2
     restart: always
   web:
@@ -29,13 +30,14 @@ services:
     links:
       - andes
     networks:
-      net_default:
+      andes_default:
         ipv4_address: 172.42.0.3
     restart: always
 networks:
-  net_default:
+  andes_default:
     driver: bridge
     ipam:
       driver: default
       config:
-        - subnet: 172.42.0.0/24
+        - subnet: 172.42.0.0/16
+    external: true

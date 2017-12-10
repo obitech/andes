@@ -13,6 +13,9 @@ class StackList(Resource):
 
 
 class StackCreate(Resource):
+  """
+  Creates a new stack data structure with services. Does not create data project files!
+  """
   parser = reqparse.RequestParser()
   parser.add_argument('name',
     type = str,
@@ -146,3 +149,13 @@ class Stack(Resource):
       return response(200, f"Stack {stack.name} has been deleted.", None, None), 200
 
     return response(404, None, f"Stack with id {_id} does not exist.", None), 404
+
+
+class StackApply(Resource):
+  """
+  Creates project files for a stack
+  """
+
+  @jwt_required()
+  def post(self, _id):
+    

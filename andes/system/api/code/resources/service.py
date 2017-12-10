@@ -13,6 +13,7 @@ class ServiceList(Resource):
 
 
 class ServiceCreate(Resource):
+  # TODO: Port syntax according to https://docs.docker.com/compose/compose-file/#ports
   parser = reqparse.RequestParser()
   parser.add_argument('name',
                       type = str,
@@ -52,6 +53,8 @@ class ServiceCreate(Resource):
     if not BlueprintModel.find_by_id(data['blueprint']):
       return {'code': 400, 'error': f"Blueprint with ID {data['blueprint']} hasn't been found."}
 
+    # TODO: Naming restrictions
+    
     # Regex check if passed exposed_ports are correct
     if not BlueprintModel.valid_ports(data['exposed_ports']):
       return {'code': 400, 'error': f"Invalid exposed_ports."}

@@ -1,0 +1,40 @@
+version: '3'
+services:
+  {% for service in services %}
+  {{ service.name }}:
+    image: {{ service.image }}
+    expose:
+      {% for port in service.exposed_ports %}
+      - "{{ port }}"
+      {% endfor %}
+    {% if service.mapped_ports %}
+    ports:
+      {% for port in service.mapped_ports %}
+      - "{{ port }}"
+      {% endfor %}
+    {% endif %}
+    {% if service.volumes %}
+    volumes:
+      {% for volume in service.volumes %}
+      - {{ volume }}
+      {% endfor %}
+    {% endif %}
+    {% if service.environment %}
+    environment:
+      {% for env in service.environment %}
+      - {{ env }}
+      {% endfor %}
+    {% endif %}
+    {% if loop.length > 1 %}
+    links:
+      {% for x in services %}
+      {% if x.name != service.name %}
+      - {{ x.name }}
+      {% endif %}
+      {% endfor %}
+    {% endif %}
+    networks:
+      andes_default:
+        - ipv4_address: {{ service.ip }}
+    restart: always
+  {% endfor %}
