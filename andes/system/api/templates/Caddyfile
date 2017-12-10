@@ -1,0 +1,6 @@
+{{ subdomain }} {
+  tls off
+  proxy {
+
+  }
+}
