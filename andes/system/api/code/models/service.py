@@ -16,15 +16,29 @@ class ServiceModel(db.Model):
 
   blueprint_id = db.Column(db.Integer, db.ForeignKey('blueprints.id'), nullable=False)
 
-  def __init__(self, name, blueprint, exposed_ports, mapped_ports, description=None, volumes=None, env=None):
+  def __init__(self, name, blueprint_id, exposed_ports, mapped_ports, description=None, volumes=None, env=None):
     self.name = name
     self.description = description
     self.mapped_ports = mapped_ports
     self.exposed_ports = exposed_ports
     self.volumes = volumes
     self.env = env
-    self.blueprint_id = blueprint
+    self.blueprint_id = blueprint_id
     self.ip = None
+  
+  def json(self):
+    return {
+      'id': self.id,
+      'blueprint': self.blueprint_id,
+      'name': self.name,
+      'description': self.description,
+      'stacks': [x.id for x in self.stacks],
+      'exposed_ports': [int(x) for x in self.exposed_ports.split(',')],
+      'mapped_ports': self.split_string(self.mapped_ports),
+      'volumes': self.split_string(self.volumes),
+      'env': self.split_string(self.env),
+      'ip': self.ip
+    }
 
   @classmethod
   def port_list(cls, ports):
@@ -43,20 +57,6 @@ class ServiceModel(db.Model):
       return None
 
     return None
-
-  def json(self):
-    return {
-      'id': self.id,
-      'blueprint': self.blueprint_id,
-      'name': self.name,
-      'description': self.description,
-      'stacks': [x.id for x in self.stacks],
-      'exposed_ports': [int(x) for x in self.exposed_ports.split(',')],
-      'mapped_ports': self.split_string(self.mapped_ports),
-      'volumes': self.split_string(self.volumes),
-      'env': self.split_string(self.env),
-      'ip': self.ip
-    }
 
   @classmethod
   def valid_env(cls, env):
@@ -119,27 +119,63 @@ class ServiceModel(db.Model):
     return None
 
   @classmethod
+  def valid_ports(cls, exposed_ports):
+    try:
+      for port in exposed_ports:
+        if port < 0 or port > 65535:
+          return False
+    except:
+      return False
+
+    return True
+
+  @classmethod
   def valid_mapped_ports(cls, ports):
     """
     Ports passed as list of strings: ['80:80','123:456']
     """
     for entry in ports:
       # Regex check if general form is correct
-      if not re.compile("^(\d+:\d+)$").match(entry):
+      # Shoould pass almost all of the short syntax: https://docs.docker.com/compose/compose-file/#ports
+      if not re.compile("^((\d{1,5}:\d{1,5})|(\d{1,5})|(\d{1,5}-\d{1,5})|(\d{1,5}-\d{1,5}:\d{1,5}-\d{1,5}))(/udp|/tcp)?$").match(entry):
         return False
 
-      # tmp = ['80', ':', '80']
-      tmp = entry.split(':')
-      # Check if passed ports are valid ports
-      for x in tmp:
-        if x != ':':
-          try:
-            if int(x) < 0 or int(x) > 65535:
+      # entry = ["80:80"]
+      mapping = entry.split(':')
+      # mapping = ['80', '80']
+      for port in mapping:
+        if port not in [":", "/udp", "/tcp"]:
+          # Port range e.g. 8000-8010
+          if '-' in port:
+            port_range = port.split('-')
+            try:
+              if int(port_range[0]) >= int(port_range[1]):
+                return False
+
+              for x in port_range:
+                if int(x) < 0 or int(x) > 65535:
+                  return False
+            except:
               return False
-          except:
-            return False
+
+          else:
+            try:
+              if int(port) < 0 or int(port) > 65535:
+                return False
+            except:
+              return False
 
     return True
+
+
+  @classmethod
+  def join_port_string(cls, exposed_ports):
+    try:
+      return ','.join([str(x) for x in exposed_ports])
+    except:
+      pass
+
+    return None
 
   @classmethod
   def get_ip(self, _id):

@@ -23,18 +23,6 @@ class BlueprintCreate(Resource):
                       type = str,
                       required = True,
                       help = "The image of the blueprint is required.")
-  parser.add_argument('exposed_ports',
-                      type = int,
-                      action = 'append',
-                      required = True,
-                      help = "The exposed ports are required.")
-
-  def check_args(self, data):
-    if data['exposed_ports']:
-      if not BlueprintModel.valid_ports(data['exposed_ports']):
-        return {'code': 400, 'error': f"Invalid exposed_ports."}
-
-    return {'code': 200}
 
   @jwt_required()
   def post(self):
@@ -43,14 +31,9 @@ class BlueprintCreate(Resource):
     if BlueprintModel.find_by_image(data['image']):
       return response(400, None, f"Blueprint with image {data['image']} already exists.", None), 400
 
-    args = self.check_args(data)
-    if args['code'] is not 200:
-      return response(args['code'], None, args['error'], None), args['code']
-
     blueprint = BlueprintModel(name = data['name'],
                                description = data['description'],
-                               image = data['image'],
-                               exposed_ports = BlueprintModel.join_port_string(data['exposed_ports']))
+                               image = data['image'])
 
     try:
       blueprint.save_to_db()
@@ -63,21 +46,15 @@ class BlueprintCreate(Resource):
   def put(self):
     data = self.parser.parse_args()
 
-    args = self.check_args(data)
-    if args['code'] is not 200:
-      return response(args['code'], None, args['error'], None), args['code']
-
     blueprint = BlueprintModel.find_by_image(data['image'])
     if blueprint:
       blueprint.name = data['name']
       blueprint.image = data['image']
       blueprint.description = data['description']
-      blueprint.exposed_ports = BlueprintModel.join_port_string(data['exposed_ports'])
     else:
       blueprint = BlueprintModel(name = data['name'],
                                  description = data['description'],
-                                 image = data['image'],
-                                 exposed_ports = BlueprintModel.join_port_string(data['exposed_ports']))
+                                 image = data['image'])
 
     try:
       blueprint.save_to_db()
