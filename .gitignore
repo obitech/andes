@@ -5,8 +5,7 @@
 
 ### Andes related ###
 *.db
-andes/stacks/*
-
+andes/stacks/*/
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
