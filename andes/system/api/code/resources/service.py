@@ -19,10 +19,6 @@ class ServiceCreate(Resource):
                       type = str,
                       required = True,
                       help = "The name of your service is required")
-  parser.add_argument('image',
-                      type = str,
-                      required = True,
-                      help = "The image name is required.",)
   parser.add_argument('blueprint',
                       type = int,
                       required = True,

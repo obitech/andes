@@ -36,17 +36,11 @@ class StackModel(db.Model):
     else:
       built = self.format_date(self.built_at)
 
-    if not self.network:
-      network = None
-    else:
-      network = self.network.json()
-
     return {
       'id': self.id,
       'name': self.name,
       'description': self.description,
       'subdomain': self.subdomain,
-      'network': network,
       'services': [x.id for x in self.services],
       'active': self.active,
       'created_at': self.format_date(self.created_at),

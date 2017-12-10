@@ -26,15 +26,25 @@ class ServiceModel(db.Model):
     self.blueprint_id = blueprint
     self.ip = None
 
-  def json(self):
-    def split_stuff(stuff):
-      try:
-        return stuff.split(',')
-      except:
-        return None
+  @classmethod
+  def port_list(cls, ports):
+    try:
+      return [int(x) for x in ports.split(',')]
+    except:
+      pass
 
+    return None
+
+  @classmethod
+  def split_string(self, stuff):
+    try:
+      return stuff.split(',')
+    except:
       return None
 
+    return None
+
+  def json(self):
     return {
       'id': self.id,
       'blueprint': self.blueprint_id,
@@ -42,9 +52,9 @@ class ServiceModel(db.Model):
       'description': self.description,
       'stacks': [x.id for x in self.stacks],
       'exposed_ports': [int(x) for x in self.exposed_ports.split(',')],
-      'mapped_ports': split_stuff(self.mapped_ports),
-      'volumes': split_stuff(self.volumes),
-      'env': split_stuff(self.env),
+      'mapped_ports': self.split_string(self.mapped_ports),
+      'volumes': self.split_string(self.volumes),
+      'env': self.split_string(self.env),
       'ip': self.ip
     }
 

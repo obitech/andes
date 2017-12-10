@@ -1,10 +1,13 @@
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 from datetime import datetime
+from os import path, makedirs
 
+from models.blueprint import BlueprintModel
 from models.service import ServiceModel
 from models.stack import StackModel
 from util.response import response
+from util.compose import get_compose, create_compose
 
 class StackList(Resource):
   @jwt_required()
@@ -44,7 +47,7 @@ class StackCreate(Resource):
 
     stack = StackModel(name = data['name'],
                        description = data['description'],
-                       subdokmain = data['subdomain'])
+                       subdomain = data['subdomain'])
 
     if data['services'] and data['services'] != [None]:
       for x in data['services']:
@@ -153,9 +156,62 @@ class Stack(Resource):
 
 class StackApply(Resource):
   """
-  Creates project files for a stack
+  Creates or updates project files for a stack
   """
+  stacks_folder = "../../stacks"
+
+  def get_compose_data(self, services):
+    data = []
+    try:
+      for service in services:
+        tmp = {}
+
+        tmp['name'] = service.name
+        tmp['image'] = BlueprintModel.find_by_id(service.blueprint_id).image
+        tmp['exposed_ports'] = ServiceModel.port_list(service.exposed_ports)
+        tmp['ip'] = service.ip
+
+        if service.volumes:
+          tmp['volumes'] = ServiceModel.split_string(service.volumes)
+
+        if service.env:
+          tmp['environment'] = ServiceModel.split_string(service.env)
+
+        if service.mapped_ports:
+          tmp['mapped_ports'] = [x for x in service.mapped_ports.split(',')]
+
+        data.append(tmp)
+
+    except:
+      return None
+
+    return data
 
   @jwt_required()
   def post(self, _id):
-    
+    if not StackModel.find_by_id(_id):
+      return response(404, None, f"Stack with ID {_id} does not exist.", None), 404
+
+    stack = StackModel.find_by_id(_id)
+    project_folder = self.stacks_folder + f"/{stack.name}"
+    compose_file = project_folder + "/docker-compose.yml"
+
+    if not path.exists(project_folder):
+      makedirs(project_folder)
+
+    data = self.get_compose_data(stack.services)
+
+    if data:
+      compose_string = get_compose(data)
+
+      if create_compose(compose_file, compose_string):
+        return response(200, f"Stack has been applied.", None, None), 200
+      else:
+        return response(500, None, f"An error has occured while trying to save compose file.", None), 500
+
+    else:
+      return response(500, None, f"An error has occured while trying to assemble data for compose file"), 500
+
+
+
+

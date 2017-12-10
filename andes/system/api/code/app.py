@@ -8,7 +8,7 @@ from security import authenticate, identity
 from resources.user import UserRegister
 from resources.blueprint import BlueprintList, BlueprintCreate, Blueprint
 from resources.service import ServiceList, ServiceCreate, Service
-from resources.stack import StackList, StackCreate, Stack
+from resources.stack import StackList, StackCreate, Stack, StackApply
 from resources.network import NetworkList, NetworkCreate, Network
 
 
@@ -38,6 +38,7 @@ api.add_resource(Service, '/services/<int:_id>')
 api.add_resource(StackList, '/stacks')
 api.add_resource(StackCreate, '/stacks/create')
 api.add_resource(Stack, '/stacks/<int:_id>')
+api.add_resource(StackApply, '/stacks/<int:_id>/apply')
 
 api.add_resource(NetworkList, '/networks')
 api.add_resource(NetworkCreate, '/networks/create')

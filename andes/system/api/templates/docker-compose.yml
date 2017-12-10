@@ -16,13 +16,13 @@ services:
     {% if service.volumes %}
     volumes:
       {% for volume in service.volumes %}
-      - {{ volume }}
+      - "{{ volume }}"
       {% endfor %}
     {% endif %}
     {% if service.environment %}
     environment:
       {% for env in service.environment %}
-      - {{ env }}
+      - "{{ env }}"
       {% endfor %}
     {% endif %}
     {% if loop.length > 1 %}

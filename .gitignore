@@ -1,7 +1,11 @@
+### System related ###
 .DS_Store
 .vagrant
-*.db
 .idea/
+
+### Andes related ###
+*.db
+andes/stacks/*
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
@@ -9,7 +13,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Environments
+# Virtual Environments
 .env
 .venv
 env/
