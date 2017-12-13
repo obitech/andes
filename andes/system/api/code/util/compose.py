@@ -15,7 +15,6 @@ def get_compose(data):
   """
   from jinja2 import Environment, FileSystemLoader
 
-  # TODO: Remove
   env = Environment(loader = FileSystemLoader('../templates', 
                                               followlinks = True),
                     trim_blocks = True,
