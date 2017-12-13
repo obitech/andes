@@ -4,8 +4,27 @@ from db import db
 
 class ServiceModel(db.Model):
   """Class representing a service
+
   A service represents an blueprint implementation in a specific stack.
   This a what will get inserted under `services` in the docker-compose file.
+
+  Attributes:
+    id (int): The ID of this service (primary key).
+    name (str): The name of this service.
+    blueprint_id (int): The ID of the blueprint this service is modelled after.
+    description (str, optional): The description for this service
+    exposed_ports (str, opptional): The ports which shall be exposed to other services linked to in the same stack.
+      This will be assembled by resource.service from [80, 8080] t0 "80,8080".
+    mapped_ports (str, optional) : The directive after which ports should be mapped from host to container.
+      This will be assembled by resources.service from ["80:80", "8080:8080"] to "80:80,8080:8080".
+    volumes (str, optional): Mapped volumes from Host to service.
+      This will be assembled by resources.service from ["/srv/www:/etc", "/path/to:/folder"] to 
+      "/srv/www:/etc,/path/to:/folder".
+    env (str, optional): Passed environment variables.
+      This will be assembled by resources.service from ["ENV_VAR=1", "ENV_VAR_2=2"] to 
+      "ENV_VAR=1,ENV_VAR_2=2".
+    ip (int): The IP assigned to this service. Will be assigned according to ID.
+
   """
   __tablename__ = 'services'
 
@@ -22,9 +41,6 @@ class ServiceModel(db.Model):
 
   def __init__(self, name, blueprint_id, exposed_ports, mapped_ports, description=None, volumes=None, env=None):
     """Service initialization method
-
-    Note:
-      The IP will be assigned according to the service id
 
     Args:
       name (str): The name of this service.
@@ -51,23 +67,11 @@ class ServiceModel(db.Model):
     self.ip = None
   
   def json(self):
-    """Returns dictionary of the model
+    """Returns dictionary of the specific service 
     
     Returns:
-      A dictionary of form::
-        {
-          'id': The ID,
-          'blueprint': The blueprint ID associated with this services,
-          'description': The service description,
-          'name': The service name,
-          'description': description,
-          'stacks': The stacks associated with this service
-          'exposed_ports': The exposed ports from this service,
-          'mapped_ports': The mapped ports from this service,
-          'volumes': The mapped volumes for this service,
-          'env': The environment variables for this service,
-          'ip': The assigned IP for this service
-        }
+      A dictionary of the attributes of the specific service.
+
     """
     return {
       'id': self.id,
