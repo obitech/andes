@@ -26,7 +26,7 @@ class BlueprintModel(db.Model):
 
     Agrs:
       name (str): The name of this service.
-      description (str): The description of this service.
+      description (str, optional): The description of this service. Defaults to None.
       image (str): The image name for this blueprint.
     """
     self.name = name
