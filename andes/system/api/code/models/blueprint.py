@@ -28,6 +28,7 @@ class BlueprintModel(db.Model):
       name (str): The name of this service.
       description (str, optional): The description of this service. Defaults to None.
       image (str): The image name for this blueprint.
+
     """
     self.name = name
     self.description = description
@@ -58,7 +59,8 @@ class BlueprintModel(db.Model):
       name (str): Name of blueprint to be found
 
     Returns:
-      A blueprint object according to name, None if not found.
+      :obj:`blueprint`: A blueprint object according to name, None if not found.
+
     """    
     return cls.query.filter_by(name=name).first()
 
@@ -70,7 +72,7 @@ class BlueprintModel(db.Model):
       image (str): image name of blueprint to be found
 
     Returns:
-      A blueprint object according to image, None if not found.
+      :obj:`blueprint`: A blueprint object according to image, None if not found.
     """    
     return cls.query.filter_by(image=image).first()  
 
@@ -82,7 +84,7 @@ class BlueprintModel(db.Model):
       _id (int): ID of blueprint to be found
 
     Returns:
-      A blueprint object according to ID, None if not found.
+      :obj:`blueprint`: A blueprint object according to ID, None if not found.
     """        
     return cls.query.filter_by(id=_id).first()
 

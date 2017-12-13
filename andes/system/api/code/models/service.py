@@ -9,10 +9,10 @@ class ServiceModel(db.Model):
   This a what will get inserted under `services` in the docker-compose file.
 
   Attributes:
-    id (int): The ID of this service (primary key).
-    name (str): The name of this service.
-    blueprint_id (int): The ID of the blueprint this service is modelled after.
-    description (str, optional): The description for this service
+    id (int): The ID of the service (primary key).
+    name (str): The name of the service.
+    blueprint_id (int): The ID of the blueprint the service is modelled after.
+    description (str, optional): The description for the service
     exposed_ports (str, opptional): The ports which shall be exposed to other services linked to in the same stack.
       This will be assembled by resource.service from [80, 8080] t0 "80,8080".
     mapped_ports (str, optional) : The directive after which ports should be mapped from host to container.
@@ -23,7 +23,7 @@ class ServiceModel(db.Model):
     env (str, optional): Passed environment variables.
       This will be assembled by resources.service from ["ENV_VAR=1", "ENV_VAR_2=2"] to 
       "ENV_VAR=1,ENV_VAR_2=2".
-    ip (int): The IP assigned to this service. Will be assigned according to ID.
+    ip (int): The IP assigned to the service. Will be assigned according to ID.
 
   """
   __tablename__ = 'services'
@@ -43,9 +43,9 @@ class ServiceModel(db.Model):
     """Service initialization method
 
     Args:
-      name (str): The name of this service.
-      blueprint_id (int): The ID of the blueprint this service is modelled after.
-      description (str, optional): The description for this service
+      name (str): The name of the service.
+      blueprint_id (int): The ID of the blueprint the service is modelled after.
+      description (str, optional): The description for the service
       exposed_ports (str, opptional): The ports which shall be exposed to other services linked to in the same stack.
         This will be assembled by resource.service from [80, 8080] t0 "80,8080".
       mapped_ports (str, optional) : The directive after which ports should be mapped from host to container.
@@ -97,7 +97,7 @@ class ServiceModel(db.Model):
         E.g. "80,8080,443"
 
     Returns:
-      A list of ports, e.g. [80, 8080, 443].
+      list: A list of ports, e.g. [80, 8080, 443].
 
       Returns None if string is in an incorrect format.
     """
@@ -116,7 +116,7 @@ class ServiceModel(db.Model):
       stuff (str): The string to be split.
 
     Returns:
-      A list of strings.
+      list: A list of strings.
 
       Returns None if string is in incorrect format.
     """
@@ -135,9 +135,7 @@ class ServiceModel(db.Model):
       env (:obj:`list`): A list of environment variables as strings.
 
     Returns:
-      True, if format is correct.
-
-      False if format is incorrect.
+      bool: True, if format is correct, False if not.
     """
     if env in [None, [""], [], [None]]:
       return True
@@ -164,7 +162,7 @@ class ServiceModel(db.Model):
       data (:obj:`dict`): The data dictionary with POST request parameters
 
     Returns:
-      A String of environment variables if format is correct.
+      str: A String of environment variables if format is correct.
 
       None if format is incorrect.
     """
@@ -190,8 +188,7 @@ class ServiceModel(db.Model):
       volumes (:ob:`list`): List of volumes to be mapped.
 
     Returns:
-      True if syntax is correct.
-      False if syntax is incorrect.
+      bool: True if syntax is correct, false if not.
     """
     if volumes in [None, [""], [], [None]]:
       return True
@@ -219,7 +216,7 @@ class ServiceModel(db.Model):
       data (:obj:`dict`): The data dictionary with POST request parameters.
 
     Returns:
-      A String of volumes if syntax is correct.
+      str: A String of volumes if syntax is correct.
 
       None if format is incorrect.
     """
@@ -241,8 +238,7 @@ class ServiceModel(db.Model):
       exposed_ports (:obj:`list`): A list of ports as int
 
     Returns:
-      True if ports are valid
-      False if ports are invalid
+      bool: True if ports are valid, False if ports are invalid
     """
     try:
       for port in exposed_ports:
@@ -264,9 +260,7 @@ class ServiceModel(db.Model):
         e.g. ['80:80','123:456', "8000", "8000-8010:8000-8010"]
 
     Returns:
-      True if ports are valid.
-
-      False if ports are invalid.
+      bool: True if ports are valid, False if ports are invalid.
     """
     for entry in ports:
       # Regex check if general form is correct
@@ -311,7 +305,7 @@ class ServiceModel(db.Model):
       exposed_ports (:obj:`list`): A list of exposed ports
 
     Returns:
-      String of exposed ports if list is valid
+      str: String of exposed ports if list is valid
 
       None if list has invalid members
     """
@@ -333,7 +327,7 @@ class ServiceModel(db.Model):
       _id (int): ID of the service
 
     Returns:
-      String of IP according to ID
+      int: String of IP according to ID
     """
     tmp = _id + 10
     return f"172.42.{tmp // 255}.{tmp % 255}"
@@ -346,7 +340,7 @@ class ServiceModel(db.Model):
       name (str): Name of service to be found
 
     Returns:
-      A service object according to name, None if not found.
+      :obj:`service`: A service object according to name, None if not found.
     """
     return cls.query.filter_by(name=name).first()
 
@@ -358,7 +352,7 @@ class ServiceModel(db.Model):
       _id (int): ID of service to be found
 
     Returns:
-      A service object according to ID, None if not found.
+      :obj:`service`: A service object according to ID, None if not found.
     """    
     return cls.query.filter_by(id=_id).first()
 

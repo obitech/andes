@@ -42,7 +42,7 @@ class UserModel(db.Model):
       password (str): The plain password of the user.
 
     Returns:
-      SHA256 hash of the password and salt.
+      str: SHA256 hash of the password and salt.
 
     """
       return generate_password_hash(password, method='pbkdf2:sha256:2000', salt_length=16)
@@ -54,7 +54,7 @@ class UserModel(db.Model):
       password (str): The plain password of the user.
 
     Returns:
-      True if password matches, False if not.
+      bool: True if password matches, False if not.
 
     """
       return check_password_hash(self.password, password)  
@@ -72,7 +72,7 @@ class UserModel(db.Model):
       name (str): Name of user to be found
 
     Returns:
-      A user object according to name, None if not found.
+      :obj:`user`: A user object according to name, None if not found.
     """    
     return cls.query.filter_by(username=username).first()
 
@@ -84,6 +84,6 @@ class UserModel(db.Model):
       _id (int): ID of user to be found
 
     Returns:
-      A user object according to ID, None if not found.
+      :obj:`user`: A user object according to ID, None if not found.
     """ 
     return cls.query.filter_by(id=_id).first()
