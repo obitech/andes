@@ -1,13 +1,13 @@
 version: '3'
 services:
   andes:
-    image: obitech/andes-api:test2-slim
+    image: obitech/andes-api:0.2
     expose:
       - "5000"
       - "5001"
     volumes:
-      - "./system/api/data:/api/data"
-      - "./projects:/projects"
+      - "./system/api/data:/andes/api/data"
+      - "./stacks:/andes/stacks"
     networks:
       andes_default:
         ipv4_address: 172.42.0.2
