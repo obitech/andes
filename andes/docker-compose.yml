@@ -16,9 +16,6 @@ services:
     cap_add:
       - NET_ADMIN
     image: abiosoft/caddy
-    expose:
-      - "80"
-      - "443"
     ports:
       - "80:80"
       - "443:443"
@@ -35,9 +32,4 @@ services:
     restart: always
 networks:
   andes_default:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.42.0.0/16
     external: true

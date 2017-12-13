@@ -187,6 +187,9 @@ if [[ "$DOCKER_SETUP" = true ]]; then
   echo -e "$GREEN==> Docker installed successfully, source .bashrc for bash-completion! $NC"
 fi
 
+echo -e "$GREEN==> Setting up docker network andes_default... $NC"
+sudo docker network create --subnet 172.42.0.0/16 andes_default
+
 #####################################################################
 ############################ CADDY SETUP ############################
 #####################################################################
