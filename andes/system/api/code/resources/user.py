@@ -3,7 +3,7 @@ from models.user import UserModel
 from util.response import response
 
 class UserRegister(Resource):
-  """API Resource handling user registration.
+  """API resource handling user registration.
 
   Note:
     The majority of the user management is handled by Flask's JWT module.
@@ -30,22 +30,15 @@ class UserRegister(Resource):
     Endpoint::
       /register
 
-    Requires a JSON object with username and password, returns a JWT token.
+    Headers:
+    - `Content-Type: application/json`
+
+    Body:
+      - username (str)
+      - password (str)
 
     Returns:
-      JWT access token as string or 400 if username already exists.
-
-    Example:
-      Request:
-      {
-        "username": "foo",
-        "password": "bar"
-      }
-
-      Response:
-      {
-        "access_token": <JWT>
-      }
+      200 if user has been created or 400 if username already exists.
 
     """
     data = UserRegister.parser.parse_args()

@@ -45,7 +45,7 @@ class UserModel(db.Model):
       str: SHA256 hash of the password and salt.
 
     """
-      return generate_password_hash(password, method='pbkdf2:sha256:2000', salt_length=16)
+    return generate_password_hash(password, method='pbkdf2:sha256:2000', salt_length=16)
 
   def check_password(self, password):
     """Checks entered password against stored hash
@@ -57,7 +57,7 @@ class UserModel(db.Model):
       bool: True if password matches, False if not.
 
     """
-      return check_password_hash(self.password, password)  
+    return check_password_hash(self.password, password)  
 
   def save_to_db(self):
     """Saves the user to the database"""

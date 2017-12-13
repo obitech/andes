@@ -5,12 +5,45 @@ from models.blueprint import BlueprintModel
 from util.response import response
 
 class BlueprintList(Resource):
+  """API resource to display list of saved blueprints"""
   @jwt_required()
   def get(self):
+    """GET method to retrieve list of saved blueprints
+
+    Endpoint::
+      /blueprints
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+
+    Returns:
+      200 if retrieval of blueprints was successful.
+
+    Example:
+      Request:
+      GET /blueprints
+
+      Response:
+      {
+        "status": 201,
+        "message": "Blueprints have been retrieved.",
+        "error": null,
+        "data": {
+          "id": 1,
+          "name": "foo",
+          "description": "bar",
+          "image": "hello-world",
+          "services: [1,2]
+        }
+      }
+
+    """
     return response(200, "Blueprints have been retrieved.", None, [blueprint.json() for blueprint in BlueprintModel.query.all()]), 200
 
 
 class BlueprintCreate(Resource):
+  """API resource to create or update blueprints
+  """
   parser = reqparse.RequestParser()
   parser.add_argument('name',
                       type = str,
@@ -26,6 +59,48 @@ class BlueprintCreate(Resource):
 
   @jwt_required()
   def post(self):
+    """POST method to create a new blueprint
+
+    Endpoint::
+      /blueprints/create
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+    - `Content-Type: application/json`
+
+    Body:
+    - name (str)
+    - description (str, optional)
+    - image (str)
+
+    Returns:
+      201 if blueprint has been successfully created, 400 if blueprint with name
+      already exists.
+
+    Example:
+      Request:
+      POST /blueprints/create
+      {
+        "name": "foo",
+        "description": "bar",
+        "image": "hello-world"
+      }
+
+      Response:
+      {
+      " status": 201,
+        "message": "Blueprint foo has been updated.",
+        "error": null,
+        "data": {
+          "id": 1,
+          "name": "foo",
+          "description": "bar",
+          "image": "hello-world",
+          "services: [1,2]
+        }
+      }
+
+    """
     data = self.parser.parse_args()
 
     if BlueprintModel.find_by_image(data['image']):
@@ -44,6 +119,48 @@ class BlueprintCreate(Resource):
 
   @jwt_required()
   def put(self):
+    """PUT method to create or update a blueprint
+
+    Endpoint::
+      /blueprints/<id>/create
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+    - `Content-Type: application/json`
+
+    Body:
+    - name (str)
+    - description (str, optional)
+    - image (str)
+
+    Returns:
+      201 if blueprint has been successfully created, 400 if blueprint with name
+      already exists.
+
+    Example:
+      Request:
+      PUT /blueprints/create
+      {
+        "name": "foo",
+        "description": "bar",
+        "image": "hello-world"
+      }
+
+      Response:
+      {
+      " status": 201,
+        "message": "Blueprint foo has been updated.",
+        "error": null,
+        "data": {
+          "id": 1,
+          "name": "foo",
+          "description": "bar",
+          "image": "hello-world",
+          "services: [1,2]
+        }
+      }
+
+    """    
     data = self.parser.parse_args()
 
     blueprint = BlueprintModel.find_by_image(data['image'])
@@ -65,8 +182,39 @@ class BlueprintCreate(Resource):
 
 
 class Blueprint(Resource):
+  """API resource to retrieve or delete a specific blueprint"""
   @jwt_required()
   def get(self, _id):
+    """GET method to retrieve a blueprint by ID.
+
+    Endpoint::
+      /blueprints/<id>
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+
+    Returns:
+      200 if blueprint has been retrieved successfully, 404 if blueprint with passed ID doesn't exist.
+
+    Example:
+      Request:
+      GET /blueprints/1
+
+      Response:
+      {
+        "status": 201,
+        "message": "Blueprint foo has been retrieved.",
+        "error": null,
+        "data": {
+          "id": 1,
+          "name": "foo",
+          "description": "bar",
+          "image": "hello-world",
+          "services: [1,2]
+        }
+      }
+
+    """
     try:
       blueprint = BlueprintModel.find_by_id(_id)
     except:
@@ -83,6 +231,30 @@ class Blueprint(Resource):
 
   @jwt_required()
   def delete(self, _id):
+    """DELETE method to delete blueprint by ID.
+
+    Endpoint::
+      /blueprints/<id>
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+
+    Returns:
+      200 if blueprint has been deleted successfully, 404 if blueprint with passed ID doesn't exist.
+
+    Example:
+      Request:
+      GET /blueprints/1
+      
+      Response:
+      {
+        "status": 200,
+        "message": "Blueprint foo has been deleted.",
+        "error": null,
+        "data": null
+      }
+
+    """
     try:
       blueprint = BlueprintModel.find_by_id(_id)
     except:
