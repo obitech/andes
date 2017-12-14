@@ -10,15 +10,50 @@ from util.response import response
 from util.compose import get_compose, create_compose
 
 class StackList(Resource):
+  """API resource to to display list of saved stacks.
+
+  Endpoint::
+    /stacks
+
+  """  
   @jwt_required()
   def get(self):
+    """GET method to retrieve list of saved stacks
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+
+    Returns:
+      200 if retrieval of stacks was successful.
+
+    Example:
+      Request:
+      GET /stacks
+
+      Response:
+      {
+        "status": 201,
+        "message": "Services have been retrieved.",
+        "error": null,
+        "data": {
+
+        }
+      }
+
+    """        
     return response(200, "Stacks have been retrieved.", None, [stack.json() for stack in StackModel.query.all()]), 200
 
 
 class StackCreate(Resource):
-  """
-  Creates a new stack data structure with services. Does not create data project files!
-  """
+  """API resource to create or update stacks
+
+  Note:
+    This resource only handles the stack information in the database, not the docker-compose.yml creation or activation.
+
+  Endpoint::
+    /stacks/create   
+
+  """  
   parser = reqparse.RequestParser()
   parser.add_argument('name',
     type = str,
@@ -36,6 +71,20 @@ class StackCreate(Resource):
     help = "Service IDs are optional.")
 
   def check_args(self, data):
+    """Helper method to check various passed payload arguments
+
+    Args:
+      data (:obj:`dict`): Request payload with parsed arguments.
+        data['name'] (str): Name of the stack.
+        data['description'] (str): Description for the stack.
+        data['subdomain'] (str): Subdomain of the stack.
+
+    Returns:
+      dict: If all checks pass, dict of type {'code': 200}. 
+        If one check fails, dict of type {'code': <error code>, 'error' <error message>}, where the code and
+        message will be directly fed into a response.
+
+    """    
     # Regex check for subdomain
     if data['subdomain'] and not StackModel.valid_subdomain(data['subdomain']):
       return {'code': 400, 'error': f"Invalid subdomain {data['subdomain']}"}
@@ -48,6 +97,49 @@ class StackCreate(Resource):
 
   @jwt_required()
   def post(self):
+    """POST method to create a new service.
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+    - `Content-Type: application/json`
+
+    Body:
+      - name (str): Name of the stack.
+      - description (str, optional): Description of the stack.
+      - subdomain (str, optional): Subdomain for the stack.
+      - services (list of int, optional): Services associated with the stack.
+
+    Returns:
+      201 if stack has been successfully created, 400 if stack with name already exists.
+
+    Example:
+      Request:
+      POST /stacks/create
+      {
+        "name": "foo_stack",
+        "description": "test stack",
+        "subdomain": "test.example.com",
+        "services": [1]
+      } 
+
+      Response:
+      {
+        "status": 201,
+        "message": "Stack foo_stack has been updated.",
+        "error": null,
+        "data": {
+          "id": 1,
+          "name": "foo_stack",
+          "description": "test stack",
+          "subdomain": "test.example.com",
+          "services": [1],
+          "active": false,
+          "created_at": "2017-12-14T09:21:50.503274",
+          "last_changed": "2017-12-14T09:21:50.503274"
+        }
+      }
+
+    """
     data = self.parser.parse_args()
 
     if StackModel.find_by_name(data['name']):
@@ -79,6 +171,49 @@ class StackCreate(Resource):
 
   @jwt_required()
   def put(self):
+    """PUT method to create or update a service.
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+    - `Content-Type: application/json`
+
+    Body:
+      - name (str): Name of the stack.
+      - description (str, optional): Description of the stack.
+      - subdomain (str, optional): Subdomain for the stack.
+      - services (list of int, optional): Services associated with the stack.
+
+    Returns:
+      201 if stack has been successfully created, 400 if stack with name already exists.
+
+    Example:
+      Request:
+      PUT /stacks/create
+      {
+        "name": "foo_stack",
+        "description": "test stack",
+        "subdomain": "test.example.com",
+        "services": [1]
+      } 
+
+      Response:
+      {
+        "status": 201,
+        "message": "Stack foo_stack has been updated.",
+        "error": null,
+        "data": {
+          "id": 1,
+          "name": "foo_stack",
+          "description": "test stack",
+          "subdomain": "test.example.com",
+          "services": [1],
+          "active": false,
+          "created_at": "2017-12-14T09:21:50.503274",
+          "last_changed": "2017-12-14T09:21:50.503274"
+        }
+      }
+            
+    """    
     data = self.parser.parse_args()
 
     # Argument check
@@ -140,8 +275,44 @@ class StackCreate(Resource):
 
 
 class Stack(Resource):
+  """API resource to retrieve or delete a specific stack
+
+  Endpoint::
+    /stacks/<id>
+
+  """    
   @jwt_required()
   def get(sef, _id):
+    """GET method to retrieve a stack by ID.
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+
+    Returns:
+      200 if stack has been retrieved successfully, 404 if stack with passed ID doesn't exist.
+
+    Example:
+      Request:
+      GET /stacks/1
+
+      Response:
+      {
+        "status": 200,
+        "message": "Stack foo_stack has been retrieved.",
+        "error": null,
+        "data": {
+          "id": 1,
+          "name": "foo_stack",
+          "description": "test stack",
+          "subdomain": "test.example.com",
+          "services": [1],
+          "active": false,
+          "created_at": "2017-12-14T09:21:50.503274",
+          "last_changed": "2017-12-14T09:21:50.503274"
+        }
+      }
+
+    """      
     try:
       stack = StackModel.find_by_id(_id)
     except:
@@ -153,6 +324,27 @@ class Stack(Resource):
 
   @jwt_required()
   def delete(self, _id):
+    """DELETE method to delete a stack by ID.
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+
+    Returns:
+      200 if stack has been deleted successfully, 404 if stack with passed ID doesn't exist.
+
+    Example:
+      Request:
+      GET /stacks/1
+      
+      Response:
+      {
+        "status": 200,
+        "message": "Stack foo_stack has been deleted.",
+        "error": null,
+        "data": null
+      }
+
+    """      
     try:
       stack = StackModel.find_by_id(_id)
     except:
@@ -170,12 +362,28 @@ class Stack(Resource):
 
 
 class StackApply(Resource):
-  """
-  Creates or updates project files for a stack
+  """API resource to create or update the stack's project files
+
+  Endpoint::
+    /stacks/<id>/apply
+
+  Attributes:
+    stacks_folder (str): The location of where to save the project files.
+
   """
   stacks_folder = "../../stacks"
 
   def get_compose_data(self, services):
+    """Helper method to pass the necessary data to the function creating the string which ends up as the 
+      docker-compose.yml.
+
+    Args:
+      services (:obj:`list` of :obj:`service`): A list with the services this stack is defined for.
+
+    Returns:
+      dict: A dictionary with the necessary information, None if exception is thrown.
+
+    """
     data = []
     try:
       for service in services:
@@ -204,6 +412,24 @@ class StackApply(Resource):
 
   @jwt_required()
   def post(self, _id):
+    """POST method to save the project files to the file system.
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+
+    Example:
+      Request:
+      POST /stacks/1/apply
+
+    Response:
+    {
+      "status": 200,
+      "message": "Stack foo_stack has been applied.",
+      "error": null,
+      "data": null
+    }
+
+    """
     if not StackModel.find_by_id(_id):
       return response(404, None, f"Stack with ID {_id} does not exist.", None), 404
 
@@ -220,7 +446,7 @@ class StackApply(Resource):
       compose_string = get_compose(data)
 
       if create_compose(compose_file, compose_string):
-        return response(200, f"Stack has been applied.", None, None), 200
+        return response(200, f"Stack {stack.name} has been applied.", None, None), 200
       else:
         return response(500, None, f"An error has occured while trying to save compose file.", None), 500
 

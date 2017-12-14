@@ -14,15 +14,22 @@ def get_compose(data):
   ]
   """
   from jinja2 import Environment, FileSystemLoader
+  from os import path, getcwd
 
-  env = Environment(loader = FileSystemLoader('../templates', 
-                                              followlinks = True),
-                    trim_blocks = True,
-                    lstrip_blocks = True)
+  try:
+    template_path = getcwd() + '/templates'
 
-  template = env.get_template('docker-compose.yml')
+    env = Environment(loader = FileSystemLoader(template_path, 
+                                                followlinks = True),
+                      trim_blocks = True,
+                      lstrip_blocks = True)
 
-  return template.render(services=data)
+    template = env.get_template('docker-compose.yml')
+
+    return template.render(services=data)
+
+  except:
+    return None
 
 def create_compose(path, text):
   try:

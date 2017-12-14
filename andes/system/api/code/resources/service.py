@@ -7,7 +7,7 @@ from models.blueprint import BlueprintModel
 from util.response import response
 
 class ServiceList(Resource):
-  """API Resource to to display list of saved services.
+  """API resource to to display list of saved services.
 
   Endpoint::
     /services
@@ -98,7 +98,7 @@ class ServiceCreate(Resource):
     Returns:
       dict: If all checks pass, dict of type {'code': 200}. 
         If one check fails, dict of type {'code': <error code>, 'error' <error message>}, where the code and
-        message will be directly fed into an appropriate response.
+        message will be directly fed into a response.
 
     """
     # Check if blueprint exists
@@ -156,12 +156,11 @@ class ServiceCreate(Resource):
     - stacks (int, optional)
 
     Returns:
-      201 if service has been successfully created, 400 if service with name
-      already exists.
+      201 if service has been successfully created, 400 if service with name already exists.
 
     Example:
       Request:
-      POST /service/create
+      POST /services/create
       {
         "name": "foo_service",
         "image": "foo_image",
@@ -253,7 +252,7 @@ class ServiceCreate(Resource):
 
     Example:
       Request:
-      POST /service/create
+      PUT /services/create
       {
         "name": "foo_service",
         "image": "foo_image",
@@ -350,6 +349,12 @@ class ServiceCreate(Resource):
 
 
 class Service(Resource):
+  """API resource to retrieve or delete a specific service
+
+  Endpoint::
+    /services/<id>
+
+  """  
   @jwt_required()
   def get(self, _id):
     """GET method to retrieve a service by ID.
