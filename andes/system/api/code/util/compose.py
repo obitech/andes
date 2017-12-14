@@ -15,11 +15,10 @@ def get_compose(data):
   """
   from jinja2 import Environment, FileSystemLoader
   from os import path, getcwd
+  from traceback import print_exc
 
   try:
-    template_path = getcwd() + '/templates'
-
-    env = Environment(loader = FileSystemLoader(template_path, 
+    env = Environment(loader = FileSystemLoader('../templates', 
                                                 followlinks = True),
                       trim_blocks = True,
                       lstrip_blocks = True)
@@ -29,14 +28,16 @@ def get_compose(data):
     return template.render(services=data)
 
   except:
+    print_exc()
     return None
 
 def create_compose(path, text):
+  from traceback import print_exc
   try:
     with open(path, 'w') as data_file:
       data_file.write(text)
-  except Exception as e:
-    print(e)
+  except:
+    print_exc()
     return False
 
   return True
