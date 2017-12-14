@@ -7,17 +7,57 @@ from models.blueprint import BlueprintModel
 from util.response import response
 
 class ServiceList(Resource):
+  """API Resource to to display list of saved services.
+
+  Endpoint::
+    /services
+
+  """
   @jwt_required()
   def get(self):
+    """GET method to retrieve list of saved services
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+
+    Returns:
+      200 if retrieval of services was successful.
+
+    Example:
+      Request:
+      GET /services
+
+      Response:
+      {
+        "status": 201,
+        "message": "Services have been retrieved.",
+        "error": null,
+        "data": {
+          "id": 1,
+
+        }
+      }
+
+    """    
     return response(200, "Services have been retrieved.", None, [service.json() for service in ServiceModel.query.all()]), 200
 
 
 class ServiceCreate(Resource):
+  """API resource to create or update services
+
+  Endpoint::
+    /services/create   
+
+  """  
   parser = reqparse.RequestParser()
+  # TODO: Add description
   parser.add_argument('name',
                       type = str,
                       required = True,
                       help = "The name of your service is required")
+  parser.add_argument('description',
+                      type = str,
+                      help = "The description is optional.")
   parser.add_argument('blueprint',
                       type = int,
                       required = True,
@@ -43,6 +83,24 @@ class ServiceCreate(Resource):
                       help = "Stacks are optional.")  
 
   def check_args(self, data):
+    """Helper method to check various passed payload arguments
+
+    Args:
+      data (:obj:`dict`): Request payload with parsed arguments.
+        data['blueprint'] (int): Blueprint ID which service will be derived from.
+        data['name'] (str): Name of service.
+        data['exposed_ports'] (list of int): Ports to be exposed.
+        data['mapped_ports'] (list of str): Ports to be mapped between host and container.
+        data['volumes'](list of str): Volumes to be mapped between host and container.
+        data['env'] (list of str): Environment variables for container.
+        data['stacks'] (list of int): Stack this service should be a part of.
+
+    Returns:
+      dict: If all checks pass, dict of type {'code': 200}. 
+        If one check fails, dict of type {'code': <error code>, 'error' <error message>}, where the code and
+        message will be directly fed into an appropriate response.
+
+    """
     # Check if blueprint exists
     if not BlueprintModel.find_by_id(data['blueprint']):
       return {'code': 400, 'error': f"Blueprint with ID {data['blueprint']} hasn't been found."}
@@ -71,6 +129,7 @@ class ServiceCreate(Resource):
       if not ServiceModel.valid_env(data['env']):
         return {'code': 400, 'error': f"Invalid environment variables."}
 
+    # Check if passed stack exists.
     if data['stacks'] and data['stacks'] != [None]:
       for x in data['stacks']:
         if not StackModel.find_by_id(x):
@@ -80,6 +139,60 @@ class ServiceCreate(Resource):
 
   @jwt_required()
   def post(self):
+    """POST method to create a new service
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+    - `Content-Type: application/json`
+
+    Body:
+    - name (str)
+    - blueprint (int)
+    - description (str, optional)
+    - exposed_ports (list of int, optional)
+    - mapped_ports (list of str, optional)
+    - volumes (list of str, optional)
+    - env (list of str, optional)
+    - stacks (int, optional)
+
+    Returns:
+      201 if service has been successfully created, 400 if service with name
+      already exists.
+
+    Example:
+      Request:
+      POST /service/create
+      {
+        "name": "foo_service",
+        "image": "foo_image",
+        "description": "A test service",
+        "exposed_ports": [80,8080],
+        "mapped_ports": ["80:80"],
+        "blueprint": 1,
+        "volumes": ["/srv/www:/"],
+        "env": ["FOO=BAR","DEBUG=1"],
+        "stacks": 1
+      }
+
+      Response:
+      {
+        "status": 201,
+        "message": "Service foo_service has been updated.",
+        "error": null,
+        "data": {
+          "id": 1,
+          "blueprint": 1,
+          "name": "foo_service",
+          "description": "A test service",
+          "stacks": [1],
+          "exposed_ports": [80,8080],
+          "mapped_ports": ["80:80"],
+          "volumes": ["/srv/www:/"],
+          "env": ["FOO=BAR","DEBUG=1"],
+          "ip": "172.42.0.11"
+        }
+      }
+      """
     data = self.parser.parse_args()
 
     if ServiceModel.find_by_name(data['name']):
@@ -96,6 +209,7 @@ class ServiceCreate(Resource):
 
     service = ServiceModel(name = data['name'],
                            blueprint_id = data['blueprint'],
+                           description = data['description'],
                            exposed_ports = exposed_ports,
                            mapped_ports = mapped_ports,
                            volumes = volumes,
@@ -118,6 +232,59 @@ class ServiceCreate(Resource):
 
   @jwt_required()
   def put(self):
+    """PUT method to create or update a service
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+    - `Content-Type: application/json`
+
+    Body:
+    - name (str)
+    - blueprint (int)
+    - description (str, optional)
+    - exposed_ports (list of int, optional)
+    - mapped_ports (list of str, optional)
+    - volumes (list of str, optional)
+    - env (list of str, optional)
+    - stacks (int, optional)
+
+    Returns:
+      201 if service has been successfully created or updated.
+
+    Example:
+      Request:
+      POST /service/create
+      {
+        "name": "foo_service",
+        "image": "foo_image",
+        "description": "A test service",
+        "exposed_ports": [80,8080],
+        "mapped_ports": ["80:80"],
+        "blueprint": 1,
+        "volumes": ["/srv/www:/"],
+        "env": ["FOO=BAR","DEBUG=1"],
+        "stacks": 1
+      }
+
+      Response:
+      {
+        "status": 201,
+        "message": "Service foo_service has been updated.",
+        "error": null,
+        "data": {
+          "id": 1,
+          "blueprint": 1,
+          "name": "foo_service",
+          "description": "A test service",
+          "stacks": [1],
+          "exposed_ports": [80,8080],
+          "mapped_ports": ["80:80"],
+          "volumes": ["/srv/www:/"],
+          "env": ["FOO=BAR","DEBUG=1"],
+          "ip": "172.42.0.11"
+        }
+      }
+      """    
     data = self.parser.parse_args()
 
     args = self.check_args(data)
@@ -133,6 +300,7 @@ class ServiceCreate(Resource):
     
     if service:
       service.name = data['name']
+      service.description = data['description']
       service.exposed_ports = exposed_ports
       service.mapped_ports = mapped_ports
       service.volumes = volumes
@@ -159,6 +327,7 @@ class ServiceCreate(Resource):
 
     else:
       service = ServiceModel(name = data['name'],
+                             description = data['description'],
                              exposed_ports = exposed_ports,
                              mapped_ports = mapped_ports,
                              volumes = volumes,
@@ -183,6 +352,38 @@ class ServiceCreate(Resource):
 class Service(Resource):
   @jwt_required()
   def get(self, _id):
+    """GET method to retrieve a service by ID.
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+
+    Returns:
+      200 if service has been retrieved successfully, 404 if service with passed ID doesn't exist.
+
+    Example:
+      Request:
+      GET /service/1
+
+      Response:
+      {
+        "status": 201,
+        "message": "Service foo_service has been retrieved.",
+        "error": null,
+        "data": {
+          "id": 1,
+          "blueprint": 1,
+          "name": "foo_service",
+          "description": "A test service",
+          "stacks": [],
+          "exposed_ports": [80,8080],
+          "mapped_ports": ["80:80"],
+          "volumes": ["/srv/www:/"],
+          "env": ["FOO=BAR","DEBUG=1"],
+          "ip": "172.42.0.11"
+        }
+      }
+
+    """    
     try:
       service = ServiceModel.find_by_id(_id)
     except:
@@ -199,6 +400,27 @@ class Service(Resource):
 
   @jwt_required()
   def delete(self, _id):
+    """DELETE method to delete service by ID.
+
+    Headers:
+    - `Authorization: JWT <JWT>`
+
+    Returns:
+      200 if service has been deleted successfully, 404 if service with passed ID doesn't exist.
+
+    Example:
+      Request:
+      GET /services/1
+      
+      Response:
+      {
+        "status": 200,
+        "message": "Service foo_service has been deleted.",
+        "error": null,
+        "data": null
+      }
+
+    """    
     try:
       service = ServiceModel.find_by_id(_id)
     except:

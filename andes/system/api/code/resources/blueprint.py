@@ -5,13 +5,15 @@ from models.blueprint import BlueprintModel
 from util.response import response
 
 class BlueprintList(Resource):
-  """API resource to display list of saved blueprints"""
+  """API resource to display list of saved blueprints.
+  
+  Endpoint::
+    /blueprints
+
+  """
   @jwt_required()
   def get(self):
     """GET method to retrieve list of saved blueprints
-
-    Endpoint::
-      /blueprints
 
     Headers:
     - `Authorization: JWT <JWT>`
@@ -43,6 +45,10 @@ class BlueprintList(Resource):
 
 class BlueprintCreate(Resource):
   """API resource to create or update blueprints
+
+  Endpoint::
+    /blueprints/create   
+
   """
   parser = reqparse.RequestParser()
   parser.add_argument('name',
@@ -60,9 +66,6 @@ class BlueprintCreate(Resource):
   @jwt_required()
   def post(self):
     """POST method to create a new blueprint
-
-    Endpoint::
-      /blueprints/create
 
     Headers:
     - `Authorization: JWT <JWT>`
@@ -121,9 +124,6 @@ class BlueprintCreate(Resource):
   def put(self):
     """PUT method to create or update a blueprint
 
-    Endpoint::
-      /blueprints/<id>/create
-
     Headers:
     - `Authorization: JWT <JWT>`
     - `Content-Type: application/json`
@@ -134,8 +134,7 @@ class BlueprintCreate(Resource):
     - image (str)
 
     Returns:
-      201 if blueprint has been successfully created, 400 if blueprint with name
-      already exists.
+      201 if blueprint has been successfully created or updated.
 
     Example:
       Request:
@@ -182,13 +181,15 @@ class BlueprintCreate(Resource):
 
 
 class Blueprint(Resource):
-  """API resource to retrieve or delete a specific blueprint"""
+  """API resource to retrieve or delete a specific blueprint
+
+  Endpoint::
+    /blueprints/<id>
+
+  """
   @jwt_required()
   def get(self, _id):
     """GET method to retrieve a blueprint by ID.
-
-    Endpoint::
-      /blueprints/<id>
 
     Headers:
     - `Authorization: JWT <JWT>`
@@ -232,9 +233,6 @@ class Blueprint(Resource):
   @jwt_required()
   def delete(self, _id):
     """DELETE method to delete blueprint by ID.
-
-    Endpoint::
-      /blueprints/<id>
 
     Headers:
     - `Authorization: JWT <JWT>`
