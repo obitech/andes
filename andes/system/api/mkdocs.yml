@@ -1,0 +1,19 @@
+site_name: Andes API documentation
+repo_url: https://github.com/obitech/andes
+
+pages:
+  - Home: 'index.md'
+  - Overview: 'overview.md'
+  - Endpoints: 
+    - '/register':
+      - 'POST': 'endpoints/register/post.md'
+    - '/auth': 
+      - 'POST': 'endpoints/auth/post.md'
+    - '/blueprints': 
+      - 'GET': 'endpoints/blueprints/get.md'
+    - '/blueprints/<_id>':
+      - 'GET': 'endpoints/blueprints_id/get.md'
+      - 'DELETE': 'endpoints/blueprints_id/delete.md'
+    - '/blueprints/create':
+      - 'POST': 'endpoints/blueprints_create/post.md'
+      - 'PUT': 'endpoints/blueprints_create/put.md'

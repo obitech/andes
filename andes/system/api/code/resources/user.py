@@ -25,22 +25,8 @@ class UserRegister(Resource):
   )
 
   def post(self):
-    """POST method to register a user.
-
-    Endpoint::
-      /register
-
-    Headers:
-    - `Content-Type: application/json`
-
-    Body:
-      - username (str)
-      - password (str)
-
-    Returns:
-      200 if user has been created or 400 if username already exists.
-
-    """
+    """POST method to register a user."""
+    
     data = UserRegister.parser.parse_args()
 
     if UserModel.find_by_username(data['username']):

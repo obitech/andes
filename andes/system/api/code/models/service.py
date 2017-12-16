@@ -185,7 +185,7 @@ class ServiceModel(db.Model):
     "$ test" would not pass.
 
     Args:
-      volumes (:ob:`list`): List of volumes to be mapped.
+      volumes (:obj:`list`): List of volumes to be mapped.
 
     Returns:
       bool: True if syntax is correct, false if not.

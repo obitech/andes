@@ -11,6 +11,7 @@ class BlueprintModel(db.Model):
     description (str): The description of this service.
     image (str): The image name for this blueprint.
     services (:obj:`list`): A list of services implementing this blueprint.
+    
   """
 
   __tablename__ = 'blueprints'
@@ -89,11 +90,15 @@ class BlueprintModel(db.Model):
     return cls.query.filter_by(id=_id).first()
 
   def save_to_db(self):
-    """Saves blueprint to database"""
+    """Saves blueprint to database
+
+    """
     db.session.add(self)
     db.session.commit()
 
   def delete_from_db(self):
-    """Deletes blueprint from database"""
+    """Deletes blueprint from database
+
+    """
     db.session.delete(self)
     db.session.commit()
