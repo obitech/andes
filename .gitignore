@@ -6,6 +6,8 @@
 ### Andes related ###
 *.db
 andes/stacks/*/
+andes/system/api/docs/site
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
