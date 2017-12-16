@@ -1,0 +1,769 @@
+{
+    "docs": [
+        {
+            "location": "/",
+            "text": "Andes API Documentation\n\n\nWelcome to Andes' API documentation. For information on classes and functions themselves, please refer to the source for now.\n\n\n\n\nGithub repo\n\n\nDocker image\n\n\n\n\nGeneral\n\n\nResponses return, in general, a JSON object with metadata and (if applicable) the actual data or an error message in the following format:\n\n\n# Sample format\n{\n    \"status\": <status code>,\n    \"message\": <...>,\n    \"error\": <...>,\n    \"data\": <...>\n}\n\n\n\n\nAuthentication\n\n\nIf you're starting from scratch you need to create a user first:\n\n\n# Endpoint\nPOST /register\n\n# Header\nContent-Type: application/json\n\n# Body\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}\n\n\n\n\nNow you need to authenticate: \n\n\n# Endpoint\nPOST /auth\n\n#Header\nContent-Type: application/json\n\n# Body\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}\n\n\n\n\nWhich will return a JWT token:\n\n\n{\n  \"access_token\": superSecretToken\n}\n\n\n\n\nThis needs to be included in following requests as a header:\n\n\n# Endpoint\nGET /stacks\n\n# Header\nAuthorization: JWT superSecretToken\n\n# Response\n{\n    \"status\": 200,\n    \"message\": \"Stacks have been retrieved.\",\n    \"error\": null,\n    \"data\": []\n}",
+            "title": "Home"
+        },
+        {
+            "location": "/#andes-api-documentation",
+            "text": "Welcome to Andes' API documentation. For information on classes and functions themselves, please refer to the source for now.   Github repo  Docker image",
+            "title": "Andes API Documentation"
+        },
+        {
+            "location": "/#general",
+            "text": "Responses return, in general, a JSON object with metadata and (if applicable) the actual data or an error message in the following format:  # Sample format\n{\n    \"status\": <status code>,\n    \"message\": <...>,\n    \"error\": <...>,\n    \"data\": <...>\n}",
+            "title": "General"
+        },
+        {
+            "location": "/#authentication",
+            "text": "If you're starting from scratch you need to create a user first:  # Endpoint\nPOST /register\n\n# Header\nContent-Type: application/json\n\n# Body\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}  Now you need to authenticate:   # Endpoint\nPOST /auth\n\n#Header\nContent-Type: application/json\n\n# Body\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}  Which will return a JWT token:  {\n  \"access_token\": superSecretToken\n}  This needs to be included in following requests as a header:  # Endpoint\nGET /stacks\n\n# Header\nAuthorization: JWT superSecretToken\n\n# Response\n{\n    \"status\": 200,\n    \"message\": \"Stacks have been retrieved.\",\n    \"error\": null,\n    \"data\": []\n}",
+            "title": "Authentication"
+        },
+        {
+            "location": "/overview/",
+            "text": "Overview\n\n\nAuthentication\n\n\n\n\n\n\n\n\nMethod\n\n\nEndpoint\n\n\nComments\n\n\n\n\n\n\n\n\n\n\nPOST\n\n\n/register\n\n\nRegisters new user\n\n\n\n\n\n\nPOST\n\n\n/auth\n\n\nAuthenticates user\n\n\n\n\n\n\n\n\nBlueprints\n\n\n\n\n\n\n\n\nMethod\n\n\nEndpoint\n\n\nComments\n\n\n\n\n\n\n\n\n\n\nGET\n\n\n/blueprints\n\n\nRetrieves list of blueprints\n\n\n\n\n\n\nGET\n\n\n/blueprints/<_id>\n\n\nRetrieves single blueprint\n\n\n\n\n\n\nDELETE\n\n\n/blueprints/<_id>\n\n\nDeletes a single blueprint\n\n\n\n\n\n\nPOST\n\n\n/blueprints/create\n\n\nCreates a new blueprint\n\n\n\n\n\n\nPUT\n\n\n/blueprints/create\n\n\nCreates or updates a blueprint\n\n\n\n\n\n\n\n\nServices\n\n\n\n\n\n\n\n\nMethod\n\n\nEndpoint\n\n\nComments\n\n\n\n\n\n\n\n\n\n\nGET\n\n\n/services\n\n\nRetrieves list of services\n\n\n\n\n\n\nGET\n\n\n/services/<_id>\n\n\nRetrieves single services\n\n\n\n\n\n\nDELETE\n\n\n/services/<_id>\n\n\nDeletes single service\n\n\n\n\n\n\nPOST\n\n\n/services/create\n\n\nCreates a new service\n\n\n\n\n\n\nPUT\n\n\n/services/create\n\n\nCreates or updates a service\n\n\n\n\n\n\n\n\nStacks\n\n\n\n\n\n\n\n\nMethod\n\n\nEndpoint\n\n\nComments\n\n\n\n\n\n\n\n\n\n\nGET\n\n\n/stacks\n\n\nRetrieves list of stacks\n\n\n\n\n\n\nGET\n\n\n/stacks/<_id>\n\n\nRetrieves single stacks\n\n\n\n\n\n\nDELETE\n\n\n/stacks/<_id>\n\n\nDeletes single service\n\n\n\n\n\n\nPOST\n\n\n/stacks/<_id>/apply\n\n\nApplies a stack and saves config files to disk\n\n\n\n\n\n\nPOST\n\n\n/stacks/create\n\n\nCreates a new stack\n\n\n\n\n\n\nPUT\n\n\n/stacks/create\n\n\nCreates or updates a stack",
+            "title": "Endpoint Overview"
+        },
+        {
+            "location": "/overview/#overview",
+            "text": "",
+            "title": "Overview"
+        },
+        {
+            "location": "/overview/#authentication",
+            "text": "Method  Endpoint  Comments      POST  /register  Registers new user    POST  /auth  Authenticates user",
+            "title": "Authentication"
+        },
+        {
+            "location": "/overview/#blueprints",
+            "text": "Method  Endpoint  Comments      GET  /blueprints  Retrieves list of blueprints    GET  /blueprints/<_id>  Retrieves single blueprint    DELETE  /blueprints/<_id>  Deletes a single blueprint    POST  /blueprints/create  Creates a new blueprint    PUT  /blueprints/create  Creates or updates a blueprint",
+            "title": "Blueprints"
+        },
+        {
+            "location": "/overview/#services",
+            "text": "Method  Endpoint  Comments      GET  /services  Retrieves list of services    GET  /services/<_id>  Retrieves single services    DELETE  /services/<_id>  Deletes single service    POST  /services/create  Creates a new service    PUT  /services/create  Creates or updates a service",
+            "title": "Services"
+        },
+        {
+            "location": "/overview/#stacks",
+            "text": "Method  Endpoint  Comments      GET  /stacks  Retrieves list of stacks    GET  /stacks/<_id>  Retrieves single stacks    DELETE  /stacks/<_id>  Deletes single service    POST  /stacks/<_id>/apply  Applies a stack and saves config files to disk    POST  /stacks/create  Creates a new stack    PUT  /stacks/create  Creates or updates a stack",
+            "title": "Stacks"
+        },
+        {
+            "location": "/endpoints/user/register/post/",
+            "text": "POST /register\n\n\nRegister and saves the user to the database.\n\n\nFull path\n\n\n/register\n\n\nHeaders\n\n\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\nKey | JSON Value type | Comment | Required\n---|---|---\nusername|String|The username to be registered|Yes\npassword|String|The password of the user|Yes\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nnull\n\n\nUser created successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nUsername already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /register\n\n\nRequest body\n\n\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"User foo has been created.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "POST"
+        },
+        {
+            "location": "/endpoints/user/register/post/#post-register",
+            "text": "Register and saves the user to the database.",
+            "title": "POST /register"
+        },
+        {
+            "location": "/endpoints/user/register/post/#full-path",
+            "text": "/register",
+            "title": "Full path"
+        },
+        {
+            "location": "/endpoints/user/register/post/#headers",
+            "text": "Content-Type: application/json",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/user/register/post/#body",
+            "text": "Key | JSON Value type | Comment | Required\n---|---|---\nusername|String|The username to be registered|Yes\npassword|String|The password of the user|Yes",
+            "title": "Body"
+        },
+        {
+            "location": "/endpoints/user/register/post/#returns",
+            "text": "Status code  Data  Comments      200  null  User created successfully.    400  null  Username already exists.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/user/register/post/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/user/register/post/#request",
+            "text": "POST /register",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/user/register/post/#request-body",
+            "text": "{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}",
+            "title": "Request body"
+        },
+        {
+            "location": "/endpoints/user/register/post/#response-body",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"User foo has been created.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/user/auth/post/",
+            "text": "POST /auth\n\n\nAuthenticates a user and returns a JWT token.\n\n\nHeaders\n\n\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\nKey | JSON Value type | Comment | Required\n---|---|---\nusername|String|The username to be authenticated|Yes\npassword|String|The password of the user|Yes\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nnull\n\n\nUser created successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nUsername already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /auth\n\n\nRequest body\n\n\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"User foo has been created.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "POST"
+        },
+        {
+            "location": "/endpoints/user/auth/post/#post-auth",
+            "text": "Authenticates a user and returns a JWT token.",
+            "title": "POST /auth"
+        },
+        {
+            "location": "/endpoints/user/auth/post/#headers",
+            "text": "Content-Type: application/json",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/user/auth/post/#body",
+            "text": "Key | JSON Value type | Comment | Required\n---|---|---\nusername|String|The username to be authenticated|Yes\npassword|String|The password of the user|Yes",
+            "title": "Body"
+        },
+        {
+            "location": "/endpoints/user/auth/post/#returns",
+            "text": "Status code  Data  Comments      200  null  User created successfully.    400  null  Username already exists.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/user/auth/post/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/user/auth/post/#request",
+            "text": "POST /auth",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/user/auth/post/#request-body",
+            "text": "{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}",
+            "title": "Request body"
+        },
+        {
+            "location": "/endpoints/user/auth/post/#response-body",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"User foo has been created.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/blueprints/get/",
+            "text": "GET /blueprints\n\n\nRetrieves a list of blueprints.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nList of Blueprints\n\n\nRetrieval of Blueprints successful.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nGET /blueprints\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Blueprints have been retrieved.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo\",\n        \"description\": \"bar\",\n        \"image\": \"hello-world\",\n        \"services: [1,2]\n    }\n}",
+            "title": "GET"
+        },
+        {
+            "location": "/endpoints/blueprints/get/#get-blueprints",
+            "text": "Retrieves a list of blueprints.",
+            "title": "GET /blueprints"
+        },
+        {
+            "location": "/endpoints/blueprints/get/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/blueprints/get/#returns",
+            "text": "Status code  Data  Comments      200  List of Blueprints  Retrieval of Blueprints successful.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/blueprints/get/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/blueprints/get/#request",
+            "text": "GET /blueprints",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/blueprints/get/#response-body",
+            "text": "{\n    \"status\": 200,\n    \"message\": \"Blueprints have been retrieved.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo\",\n        \"description\": \"bar\",\n        \"image\": \"hello-world\",\n        \"services: [1,2]\n    }\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/blueprints/id/get/",
+            "text": "GET /blueprints/<_id>\n\n\nRetrieves a specific blueprint according to passed ID.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nBlueprint\n\n\nRetrieval of Blueprint successful.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nBlueprint with passed name has not been found.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nGET /blueprints/1\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Blueprint foo has been retrieved.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo\",\n        \"description\": \"bar\",\n        \"image\": \"hello-world\",\n        \"services: [1,2]\n    }\n}",
+            "title": "GET"
+        },
+        {
+            "location": "/endpoints/blueprints/id/get/#get-blueprints_id",
+            "text": "Retrieves a specific blueprint according to passed ID.",
+            "title": "GET /blueprints/&lt;_id&gt;"
+        },
+        {
+            "location": "/endpoints/blueprints/id/get/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/blueprints/id/get/#returns",
+            "text": "Status code  Data  Comments      200  Blueprint  Retrieval of Blueprint successful.    400  null  Blueprint with passed name has not been found.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/blueprints/id/get/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/blueprints/id/get/#request",
+            "text": "GET /blueprints/1",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/blueprints/id/get/#response-body",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"Blueprint foo has been retrieved.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo\",\n        \"description\": \"bar\",\n        \"image\": \"hello-world\",\n        \"services: [1,2]\n    }\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/blueprints/id/delete/",
+            "text": "DELETE /blueprints/<_id>\n\n\nDeletes a specific blueprint according to passed ID.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nnull\n\n\nDeletion of Blueprint successful.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nBlueprint not found.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nDELETE /blueprints/1\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Blueprint foo has been deleted.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "DELETE"
+        },
+        {
+            "location": "/endpoints/blueprints/id/delete/#delete-blueprints_id",
+            "text": "Deletes a specific blueprint according to passed ID.",
+            "title": "DELETE /blueprints/&lt;_id&gt;"
+        },
+        {
+            "location": "/endpoints/blueprints/id/delete/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/blueprints/id/delete/#returns",
+            "text": "Status code  Data  Comments      200  null  Deletion of Blueprint successful.    400  null  Blueprint not found.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/blueprints/id/delete/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/blueprints/id/delete/#request",
+            "text": "DELETE /blueprints/1",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/blueprints/id/delete/#response-body",
+            "text": "{\n    \"status\": 200,\n    \"message\": \"Blueprint foo has been deleted.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/blueprints/create/post/",
+            "text": "POST /blueprints/create\n\n\nCreates a new blueprint.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nYes\n\n\n\n\n\n\nimage\n\n\nString\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nBlueprint\n\n\nBlueprint has been created successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nBlueprint with passed image already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /blueprints/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo\",\n    \"description\": \"bar\",\n    \"image\": \"hello-world\"\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Blueprint foo has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo\",\n        \"description\": \"bar\",\n        \"image\": \"hello-world\",\n        \"services: [1,2]\n    }\n}",
+            "title": "POST"
+        },
+        {
+            "location": "/endpoints/blueprints/create/post/#post-blueprintscreate",
+            "text": "Creates a new blueprint.",
+            "title": "POST /blueprints/create"
+        },
+        {
+            "location": "/endpoints/blueprints/create/post/#headers",
+            "text": "Authorization: JWT <JWT Token>  Content-Type: application/json",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/blueprints/create/post/#body",
+            "text": "Key  JSON Value type  Required      name  String  Yes    image  String  Yes    description  String  No",
+            "title": "Body"
+        },
+        {
+            "location": "/endpoints/blueprints/create/post/#returns",
+            "text": "Status code  Data  Comments      201  Blueprint  Blueprint has been created successfully.    400  null  Blueprint with passed image already exists.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/blueprints/create/post/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/blueprints/create/post/#request",
+            "text": "POST /blueprints/create",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/blueprints/create/post/#request-body",
+            "text": "{\n    \"name\": \"foo\",\n    \"description\": \"bar\",\n    \"image\": \"hello-world\"\n}",
+            "title": "Request body"
+        },
+        {
+            "location": "/endpoints/blueprints/create/post/#response-body",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"Blueprint foo has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo\",\n        \"description\": \"bar\",\n        \"image\": \"hello-world\",\n        \"services: [1,2]\n    }\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/blueprints/create/put/",
+            "text": "PUT /blueprints/create\n\n\nCreates or updates a blueprint.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nYes\n\n\n\n\n\n\nimage\n\n\nString\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nBlueprint\n\n\nBlueprint has been created or updated successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nBlueprint with passed image already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPUT /blueprints/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo\",\n    \"description\": \"bar\",\n    \"image\": \"hello-world\"\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Blueprint foo has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo\",\n        \"description\": \"bar\",\n        \"image\": \"hello-world\",\n        \"services: [1,2]\n    }\n}",
+            "title": "PUT"
+        },
+        {
+            "location": "/endpoints/blueprints/create/put/#put-blueprintscreate",
+            "text": "Creates or updates a blueprint.",
+            "title": "PUT /blueprints/create"
+        },
+        {
+            "location": "/endpoints/blueprints/create/put/#headers",
+            "text": "Authorization: JWT <JWT Token>  Content-Type: application/json",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/blueprints/create/put/#body",
+            "text": "Key  JSON Value type  Required      name  String  Yes    image  String  Yes    description  String  No",
+            "title": "Body"
+        },
+        {
+            "location": "/endpoints/blueprints/create/put/#returns",
+            "text": "Status code  Data  Comments      201  Blueprint  Blueprint has been created or updated successfully.    400  null  Blueprint with passed image already exists.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/blueprints/create/put/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/blueprints/create/put/#request",
+            "text": "PUT /blueprints/create",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/blueprints/create/put/#request-body",
+            "text": "{\n    \"name\": \"foo\",\n    \"description\": \"bar\",\n    \"image\": \"hello-world\"\n}",
+            "title": "Request body"
+        },
+        {
+            "location": "/endpoints/blueprints/create/put/#response-body",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"Blueprint foo has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo\",\n        \"description\": \"bar\",\n        \"image\": \"hello-world\",\n        \"services: [1,2]\n    }\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/services/get/",
+            "text": "GET /services\n\n\nRetrieves a list of Services.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nList of Services\n\n\nRetrieval of Services has been successful.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nGET /services\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Services have been retrieved.\",\n    \"error\": null,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"blueprint\": 1,\n            \"name\": \"foo_service\",\n            \"description\": \"A test service\",\n            \"stacks\": [],\n            \"exposed_ports\": [\n                80,\n                8080\n            ],\n            \"mapped_ports\": [\n                \"80:80\"\n            ],\n            \"volumes\": [\n                \"/srv/www:/\"\n            ],\n            \"env\": [\n                \"FOO=BAR\",\n                \"DEBUG=1\"\n            ],\n            \"ip\": \"172.42.0.11\"\n        }\n    ]\n}",
+            "title": "GET"
+        },
+        {
+            "location": "/endpoints/services/get/#get-services",
+            "text": "Retrieves a list of Services.",
+            "title": "GET /services"
+        },
+        {
+            "location": "/endpoints/services/get/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/services/get/#returns",
+            "text": "Status code  Data  Comments      200  List of Services  Retrieval of Services has been successful.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/services/get/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/services/get/#request",
+            "text": "GET /services",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/services/get/#response-body",
+            "text": "{\n    \"status\": 200,\n    \"message\": \"Services have been retrieved.\",\n    \"error\": null,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"blueprint\": 1,\n            \"name\": \"foo_service\",\n            \"description\": \"A test service\",\n            \"stacks\": [],\n            \"exposed_ports\": [\n                80,\n                8080\n            ],\n            \"mapped_ports\": [\n                \"80:80\"\n            ],\n            \"volumes\": [\n                \"/srv/www:/\"\n            ],\n            \"env\": [\n                \"FOO=BAR\",\n                \"DEBUG=1\"\n            ],\n            \"ip\": \"172.42.0.11\"\n        }\n    ]\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/services/id/get/",
+            "text": "GET /services/<_id>\n\n\nRetrieves a specific service according to passed ID.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nService\n\n\nRetrieval of Service successful.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nService with passed name has not been found.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nGET /services/1\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Service foo_service has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"blueprint\": 1,\n        \"name\": \"foo_service\",\n        \"description\": \"A test service\",\n        \"stacks\": [1],\n        \"exposed_ports\": [80,8080],\n        \"mapped_ports\": [\"80:80\"],\n        \"volumes\": [\"/srv/www:/\"],\n        \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n        \"ip\": \"172.42.0.11\"\n    }\n}",
+            "title": "GET"
+        },
+        {
+            "location": "/endpoints/services/id/get/#get-services_id",
+            "text": "Retrieves a specific service according to passed ID.",
+            "title": "GET /services/&lt;_id&gt;"
+        },
+        {
+            "location": "/endpoints/services/id/get/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/services/id/get/#returns",
+            "text": "Status code  Data  Comments      200  Service  Retrieval of Service successful.    400  null  Service with passed name has not been found.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/services/id/get/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/services/id/get/#request",
+            "text": "GET /services/1",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/services/id/get/#response-body",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"Service foo_service has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"blueprint\": 1,\n        \"name\": \"foo_service\",\n        \"description\": \"A test service\",\n        \"stacks\": [1],\n        \"exposed_ports\": [80,8080],\n        \"mapped_ports\": [\"80:80\"],\n        \"volumes\": [\"/srv/www:/\"],\n        \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n        \"ip\": \"172.42.0.11\"\n    }\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/services/id/delete/",
+            "text": "DELETE /services/<_id>\n\n\nDeletes a specific Service according to passed ID.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nnull\n\n\nDeletion of Service successful.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nService with passed name has not been found.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nDELETE /services/1\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Service foo has been deleted.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "DELETE"
+        },
+        {
+            "location": "/endpoints/services/id/delete/#delete-services_id",
+            "text": "Deletes a specific Service according to passed ID.",
+            "title": "DELETE /services/&lt;_id&gt;"
+        },
+        {
+            "location": "/endpoints/services/id/delete/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/services/id/delete/#returns",
+            "text": "Status code  Data  Comments      200  null  Deletion of Service successful.    400  null  Service with passed name has not been found.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/services/id/delete/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/services/id/delete/#request",
+            "text": "DELETE /services/1",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/services/id/delete/#response-body",
+            "text": "{\n    \"status\": 200,\n    \"message\": \"Service foo has been deleted.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/services/create/post/",
+            "text": "POST /services/create\n\n\nCreates a new service.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nThe service name\n\n\nYes\n\n\n\n\n\n\nblueprint\n\n\nInteger\n\n\nThe Blueprint ID this service implements\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nThe service description\n\n\nNo\n\n\n\n\n\n\nexposed_ports\n\n\nArray of integers\n\n\nPorts to be \nexposed\n to other services in stack.\n\n\nNo\n\n\n\n\n\n\nmapped_ports\n\n\nArray of strings\n\n\nPorts to be \nmapped\n between host and service\n\n\nNo\n\n\n\n\n\n\nvolumes\n\n\nArray of strings\n\n\nVolumes to be \nmapped\n between host and service. Only supports file system mapping.\n\n\nNo\n\n\n\n\n\n\nenv\n\n\nArray of strings\n\n\nEnvironment variables to be passed to service\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nService\n\n\nService has been created successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nService with passed name already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /services/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo_service\",\n    \"description\": \"A test service\",\n    \"exposed_ports\": [80,8080],\n    \"mapped_ports\": [\"80:80\"],\n    \"blueprint\": 1,\n    \"volumes\": [\"/srv/www:/\"],\n    \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n    \"stacks\": 1\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Service foo_service has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"blueprint\": 1,\n        \"name\": \"foo_service\",\n        \"description\": \"A test service\",\n        \"stacks\": [1],\n        \"exposed_ports\": [80,8080],\n        \"mapped_ports\": [\"80:80\"],\n        \"volumes\": [\"/srv/www:/\"],\n        \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n        \"ip\": \"172.42.0.11\"\n    }\n}",
+            "title": "POST"
+        },
+        {
+            "location": "/endpoints/services/create/post/#post-servicescreate",
+            "text": "Creates a new service.",
+            "title": "POST /services/create"
+        },
+        {
+            "location": "/endpoints/services/create/post/#headers",
+            "text": "Authorization: JWT <JWT Token>  Content-Type: application/json",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/services/create/post/#body",
+            "text": "Key  JSON Value type  Comment  Required      name  String  The service name  Yes    blueprint  Integer  The Blueprint ID this service implements  Yes    description  String  The service description  No    exposed_ports  Array of integers  Ports to be  exposed  to other services in stack.  No    mapped_ports  Array of strings  Ports to be  mapped  between host and service  No    volumes  Array of strings  Volumes to be  mapped  between host and service. Only supports file system mapping.  No    env  Array of strings  Environment variables to be passed to service  No",
+            "title": "Body"
+        },
+        {
+            "location": "/endpoints/services/create/post/#returns",
+            "text": "Status code  Data  Comments      201  Service  Service has been created successfully.    400  null  Service with passed name already exists.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/services/create/post/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/services/create/post/#request",
+            "text": "POST /services/create",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/services/create/post/#request-body",
+            "text": "{\n    \"name\": \"foo_service\",\n    \"description\": \"A test service\",\n    \"exposed_ports\": [80,8080],\n    \"mapped_ports\": [\"80:80\"],\n    \"blueprint\": 1,\n    \"volumes\": [\"/srv/www:/\"],\n    \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n    \"stacks\": 1\n}",
+            "title": "Request body"
+        },
+        {
+            "location": "/endpoints/services/create/post/#response-body",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"Service foo_service has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"blueprint\": 1,\n        \"name\": \"foo_service\",\n        \"description\": \"A test service\",\n        \"stacks\": [1],\n        \"exposed_ports\": [80,8080],\n        \"mapped_ports\": [\"80:80\"],\n        \"volumes\": [\"/srv/www:/\"],\n        \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n        \"ip\": \"172.42.0.11\"\n    }\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/services/create/put/",
+            "text": "POST /stacks/create\n\n\nCreates or updates a stack.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nThe stack name\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nThe stack description\n\n\nNo\n\n\n\n\n\n\nsubdomain\n\n\nString\n\n\nThe subdomain this stack will be reachable under.\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been created successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPUT /stacks/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"services\": [1]\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "title": "PUT"
+        },
+        {
+            "location": "/endpoints/services/create/put/#post-stackscreate",
+            "text": "Creates or updates a stack.",
+            "title": "POST /stacks/create"
+        },
+        {
+            "location": "/endpoints/services/create/put/#headers",
+            "text": "Authorization: JWT <JWT Token>  Content-Type: application/json",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/services/create/put/#body",
+            "text": "Key  JSON Value type  Comment  Required      name  String  The stack name  Yes    description  String  The stack description  No    subdomain  String  The subdomain this stack will be reachable under.  No",
+            "title": "Body"
+        },
+        {
+            "location": "/endpoints/services/create/put/#returns",
+            "text": "Status code  Data  Comments      201  Stack  Stack has been created successfully.    400  null  Stack with passed name already exists.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/services/create/put/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/services/create/put/#request",
+            "text": "PUT /stacks/create",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/services/create/put/#request-body",
+            "text": "{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"services\": [1]\n}",
+            "title": "Request body"
+        },
+        {
+            "location": "/endpoints/services/create/put/#response-body",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/stacks/get/",
+            "text": "GET /stacks\n\n\nRetrieves a list of stacks.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nList of stacks\n\n\nRetrieval of stacks has been successful.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nGET /stacks\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Stacks have been retrieved.\",\n    \"error\": null,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"foo_stack\",\n            \"description\": \"test stack\",\n            \"subdomain\": \"test.example.com\",\n            \"services\": [\n                1\n            ],\n            \"active\": false,\n            \"created_at\": \"2017-12-16T18:15:12.179471\",\n            \"last_changed\": \"2017-12-16T18:15:12.179471\"\n        }\n    ]\n}",
+            "title": "GET"
+        },
+        {
+            "location": "/endpoints/stacks/get/#get-stacks",
+            "text": "Retrieves a list of stacks.",
+            "title": "GET /stacks"
+        },
+        {
+            "location": "/endpoints/stacks/get/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/stacks/get/#returns",
+            "text": "Status code  Data  Comments      200  List of stacks  Retrieval of stacks has been successful.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/stacks/get/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/stacks/get/#request",
+            "text": "GET /stacks",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/stacks/get/#response-body",
+            "text": "{\n    \"status\": 200,\n    \"message\": \"Stacks have been retrieved.\",\n    \"error\": null,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"foo_stack\",\n            \"description\": \"test stack\",\n            \"subdomain\": \"test.example.com\",\n            \"services\": [\n                1\n            ],\n            \"active\": false,\n            \"created_at\": \"2017-12-16T18:15:12.179471\",\n            \"last_changed\": \"2017-12-16T18:15:12.179471\"\n        }\n    ]\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/stacks/id/get/",
+            "text": "GET /stacks/<_id>\n\n\nRetrieves a specific stack according to passed ID.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nStack\n\n\nRetrieval of stack successful.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name has not been found.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nGET /stacks/1\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been retrieved.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "title": "GET"
+        },
+        {
+            "location": "/endpoints/stacks/id/get/#get-stacks_id",
+            "text": "Retrieves a specific stack according to passed ID.",
+            "title": "GET /stacks/&lt;_id&gt;"
+        },
+        {
+            "location": "/endpoints/stacks/id/get/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/stacks/id/get/#returns",
+            "text": "Status code  Data  Comments      200  Stack  Retrieval of stack successful.    400  null  Stack with passed name has not been found.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/stacks/id/get/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/stacks/id/get/#request",
+            "text": "GET /stacks/1",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/stacks/id/get/#response-body",
+            "text": "{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been retrieved.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/stacks/id/delete/",
+            "text": "DELETE /stacks/<_id>\n\n\nDeletes a specific stack according to passed ID.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nnull\n\n\nDeletion of stack has been successful.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name has not been found.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nDELETE /stacks/1\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been deleted.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "DELETE"
+        },
+        {
+            "location": "/endpoints/stacks/id/delete/#delete-stacks_id",
+            "text": "Deletes a specific stack according to passed ID.",
+            "title": "DELETE /stacks/&lt;_id&gt;"
+        },
+        {
+            "location": "/endpoints/stacks/id/delete/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/stacks/id/delete/#returns",
+            "text": "Status code  Data  Comments      200  null  Deletion of stack has been successful.    400  null  Stack with passed name has not been found.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/stacks/id/delete/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/stacks/id/delete/#request",
+            "text": "DELETE /stacks/1",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/stacks/id/delete/#response-body",
+            "text": "{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been deleted.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/stacks/create/post/",
+            "text": "POST /stacks/create\n\n\nCreates a new stack.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nThe stack name\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nThe stack description\n\n\nNo\n\n\n\n\n\n\nsubdomain\n\n\nString\n\n\nThe subdomain this stack will be reachable under.\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been created successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /stacks/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"services\": [1]\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "title": "POST"
+        },
+        {
+            "location": "/endpoints/stacks/create/post/#post-stackscreate",
+            "text": "Creates a new stack.",
+            "title": "POST /stacks/create"
+        },
+        {
+            "location": "/endpoints/stacks/create/post/#headers",
+            "text": "Authorization: JWT <JWT Token>  Content-Type: application/json",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/stacks/create/post/#body",
+            "text": "Key  JSON Value type  Comment  Required      name  String  The stack name  Yes    description  String  The stack description  No    subdomain  String  The subdomain this stack will be reachable under.  No",
+            "title": "Body"
+        },
+        {
+            "location": "/endpoints/stacks/create/post/#returns",
+            "text": "Status code  Data  Comments      201  Stack  Stack has been created successfully.    400  null  Stack with passed name already exists.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/stacks/create/post/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/stacks/create/post/#request",
+            "text": "POST /stacks/create",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/stacks/create/post/#request-body",
+            "text": "{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"services\": [1]\n}",
+            "title": "Request body"
+        },
+        {
+            "location": "/endpoints/stacks/create/post/#response-body",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/stacks/create/put/",
+            "text": "PUT /stacks/create\n\n\nCreates or updates a stack.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nThe stack name\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nThe stack description\n\n\nNo\n\n\n\n\n\n\nsubdomain\n\n\nString\n\n\nThe subdomain this stack will be reachable under.\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been created successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPUT /stacks/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"services\": [1]\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "title": "PUT"
+        },
+        {
+            "location": "/endpoints/stacks/create/put/#put-stackscreate",
+            "text": "Creates or updates a stack.",
+            "title": "PUT /stacks/create"
+        },
+        {
+            "location": "/endpoints/stacks/create/put/#headers",
+            "text": "Authorization: JWT <JWT Token>  Content-Type: application/json",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/stacks/create/put/#body",
+            "text": "Key  JSON Value type  Comment  Required      name  String  The stack name  Yes    description  String  The stack description  No    subdomain  String  The subdomain this stack will be reachable under.  No",
+            "title": "Body"
+        },
+        {
+            "location": "/endpoints/stacks/create/put/#returns",
+            "text": "Status code  Data  Comments      201  Stack  Stack has been created successfully.    400  null  Stack with passed name already exists.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/stacks/create/put/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/stacks/create/put/#request",
+            "text": "PUT /stacks/create",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/stacks/create/put/#request-body",
+            "text": "{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"services\": [1]\n}",
+            "title": "Request body"
+        },
+        {
+            "location": "/endpoints/stacks/create/put/#response-body",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/post/",
+            "text": "POST /stacks/<_id>/create\n\n\nApplies a stack, generates a \ndocker-compose.yml\n and saves it to disc in \nandes/andes/stacks/<stack_name>\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been applied successfully.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /stacks/1/apply\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been applied.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "POST"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/post/#post-stacks_idcreate",
+            "text": "Applies a stack, generates a  docker-compose.yml  and saves it to disc in  andes/andes/stacks/<stack_name>",
+            "title": "POST /stacks/&lt;_id&gt;/create"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/post/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/post/#returns",
+            "text": "Status code  Data  Comments      201  Stack  Stack has been applied successfully.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/post/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/post/#request",
+            "text": "POST /stacks/1/apply",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/post/#response-body",
+            "text": "{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been applied.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "Response body"
+        }
+    ]
+}
