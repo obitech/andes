@@ -1,5 +1,5 @@
 # POST /services/create
-Creates a new Service.
+Creates a new service.
 
 ## Headers
 * `Authorization: JWT <JWT Token>`
@@ -8,13 +8,13 @@ Creates a new Service.
 ## Body
 Key | JSON Value type | Comment | Required
 ---|---|---|---
-name|String|The Service name|Yes
-blueprint|Integer|The Blueprint ID this Service implements|Yes
-description|String|The Service description|No
+name|String|The service name|Yes
+blueprint|Integer|The Blueprint ID this service implements|Yes
+description|String|The service description|No
 exposed_ports|Array of integers|Ports to be [exposed](https://docs.docker.com/compose/compose-file/#expose) to other services in stack.|No
-mapped_ports|Array of strings|Ports to be [mapped](https://docs.docker.com/compose/compose-file/#ports) between host and Service|No
-volumes|Array of strings|Volumes to be [mapped](https://docs.docker.com/compose/compose-file/#short-syntax-3) between host and Service. Only supports file system mapping.|No
-env|Array of strings|Environment variables to be passed to Service|No
+mapped_ports|Array of strings|Ports to be [mapped](https://docs.docker.com/compose/compose-file/#ports) between host and service|No
+volumes|Array of strings|Volumes to be [mapped](https://docs.docker.com/compose/compose-file/#short-syntax-3) between host and service. Only supports file system mapping.|No
+env|Array of strings|Environment variables to be passed to service|No
 
 
 ## Returns

@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from models.user import UserModel
 from util.response import response
 
+
 class UserRegister(Resource):
   """API resource handling user registration.
 

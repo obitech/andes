@@ -3,6 +3,7 @@ from datetime import datetime
 
 from db import db
 
+
 stack_service_table = db.Table('stack_service_table',
   db.Column('stack_id', db.Integer, db.ForeignKey('stacks.id'), primary_key=True),
   db.Column('service_id', db.Integer, db.ForeignKey('services.id'), primary_key=True))

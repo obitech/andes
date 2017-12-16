@@ -2,6 +2,7 @@ import re
 
 from db import db
 
+
 class ServiceModel(db.Model):
   """Class representing a service
 

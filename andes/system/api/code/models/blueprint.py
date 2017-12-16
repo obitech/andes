@@ -1,5 +1,6 @@
 from db import db
 
+
 class BlueprintModel(db.Model):
   """Class representing a blueprint
 

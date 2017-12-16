@@ -1,5 +1,7 @@
-from db import db
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from db import db
+
 
 class UserModel(db.Model):
   """Class representing an user for the api.

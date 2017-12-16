@@ -4,6 +4,7 @@ from flask_jwt import jwt_required
 from models.blueprint import BlueprintModel
 from util.response import response
 
+
 class BlueprintList(Resource):
   """API resource to display list of saved blueprints."""
 

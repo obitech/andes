@@ -1,4 +1,4 @@
-# Welcome
+# Andes API Documentation
 
 Welcome to Andes' API documentation. For information on classes and functions themselves, please refer to the source for now.
 

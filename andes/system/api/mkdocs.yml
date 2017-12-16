@@ -5,26 +5,37 @@ pages:
   - Home: 'index.md'
   - Endpoint Overview: 'overview.md'
   - Endpoint Reference: 
-    - 'User management':
+    - 'Authentication':
       - '/register':
-        - 'POST': 'endpoints/register/post.md'
+        - 'POST': 'endpoints/user/register/post.md'
       - '/auth': 
-        - 'POST': 'endpoints/auth/post.md'
+        - 'POST': 'endpoints/user/auth/post.md'
     - 'Blueprints':
       - '/blueprints': 
         - 'GET': 'endpoints/blueprints/get.md'
       - '/blueprints/<_id>':
-        - 'GET': 'endpoints/blueprints_id/get.md'
-        - 'DELETE': 'endpoints/blueprints_id/delete.md'
+        - 'GET': 'endpoints/blueprints/id/get.md'
+        - 'DELETE': 'endpoints/blueprints/id/delete.md'
       - '/blueprints/create':
-        - 'POST': 'endpoints/blueprints_create/post.md'
-        - 'PUT': 'endpoints/blueprints_create/put.md'
+        - 'POST': 'endpoints/blueprints/create/post.md'
+        - 'PUT': 'endpoints/blueprints/create/put.md'
     - 'Services':
       - '/services':
         - 'GET': 'endpoints/services/get.md'
       - '/services/<_id>':
-        - 'GET': 'endpoints/services_id/get.md'
-        - 'DELETE': 'endpoints/services_id/delete.md'
+        - 'GET': 'endpoints/services/id/get.md'
+        - 'DELETE': 'endpoints/services/id/delete.md'
       - '/services/create':
-        - 'POST': 'endpoints/services_create/post.md'
-        - 'PUT': 'endpoints/services_create/put.md'
+        - 'POST': 'endpoints/services/create/post.md'
+        - 'PUT': 'endpoints/services/create/put.md'
+    - 'Stacks':
+      - '/stacks':
+        - 'GET': 'endpoints/stacks/get.md'
+      - '/stacks/<_id>':
+        - 'GET': 'endpoints/stacks/id/get.md'
+        - 'DELETE': 'endpoints/stacks/id/delete.md'
+      - '/stacks/create':
+        - 'POST': 'endpoints/stacks/create/post.md'
+        - 'PUT': 'endpoints/stacks/create/put.md'
+      - '/stacks/<_id>/apply':
+        - 'POST': 'endpoints/stacks/id/apply/post.md'
