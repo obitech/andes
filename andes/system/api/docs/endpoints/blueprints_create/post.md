@@ -20,7 +20,7 @@ Status code | Data | Comments
 
 ## Example
 ### Request
-`POST /blueprint/create`
+`POST /blueprints/create`
 ### Request body
 ```json
 {

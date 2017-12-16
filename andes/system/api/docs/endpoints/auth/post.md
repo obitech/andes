@@ -5,10 +5,10 @@ Authenticates a user and returns a JWT token.
 * `Content-Type: application/json`
 
 ## Body
-Key | JSON Value type | Required
+Key | JSON Value type | Comment | Required
 ---|---|---
-username|String|Yes
-password|String|Yes
+username|String|The username to be authenticated|Yes
+password|String|The password of the user|Yes
 
 ## Returns
 Status code | Data | Comments 

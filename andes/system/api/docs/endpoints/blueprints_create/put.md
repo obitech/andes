@@ -1,4 +1,4 @@
-# POST /blueprints/create
+# PUT /blueprints/create
 Creates or updates a blueprint.
 
 ## Headers
@@ -20,7 +20,7 @@ Status code | Data | Comments
 
 ## Example
 ### Request
-`PUT /blueprint/create`
+`PUT /blueprints/create`
 ### Request body
 ```json
 {

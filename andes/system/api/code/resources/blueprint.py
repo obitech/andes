@@ -31,45 +31,8 @@ class BlueprintCreate(Resource):
 
   @jwt_required()
   def post(self):
-    """POST method to create a new blueprint
+    """POST method to create a new blueprint."""
 
-    Headers:
-    - `Authorization: JWT <JWT>`
-    - `Content-Type: application/json`
-
-    Body:
-    - name (str)
-    - description (str, optional)
-    - image (str)
-
-    Returns:
-      201 if blueprint has been successfully created, 400 if blueprint with name
-      already exists.
-
-    Example:
-      Request:
-      POST /blueprints/create
-      {
-        "name": "foo",
-        "description": "bar",
-        "image": "hello-world"
-      }
-
-      Response:
-      {
-      " status": 201,
-        "message": "Blueprint foo has been updated.",
-        "error": null,
-        "data": {
-          "id": 1,
-          "name": "foo",
-          "description": "bar",
-          "image": "hello-world",
-          "services: [1,2]
-        }
-      }
-
-    """
     data = self.parser.parse_args()
 
     if BlueprintModel.find_by_image(data['image']):
@@ -88,44 +51,8 @@ class BlueprintCreate(Resource):
 
   @jwt_required()
   def put(self):
-    """PUT method to create or update a blueprint
-
-    Headers:
-    - `Authorization: JWT <JWT>`
-    - `Content-Type: application/json`
-
-    Body:
-    - name (str)
-    - description (str, optional)
-    - image (str)
-
-    Returns:
-      201 if blueprint has been successfully created or updated.
-
-    Example:
-      Request:
-      PUT /blueprints/create
-      {
-        "name": "foo",
-        "description": "bar",
-        "image": "hello-world"
-      }
-
-      Response:
-      {
-      " status": 201,
-        "message": "Blueprint foo has been updated.",
-        "error": null,
-        "data": {
-          "id": 1,
-          "name": "foo",
-          "description": "bar",
-          "image": "hello-world",
-          "services: [1,2]
-        }
-      }
-
-    """    
+    """PUT method to create or update a blueprint."""    
+    
     data = self.parser.parse_args()
 
     blueprint = BlueprintModel.find_by_image(data['image'])
@@ -148,7 +75,7 @@ class BlueprintCreate(Resource):
 
 class Blueprint(Resource):
   """API resource to retrieve or delete a specific blueprint."""
-  
+
   @jwt_required()
   def get(self, _id):
     """GET method to retrieve a blueprint by ID."""

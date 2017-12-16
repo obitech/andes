@@ -3,17 +3,28 @@ repo_url: https://github.com/obitech/andes
 
 pages:
   - Home: 'index.md'
-  - Overview: 'overview.md'
-  - Endpoints: 
-    - '/register':
-      - 'POST': 'endpoints/register/post.md'
-    - '/auth': 
-      - 'POST': 'endpoints/auth/post.md'
-    - '/blueprints': 
-      - 'GET': 'endpoints/blueprints/get.md'
-    - '/blueprints/<_id>':
-      - 'GET': 'endpoints/blueprints_id/get.md'
-      - 'DELETE': 'endpoints/blueprints_id/delete.md'
-    - '/blueprints/create':
-      - 'POST': 'endpoints/blueprints_create/post.md'
-      - 'PUT': 'endpoints/blueprints_create/put.md'
+  - Endpoint Overview: 'overview.md'
+  - Endpoint Reference: 
+    - 'User management':
+      - '/register':
+        - 'POST': 'endpoints/register/post.md'
+      - '/auth': 
+        - 'POST': 'endpoints/auth/post.md'
+    - 'Blueprints':
+      - '/blueprints': 
+        - 'GET': 'endpoints/blueprints/get.md'
+      - '/blueprints/<_id>':
+        - 'GET': 'endpoints/blueprints_id/get.md'
+        - 'DELETE': 'endpoints/blueprints_id/delete.md'
+      - '/blueprints/create':
+        - 'POST': 'endpoints/blueprints_create/post.md'
+        - 'PUT': 'endpoints/blueprints_create/put.md'
+    - 'Services':
+      - '/services':
+        - 'GET': 'endpoints/services/get.md'
+      - '/services/<_id>':
+        - 'GET': 'endpoints/services_id/get.md'
+        - 'DELETE': 'endpoints/services_id/delete.md'
+      - '/services/create':
+        - 'POST': 'endpoints/services_create/post.md'
+        - 'PUT': 'endpoints/services_create/put.md'

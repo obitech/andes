@@ -7,7 +7,7 @@ Retrieves a specific blueprint according to passed ID.
 Status code | Data | Comments 
 ---|---|---
 200|Blueprint|Retrieval of Blueprint successful.
-400|null|Blueprint not found.
+400|null|Blueprint with passed name has not been found.
 
 ## Example
 ### Request
