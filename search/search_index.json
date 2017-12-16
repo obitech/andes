@@ -492,13 +492,13 @@
         },
         {
             "location": "/endpoints/services/create/put/",
-            "text": "POST /stacks/create\n\n\nCreates or updates a stack.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nThe stack name\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nThe stack description\n\n\nNo\n\n\n\n\n\n\nsubdomain\n\n\nString\n\n\nThe subdomain this stack will be reachable under.\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been created successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPUT /stacks/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"services\": [1]\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "text": "PUT /services/create\n\n\nCreates or updates a service.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nThe service name\n\n\nYes\n\n\n\n\n\n\nblueprint\n\n\nInteger\n\n\nThe Blueprint ID this service implements\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nThe service description\n\n\nNo\n\n\n\n\n\n\nexposed_ports\n\n\nArray of integers\n\n\nPorts to be \nexposed\n to other services in stack.\n\n\nNo\n\n\n\n\n\n\nmapped_ports\n\n\nArray of strings\n\n\nPorts to be \nmapped\n between host and service\n\n\nNo\n\n\n\n\n\n\nvolumes\n\n\nArray of strings\n\n\nVolumes to be \nmapped\n between host and service. Only supports file system mapping.\n\n\nNo\n\n\n\n\n\n\nenv\n\n\nArray of strings\n\n\nEnvironment variables to be passed to service\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nService\n\n\nService has been created or updated successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nService with passed name already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPUT /services/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo_service\",\n    \"description\": \"A test service\",\n    \"exposed_ports\": [80,8080],\n    \"mapped_ports\": [\"80:80\"],\n    \"blueprint\": 1,\n    \"volumes\": [\"/srv/www:/\"],\n    \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n    \"stacks\": 1\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Service foo_service has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"blueprint\": 1,\n        \"name\": \"foo_service\",\n        \"description\": \"A test service\",\n        \"stacks\": [1],\n        \"exposed_ports\": [80,8080],\n        \"mapped_ports\": [\"80:80\"],\n        \"volumes\": [\"/srv/www:/\"],\n        \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n        \"ip\": \"172.42.0.11\"\n    }\n}",
             "title": "PUT"
         },
         {
-            "location": "/endpoints/services/create/put/#post-stackscreate",
-            "text": "Creates or updates a stack.",
-            "title": "POST /stacks/create"
+            "location": "/endpoints/services/create/put/#put-servicescreate",
+            "text": "Creates or updates a service.",
+            "title": "PUT /services/create"
         },
         {
             "location": "/endpoints/services/create/put/#headers",
@@ -507,12 +507,12 @@
         },
         {
             "location": "/endpoints/services/create/put/#body",
-            "text": "Key  JSON Value type  Comment  Required      name  String  The stack name  Yes    description  String  The stack description  No    subdomain  String  The subdomain this stack will be reachable under.  No",
+            "text": "Key  JSON Value type  Comment  Required      name  String  The service name  Yes    blueprint  Integer  The Blueprint ID this service implements  Yes    description  String  The service description  No    exposed_ports  Array of integers  Ports to be  exposed  to other services in stack.  No    mapped_ports  Array of strings  Ports to be  mapped  between host and service  No    volumes  Array of strings  Volumes to be  mapped  between host and service. Only supports file system mapping.  No    env  Array of strings  Environment variables to be passed to service  No",
             "title": "Body"
         },
         {
             "location": "/endpoints/services/create/put/#returns",
-            "text": "Status code  Data  Comments      201  Stack  Stack has been created successfully.    400  null  Stack with passed name already exists.",
+            "text": "Status code  Data  Comments      201  Service  Service has been created or updated successfully.    400  null  Service with passed name already exists.",
             "title": "Returns"
         },
         {
@@ -522,17 +522,17 @@
         },
         {
             "location": "/endpoints/services/create/put/#request",
-            "text": "PUT /stacks/create",
+            "text": "PUT /services/create",
             "title": "Request"
         },
         {
             "location": "/endpoints/services/create/put/#request-body",
-            "text": "{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"services\": [1]\n}",
+            "text": "{\n    \"name\": \"foo_service\",\n    \"description\": \"A test service\",\n    \"exposed_ports\": [80,8080],\n    \"mapped_ports\": [\"80:80\"],\n    \"blueprint\": 1,\n    \"volumes\": [\"/srv/www:/\"],\n    \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n    \"stacks\": 1\n}",
             "title": "Request body"
         },
         {
             "location": "/endpoints/services/create/put/#response-body",
-            "text": "{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"Service foo_service has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"blueprint\": 1,\n        \"name\": \"foo_service\",\n        \"description\": \"A test service\",\n        \"stacks\": [1],\n        \"exposed_ports\": [80,8080],\n        \"mapped_ports\": [\"80:80\"],\n        \"volumes\": [\"/srv/www:/\"],\n        \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n        \"ip\": \"172.42.0.11\"\n    }\n}",
             "title": "Response body"
         },
         {

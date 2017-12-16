@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         <meta name="author" content="obitech">
-        
+        <link rel="canonical" href="https://obitech.github.io/andes/endpoints/services/create/put/">
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
         <title>PUT - Andes API documentation</title>
         <link href="../../../../css/bootstrap-custom.min.css" rel="stylesheet">
@@ -253,7 +253,7 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#post-stackscreate">POST /stacks/create</a></li>
+        <li class="main active"><a href="#put-servicescreate">PUT /services/create</a></li>
             <li><a href="#headers">Headers</a></li>
             <li><a href="#body">Body</a></li>
             <li><a href="#returns">Returns</a></li>
@@ -262,8 +262,8 @@
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="post-stackscreate">POST /stacks/create</h1>
-<p>Creates or updates a stack.</p>
+<h1 id="put-servicescreate">PUT /services/create</h1>
+<p>Creates or updates a service.</p>
 <h2 id="headers">Headers</h2>
 <ul>
 <li><code>Authorization: JWT &lt;JWT Token&gt;</code></li>
@@ -283,19 +283,43 @@
 <tr>
 <td>name</td>
 <td>String</td>
-<td>The stack name</td>
+<td>The service name</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>blueprint</td>
+<td>Integer</td>
+<td>The Blueprint ID this service implements</td>
 <td>Yes</td>
 </tr>
 <tr>
 <td>description</td>
 <td>String</td>
-<td>The stack description</td>
+<td>The service description</td>
 <td>No</td>
 </tr>
 <tr>
-<td>subdomain</td>
-<td>String</td>
-<td>The subdomain this stack will be reachable under.</td>
+<td>exposed_ports</td>
+<td>Array of integers</td>
+<td>Ports to be <a href="https://docs.docker.com/compose/compose-file/#expose">exposed</a> to other services in stack.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>mapped_ports</td>
+<td>Array of strings</td>
+<td>Ports to be <a href="https://docs.docker.com/compose/compose-file/#ports">mapped</a> between host and service</td>
+<td>No</td>
+</tr>
+<tr>
+<td>volumes</td>
+<td>Array of strings</td>
+<td>Volumes to be <a href="https://docs.docker.com/compose/compose-file/#short-syntax-3">mapped</a> between host and service. Only supports file system mapping.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>env</td>
+<td>Array of strings</td>
+<td>Environment variables to be passed to service</td>
 <td>No</td>
 </tr>
 </tbody>
@@ -312,42 +336,48 @@
 <tbody>
 <tr>
 <td>201</td>
-<td>Stack</td>
-<td>Stack has been created successfully.</td>
+<td>Service</td>
+<td>Service has been created or updated successfully.</td>
 </tr>
 <tr>
 <td>400</td>
 <td>null</td>
-<td>Stack with passed name already exists.</td>
+<td>Service with passed name already exists.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="example">Example</h2>
 <h3 id="request">Request</h3>
-<p><code>PUT /stacks/create</code></p>
+<p><code>PUT /services/create</code></p>
 <h3 id="request-body">Request body</h3>
 <pre><code class="json">{
-    &quot;name&quot;: &quot;foo_stack&quot;,
-    &quot;description&quot;: &quot;test stack&quot;,
-    &quot;subdomain&quot;: &quot;test.example.com&quot;,
-    &quot;services&quot;: [1]
+    &quot;name&quot;: &quot;foo_service&quot;,
+    &quot;description&quot;: &quot;A test service&quot;,
+    &quot;exposed_ports&quot;: [80,8080],
+    &quot;mapped_ports&quot;: [&quot;80:80&quot;],
+    &quot;blueprint&quot;: 1,
+    &quot;volumes&quot;: [&quot;/srv/www:/&quot;],
+    &quot;env&quot;: [&quot;FOO=BAR&quot;,&quot;DEBUG=1&quot;],
+    &quot;stacks&quot;: 1
 }
 </code></pre>
 
 <h3 id="response-body">Response body</h3>
 <pre><code class="json">{
     &quot;status&quot;: 201,
-    &quot;message&quot;: &quot;Stack foo_stack has been updated.&quot;,
+    &quot;message&quot;: &quot;Service foo_service has been updated.&quot;,
     &quot;error&quot;: null,
     &quot;data&quot;: {
         &quot;id&quot;: 1,
-        &quot;name&quot;: &quot;foo_stack&quot;,
-        &quot;description&quot;: &quot;test stack&quot;,
-        &quot;subdomain&quot;: &quot;test.example.com&quot;,
-        &quot;services&quot;: [1],
-        &quot;active&quot;: false,
-        &quot;created_at&quot;: &quot;2017-12-14T09:21:50.503274&quot;,
-        &quot;last_changed&quot;: &quot;2017-12-14T09:21:50.503274&quot;
+        &quot;blueprint&quot;: 1,
+        &quot;name&quot;: &quot;foo_service&quot;,
+        &quot;description&quot;: &quot;A test service&quot;,
+        &quot;stacks&quot;: [1],
+        &quot;exposed_ports&quot;: [80,8080],
+        &quot;mapped_ports&quot;: [&quot;80:80&quot;],
+        &quot;volumes&quot;: [&quot;/srv/www:/&quot;],
+        &quot;env&quot;: [&quot;FOO=BAR&quot;,&quot;DEBUG=1&quot;],
+        &quot;ip&quot;: &quot;172.42.0.11&quot;
     }
 }
 </code></pre></div>
