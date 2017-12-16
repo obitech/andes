@@ -1,5 +1,5 @@
-# POST /stacks/create
-Creates or updates a stack.
+# PUT /services/create
+Creates or updates a service.
 
 ## Headers
 * `Authorization: JWT <JWT Token>`
@@ -8,43 +8,54 @@ Creates or updates a stack.
 ## Body
 Key | JSON Value type | Comment | Required
 ---|---|---|---
-name|String|The stack name|Yes
-description|String|The stack description|No
-subdomain|String|The subdomain this stack will be reachable under.|No
+name|String|The service name|Yes
+blueprint|Integer|The Blueprint ID this service implements|Yes
+description|String|The service description|No
+exposed_ports|Array of integers|Ports to be [exposed](https://docs.docker.com/compose/compose-file/#expose) to other services in stack.|No
+mapped_ports|Array of strings|Ports to be [mapped](https://docs.docker.com/compose/compose-file/#ports) between host and service|No
+volumes|Array of strings|Volumes to be [mapped](https://docs.docker.com/compose/compose-file/#short-syntax-3) between host and service. Only supports file system mapping.|No
+env|Array of strings|Environment variables to be passed to service|No
+
 
 ## Returns
 Status code | Data | Comments 
 ---|---|---
-201|Stack|Stack has been created successfully.
-400|null|Stack with passed name already exists.
+201|Service|Service has been created or updated successfully.
+400|null|Service with passed name already exists.
 
 ## Example
 ### Request
-`PUT /stacks/create`
+`PUT /services/create`
 ### Request body
 ```json
 {
-    "name": "foo_stack",
-    "description": "test stack",
-    "subdomain": "test.example.com",
-    "services": [1]
+    "name": "foo_service",
+    "description": "A test service",
+    "exposed_ports": [80,8080],
+    "mapped_ports": ["80:80"],
+    "blueprint": 1,
+    "volumes": ["/srv/www:/"],
+    "env": ["FOO=BAR","DEBUG=1"],
+    "stacks": 1
 }
 ```
 ### Response body
 ```json
 {
     "status": 201,
-    "message": "Stack foo_stack has been updated.",
+    "message": "Service foo_service has been updated.",
     "error": null,
     "data": {
         "id": 1,
-        "name": "foo_stack",
-        "description": "test stack",
-        "subdomain": "test.example.com",
-        "services": [1],
-        "active": false,
-        "created_at": "2017-12-14T09:21:50.503274",
-        "last_changed": "2017-12-14T09:21:50.503274"
+        "blueprint": 1,
+        "name": "foo_service",
+        "description": "A test service",
+        "stacks": [1],
+        "exposed_ports": [80,8080],
+        "mapped_ports": ["80:80"],
+        "volumes": ["/srv/www:/"],
+        "env": ["FOO=BAR","DEBUG=1"],
+        "ip": "172.42.0.11"
     }
 }
 ```

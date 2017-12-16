@@ -2,8 +2,8 @@
 
 Welcome to Andes' API documentation. For information on classes and functions themselves, please refer to the source for now.
 
-* [Github repo](https://hub.docker.com/r/obitech/andes-api/)
-* [Docker image](https://hub.docker.com/r/obitech/andes-api/)
+* [Github repo](https://github.com/obitech/andes)
+* [Docker image](https://hub.docker.com/r/obitech/andes/)
 
 ## General
 
