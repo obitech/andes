@@ -1,5 +1,7 @@
 site_name: Andes API documentation
 repo_url: https://github.com/obitech/andes
+site_description: "Andes API documentation"
+site_author: "obitech"
 
 pages:
   - Home: 'index.md'
