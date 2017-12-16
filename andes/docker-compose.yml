@@ -1,7 +1,7 @@
 version: '3'
 services:
   andes:
-    image: obitech/andes-api:0.2.1
+    image: obitech/andes:latest
     expose:
       - "5000"
       - "5001"

@@ -10,7 +10,6 @@ COPY system/api/*.ini /andes/api
 WORKDIR /andes/api
 
 RUN apt-get update \
-    && apt-get upgrade -y \
     && apt-get install build-essential -y  \
     && pip3 install -r requirements_container.txt \
     && apt-get clean
