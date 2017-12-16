@@ -6,7 +6,7 @@
 ### Andes related ###
 *.db
 andes/stacks/*/
-andes/system/api/docs/site
+docs/site
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
