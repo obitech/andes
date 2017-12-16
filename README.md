@@ -1,4 +1,5 @@
 # Andes
+[![Docker Build Status](https://img.shields.io/docker/build/obitech/andes.svg)](https://hub.docker.com/r/obitech/andes/builds/) [![Docker Pulls](https://img.shields.io/docker/pulls/obitech/andes.svg)](https://hub.docker.com/r/obitech/andes/)
 
 The ``master`` branch is used for development, however you can already run it as a container.
 
