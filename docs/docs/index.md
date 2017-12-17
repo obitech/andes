@@ -68,7 +68,6 @@ Between the docker and Caddy setup, the script will also create a user defined d
 Check with `docker container ls` if you have the andes and Caddy container up and running. The API will will be reachable under your specified hostname + `/api`
 
 ## Using the API
-### Response format
 
 Responses return, in general, a JSON object with metadata and (if applicable) the actual data or an error message in the following format:
 
@@ -80,11 +79,15 @@ Responses return, in general, a JSON object with metadata and (if applicable) th
     "error": <...>,
     "data": <...>
 }
+
+For more information on the response format, have a look at the endpoint reference.
+
 ```
 
-## Authentication
+### Authentication
 
 If you're starting from scratch you need to create a user first:
+
 ```
 # Endpoint
 POST /register
