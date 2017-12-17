@@ -15,7 +15,7 @@ NC='\033[0m'
 TLS_ENABLED=false
 HOSTNAME=localhost
 ANDES_DIR=/home/$USER/andes
-COMPOSE_VERSION=1.16.1
+COMPOSE_VERSION=1.17.1
 EMAIL=
 DOCKER_SETUP=true
 CADDY_SETUP=true
@@ -32,7 +32,7 @@ usage() {
     -d                     Skip Docker install
     -H <hostname>          Specify hostname for caddy to be reached under. Defaults to localhost
     -e <email>             Your email address needed for TLS certificates. If omitted, Caddy will run without TLS
-    -V <version>           Docker-compose version. Defaults to 1.16.1"
+    -V <version>           Docker-compose version. Defaults to 1.17.1"
 
 }
 
