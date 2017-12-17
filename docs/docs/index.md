@@ -9,7 +9,7 @@ Welcome to Andes' API documentation. For information on classes and functions th
 
 Andes offers an easy-to-use way to deploy multiple different container setups (stacks) on the same host. For this there are three parts:
 
-* [Caddy](https://gocaddy.com) acting as a reverse proxy handling requests to your different stacks.
+* [Caddy](https://caddyserver.com) acting as a reverse proxy handling requests to your different stacks.
 * Andes API to create and manage your stacks and build your docker-compose files.
 * Docker-compose bringing up your previously defined stacks as docker-compose.yml files.
 
@@ -107,7 +107,7 @@ Now you need to authenticate:
 # Endpoint
 POST /auth
 
-#Header
+# Header
 Content-Type: application/json
 
 # Body

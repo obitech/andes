@@ -1,7 +1,7 @@
 # Andes
 [![Docker Build Status](https://img.shields.io/docker/build/obitech/andes.svg)](https://hub.docker.com/r/obitech/andes/builds/) [![Docker Pulls](https://img.shields.io/docker/pulls/obitech/andes.svg)](https://hub.docker.com/r/obitech/andes/)
 
-Andes is a self-hosted management tool for creating and deploying simple container "stacks" on a single host, reachable under a specific subdomain and with full TLS encryption powered by Let's Encrypt. Similiar to [Traefik](https://traefik.io) it allows multiple container environments to be reachable through a single webserver acting as reverse proxy, in this case [Caddy](https://gocaddy.com).
+Andes is a self-hosted management tool for creating and deploying simple container "stacks" on a single host, reachable under a specific subdomain and with full TLS encryption powered by Let's Encrypt. Similiar to [Traefik](https://traefik.io) it allows multiple container environments to be reachable through a single webserver acting as reverse proxy, in this case [Caddy](https://caddyserver.com).
 
 * [Documentation](https://obitech.github.io/andes/)
 
