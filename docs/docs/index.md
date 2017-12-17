@@ -25,7 +25,7 @@ Note that Andes' stacks have nothing to do with the `docker stack` command in sw
 
 ## Installation
 
-After you've cloned the github repo, the best way to setup andes is to run the bootstrap script in `andes/andes`. This installation has been tested on Debian, Ubuntu and macOS.
+After you've cloned the github repo, the best way to setup andes is to run the bootstrap script. This installation has been tested on Debian, Ubuntu and macOS.
 
 ### `bootstrap.sh`
 
