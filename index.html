@@ -255,7 +255,8 @@
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#andes-api-documentation">Andes API Documentation</a></li>
             <li><a href="#general">General</a></li>
-            <li><a href="#authentication">Authentication</a></li>
+            <li><a href="#installation">Installation</a></li>
+            <li><a href="#using-the-api">Using the API</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -267,6 +268,87 @@
 <li><a href="https://hub.docker.com/r/obitech/andes/">Docker image</a></li>
 </ul>
 <h2 id="general">General</h2>
+<p>Andes offers an easy-to-use way to deploy multiple different container setups (stacks) on the same host. For this there are three parts:</p>
+<ul>
+<li><a href="https://gocaddy.com">Caddy</a> acting as a reverse proxy handling requests to your different stacks.</li>
+<li>Andes API to create and manage your stacks and build your docker-compose files.</li>
+<li>Docker-compose bringing up your previously defined stacks as docker-compose.yml files.</li>
+</ul>
+<p>Normally the workflow looks like that:</p>
+<ol>
+<li>You register a blueprint, which is essentially a docker image on docker hub, or one you created locally.</li>
+<li>From a blueprint you create a service, which is defining your container environment</li>
+<li>You add one or more services to a stack.</li>
+<li>You apply a stack, which will create the <code>docker-compose.yml</code> and specific <code>Caddyfile</code> for it.</li>
+<li>You launch your stack and Caddy will serve it on your specified subdomain.</li>
+</ol>
+<p>Note that Andes' stacks have nothing to do with the <code>docker stack</code> command in swarm mode.</p>
+<h2 id="installation">Installation</h2>
+<p>After you've cloned the github repo, the best way to setup andes is to run the bootstrap script. This installation has been tested on Debian, Ubuntu and macOS.</p>
+<h3 id="bootstrapsh"><code>bootstrap.sh</code></h3>
+<p>The script accepts the following arguments:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-h</code></td>
+<td>Displays usage information</td>
+</tr>
+<tr>
+<td><code>-c</code></td>
+<td>Skips Caddy installation and setup. Use this flag if you only want to install docker and docker-compose</td>
+</tr>
+<tr>
+<td><code>-d</code></td>
+<td>Skips docker and docker-compose installation. Use this flag if you have already docker installed and just want to setup Caddy for Andes.</td>
+</tr>
+<tr>
+<td><code>-H &lt;hostname&gt;</code></td>
+<td>Specifies the hostname Caddy to be reached under. Defaults to localhost</td>
+</tr>
+<tr>
+<td><code>-e &lt;email&gt;</code></td>
+<td>Your email address which is required to setup Let's Encrypt TLS certificates. Without this, TLS can not be used.</td>
+</tr>
+<tr>
+<td><code>-V &lt;version&gt;</code></td>
+<td>The docker-compose version to be installed. Defaults to 1.17.1</td>
+</tr>
+</tbody>
+</table>
+<h4 id="docker-installation">Docker installation</h4>
+<p>For the docker installation, the script follows the procedure from the official docker documentation</p>
+<ol>
+<li>Remove deprecated docker packages</li>
+<li>Install additional packages, namely<ul>
+<li><code>apt-transport-https</code></li>
+<li><code>ca-certificates</code></li>
+<li><code>curl</code></li>
+<li><code>software-properties-common</code></li>
+<li><code>bash-completion</code></li>
+</ul>
+</li>
+<li>Add and verify docker's official GPG key</li>
+<li>Add and install the <code>docker-ce</code> repository.</li>
+<li>Add your user to the docker group</li>
+<li>Enable the docker.service</li>
+<li>Curl and install docker-compose, plus add it to <code>bash-completion</code></li>
+</ol>
+<p>Between the docker and Caddy setup, the script will also create a user defined docker network with subnet <code>172.42.0.0./16</code> where Caddy and the deployed containers will run in.</p>
+<h4 id="caddy-setup">Caddy setup</h4>
+<ol>
+<li>Create a <code>Caddyfile</code> in <code>andes/andes/system</code> according to the previously passed arguments</li>
+<li>Pull the <a href="https://hub.docker.com/r/abiosoft/caddy">Caddy container image</a></li>
+<li>Pull the <a href="https://hub.docker.com/r/obitech/andes">Andes API container image</a></li>
+<li>Bring up the <code>docker-compose.yml</code> in <code>andes/andes/system</code>.</li>
+</ol>
+<p>Check with <code>docker container ls</code> if you have the andes and Caddy container up and running. The API will will be reachable under your specified hostname + <code>/api</code></p>
+<h2 id="using-the-api">Using the API</h2>
 <p>Responses return, in general, a JSON object with metadata and (if applicable) the actual data or an error message in the following format:</p>
 <pre><code class="json"># Sample format
 {
@@ -275,9 +357,12 @@
     &quot;error&quot;: &lt;...&gt;,
     &quot;data&quot;: &lt;...&gt;
 }
+
+For more information on the response format, have a look at the endpoint reference.
+
 </code></pre>
 
-<h2 id="authentication">Authentication</h2>
+<h3 id="authentication">Authentication</h3>
 <p>If you're starting from scratch you need to create a user first:</p>
 <pre><code># Endpoint
 POST /register
@@ -408,5 +493,5 @@ Authorization: JWT superSecretToken
 
 <!--
 MkDocs version : 0.17.2
-Build Date UTC : 2017-12-16 20:49:55
+Build Date UTC : 2017-12-17 13:19:31
 -->
