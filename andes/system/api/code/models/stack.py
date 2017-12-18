@@ -18,6 +18,7 @@ class StackModel(db.Model):
     name (str): The name of the stack.
     description (str): The description of the stack.
     subdomain (str): The subdomain a stack is reachable under.
+    email (str): The email needed for Caddy to create TLS certificates for this subdomain.
     active (bool): The status if this stack is currently running or not.
     created_at (str): Indicating the creation of the stack.
     last_changed (str): Indictaion when this stack has been last modified.
@@ -29,13 +30,14 @@ class StackModel(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(32), nullable=False)
   description = db.Column(db.String(256))
-  subdomain = db.Column(db.String(128)) 
+  subdomain = db.Column(db.String(128))
+  email = db.Column(db.String(64))
   active = db.Column(db.Boolean)
   created_at = db.Column(db.DateTime, default=datetime.now())
   last_changed = db.Column(db.DateTime, default=datetime.now())
   services = db.relationship('ServiceModel', secondary=stack_service_table, backref="stacks", lazy=True)
 
-  def __init__(self, name, description=None, subdomain=None):
+  def __init__(self, name, email= None, description=None, subdomain=None):
     """Stack initializiation method
 
     Args:
@@ -47,6 +49,7 @@ class StackModel(db.Model):
     self.name = name
     self.active = False
     self.description = description
+    self.email = email
     self.subdomain = subdomain
     self.created_at = datetime.now()
     self.last_changed = self.created_at
@@ -63,11 +66,32 @@ class StackModel(db.Model):
       'name': self.name,
       'description': self.description,
       'subdomain': self.subdomain,
+      'email': self.email,
       'services': [x.id for x in self.services],
       'active': self.active,
       'created_at': self.format_date(self.created_at),
       'last_changed': self.format_date(self.last_changed),
     }
+
+  @classmethod
+  def valid_email(cls, email):
+    """Checks with regex if provided email is valid
+
+    Args:
+      email (str): The email to be checked.
+
+    Returns:
+      bool: True if correct, False if not.
+
+    """
+
+    try:
+      if re.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$").match(email):
+        return True
+    except:
+      pass
+
+    return False
 
   @classmethod
   def valid_subdomain(cls, domain):

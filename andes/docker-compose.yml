@@ -22,7 +22,7 @@ services:
     volumes:
       - "./system/Caddyfile:/etc/Caddyfile"
       - "./system/certs:/root/.caddy"
-      - "./system/vhosts:/etc/caddy/sites-enabled"
+      - "./stacks/conf.d:/etc/caddy/sites-enabled"
       - "./system/frontend:/srv/www"
     links:
       - andes

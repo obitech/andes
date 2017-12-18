@@ -21,36 +21,36 @@ class StackList(Resource):
 
 
 class StackCreate(Resource):
-  """API resource to create or update stacks.
-
-  The passed subdomain will be checked with regex if it's valid.
-
-  """
+  """API resource to create or update stacks."""
 
   parser = reqparse.RequestParser()
   parser.add_argument('name',
-    type = str,
-    required = True,
-    help = "The name of the stack is required.")
+                      type = str,
+                      required = True,
+                      help = "The name of the stack is required.")
   parser.add_argument('description',
-    type = str,
-    help = "The description of the stack.")
+                      type = str,
+                      help = "The description of the stack.")
   parser.add_argument('subdomain',
-    type = str,
-    help = "The subdomain this stack should reside under.")
+                      type = str,
+                      help = "The subdomain this stack should reside under.")
   parser.add_argument('services',
-    type = int,
-    action = 'append',
-    help = "Service IDs are optional.")
+                      type = int,
+                      action = 'append',
+                      help = "Service IDs are optional.")
+  parser.add_argument('email',
+                      type = str,
+                      help = "The email for TLS certificate generation is optional.")
 
   def check_args(self, data):
     """Helper method to check various passed payload arguments
 
     Args:
-      data (:obj:`dict`): Request payload with parsed arguments.
+      data (:obj:`dict`): Request payload with parsed arguments. Arguments to be checked:
         data['name'] (str): Name of the stack.
         data['description'] (str): Description for the stack.
         data['subdomain'] (str): Subdomain of the stack.
+        data['email'] (str): The email needed for Caddy to grab a TLS certificate.
 
     Returns:
       dict: If all checks pass, dict of type {'code': 200}. 
@@ -58,19 +58,24 @@ class StackCreate(Resource):
         message will be directly fed into a response.
 
     """    
-    # Regex check for subdomain
-    if data['subdomain'] and not StackModel.valid_subdomain(data['subdomain']):
-      return {'code': 400, 'error': f"Invalid subdomain {data['subdomain']}"}
 
-    # Regex check for name
+    # Regex check for valid name
     if not StackModel.valid_name(data['name']):
       return {'code': 400, 'error': f"Invalid stack name {data['name']}."}
+
+    # Regex check for valid subdomain
+    if data['subdomain'] and not StackModel.valid_subdomain(data['subdomain']):
+      return {'code': 400, 'error': f"Invalid subdomain {data['subdomain']}."}
+
+    # Regex check for valid email
+    if data['email'] and not StackModel.valid_email(data['email']):
+      return {'code': 400, 'error': f"Email {data['email']} is invalid."}
 
     return {'code': 200}
 
   @jwt_required()
   def post(self):
-    """POST method to create a new service."""
+    """POST method to create a new stack."""
 
     data = self.parser.parse_args()
 
@@ -84,7 +89,8 @@ class StackCreate(Resource):
 
     stack = StackModel(name = data['name'],
                        description = data['description'],
-                       subdomain = data['subdomain'])
+                       subdomain = data['subdomain'],
+                       email = data['email'])
 
     if data['services'] and data['services'] != [None]:
       for x in data['services']:
@@ -103,7 +109,7 @@ class StackCreate(Resource):
 
   @jwt_required()
   def put(self):
-    """PUT method to create or update a service."""
+    """PUT method to create or update a stack."""
 
     data = self.parser.parse_args()
 
@@ -120,9 +126,8 @@ class StackCreate(Resource):
       stack.subdomain = data['subdomain']
       stack.last_changed = datetime.now()
 
-      
+      # Update m:n-Table for stacks:services
       if data['services'] and data['services'] != [None]:
-        print(data['services'])
         # Get sets of services which need to be updated and deleted
         old = {x.id for x in stack.services}
         new = set(data['services'])
@@ -147,7 +152,8 @@ class StackCreate(Resource):
     else:
       stack = StackModel(name = data['name'],
                          description = data['description'],
-                         subdomain = data['subdomain'])
+                         subdomain = data['subdomain'],
+                         email = data['email'])
 
       if data['services'] and data['services'] != [None]:
         for x in data['services']:
@@ -262,6 +268,8 @@ class StackApply(Resource):
 
     if not path.exists(project_folder):
       makedirs(project_folder)
+
+    # TODO: Create conf.d folder
 
     data = self.get_compose_data(stack.services)
 
