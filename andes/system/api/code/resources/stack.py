@@ -7,7 +7,7 @@ from models.blueprint import BlueprintModel
 from models.service import ServiceModel
 from models.stack import StackModel
 from util.response import response
-from util.compose import get_compose, create_compose
+from util.confgen import get_compose, create_file, get_compose_data, get_caddyconf
 
 
 class StackList(Resource):
@@ -224,81 +224,50 @@ class Stack(Resource):
 
 
 class StackApply(Resource):
-  """API resource to create or update the stack's project files
-
-  Attributes:
-    stacks_folder (str): The location of where to save the project files.
-
-  """
-
-  stacks_folder = "../../stacks"
-
-  def get_compose_data(self, services):
-    """Helper method to pass the necessary data to the function creating the string which ends up as the 
-      docker-compose.yml.
-
-    Args:
-      services (:obj:`list` of :obj:`service`): A list with the services this stack is defined for.
-
-    Returns:
-      dict: A dictionary with the necessary information, None if exception is thrown.
-
-    """
-
-    data = []
-    try:
-      for service in services:
-        tmp = {}
-
-        tmp['name'] = service.name
-        tmp['image'] = BlueprintModel.find_by_id(service.blueprint_id).image
-        tmp['exposed_ports'] = ServiceModel.port_list(service.exposed_ports)
-        tmp['ip'] = service.ip
-
-        if service.volumes:
-          tmp['volumes'] = ServiceModel.split_string(service.volumes)
-
-        if service.env:
-          tmp['environment'] = ServiceModel.split_string(service.env)
-
-        if service.mapped_ports:
-          tmp['mapped_ports'] = [x for x in service.mapped_ports.split(',')]
-
-        data.append(tmp)
-
-    except:
-      return None
-
-    return data
+  """API resource to create or update the stack's project files."""
 
   @jwt_required()
   def post(self, _id):
+    from os import getcwd
     """POST method to save the project files to the file system."""
 
     if not StackModel.find_by_id(_id):
       return response(404, None, f"Stack with ID {_id} does not exist.", None), 404
 
     stack = StackModel.find_by_id(_id)
-    project_folder = self.stacks_folder + f"/{stack.name}"
-    compose_file = project_folder + "/docker-compose.yml"
+
+    stacks_folder = "../stacks"
+    caddyconf_folder = stacks_folder + "/conf.d"
+    project_folder = stacks_folder + f"/{stack.name}"
+
+    compose_location = project_folder + "/docker-compose.yml"
+    caddyconf_location = caddyconf_folder + f"/{stack.name}.conf"
 
     if not path.exists(project_folder):
       makedirs(project_folder)
 
-    # TODO: Create conf.d folder
+    if not path.exists(caddyconf_folder):
+      makedirs(caddyconf_folder)
 
-    data = self.get_compose_data(stack.services)
+    data_compose = get_compose_data(services=stack.services, stack_name=stack.name)
+    data_caddyconf = {
+      'subdomain': stack.subdomain,
+      'email': stack.email,
+      'proxy_service': "replace this!",
+      'proxy_port': stack.proxy_port
+    }
 
-    if data:
-      compose_string = get_compose(data)
+    if data_compose:
+      compose_string = get_compose(data_compose)
+      caddyconf_string = get_caddyconf(data_caddyconf)
 
-      if create_compose(compose_file, compose_string):
+      if create_file(compose_location, compose_string) and create_file(caddyconf_location, caddyconf_string):
         return response(200, f"Stack {stack.name} has been applied.", None, None), 200
       else:
         return response(500, None, f"An error has occured while trying to save compose file.", None), 500
 
     else:
-      return response(500, None, f"An error has occured while trying to assemble data for compose file"), 500
+      return response(500, None, f"An error has occured while trying to assemble data for compose file", None), 500
 
 
 

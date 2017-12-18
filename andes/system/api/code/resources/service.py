@@ -21,7 +21,6 @@ class ServiceCreate(Resource):
   """API resource to create or update services."""  
 
   parser = reqparse.RequestParser()
-  # TODO: Add description
   parser.add_argument('name',
                       type = str,
                       required = True,

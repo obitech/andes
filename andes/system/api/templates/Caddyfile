@@ -1,6 +1,10 @@
 {{ subdomain }} {
+  {% if email != None %}
+  {{ email }}
+  {% else %}
   tls off
-  proxy {
-
+  {% endif %}
+  proxy / {{ proxy_service }}:{{ proxy_port }} {
+    transparent
   }
 }
