@@ -41,9 +41,16 @@ class StackCreate(Resource):
   parser.add_argument('email',
                       type = str,
                       help = "The email for TLS certificate generation is optional.")
+  parser.add_argument('proxy_port',
+                      type = int,
+                      required = True,
+                      help = "The proxy_port is required so Caddy can forward requests to the container.")
 
   def check_args(self, data):
     """Helper method to check various passed payload arguments
+
+    Note:
+      This does not check if the proxy_port is part of the published ports ports
 
     Args:
       data (:obj:`dict`): Request payload with parsed arguments. Arguments to be checked:
@@ -51,6 +58,7 @@ class StackCreate(Resource):
         data['description'] (str): Description for the stack.
         data['subdomain'] (str): Subdomain of the stack.
         data['email'] (str): The email needed for Caddy to grab a TLS certificate.
+        data['proxy_port'] (int): The main port Caddy will forward requests to for this stack.
 
     Returns:
       dict: If all checks pass, dict of type {'code': 200}. 
@@ -58,6 +66,10 @@ class StackCreate(Resource):
         message will be directly fed into a response.
 
     """    
+
+    # Regex check for valid proxy_port
+    if not ServiceModel.valid_ports([data['proxy_port']]):
+      return {'code': 400, 'error': f"Invalid proxy_port {data['proxy_port']}"}
 
     # Regex check for valid name
     if not StackModel.valid_name(data['name']):
@@ -90,7 +102,8 @@ class StackCreate(Resource):
     stack = StackModel(name = data['name'],
                        description = data['description'],
                        subdomain = data['subdomain'],
-                       email = data['email'])
+                       email = data['email'],
+                       proxy_port = data['proxy_port'])
 
     if data['services'] and data['services'] != [None]:
       for x in data['services']:
@@ -124,6 +137,8 @@ class StackCreate(Resource):
       stack.name = data['name']
       stack.description = data['description']
       stack.subdomain = data['subdomain']
+      stack.email = data['email']
+      stack.proxy_port = data['proxy_port']
       stack.last_changed = datetime.now()
 
       # Update m:n-Table for stacks:services
@@ -153,7 +168,8 @@ class StackCreate(Resource):
       stack = StackModel(name = data['name'],
                          description = data['description'],
                          subdomain = data['subdomain'],
-                         email = data['email'])
+                         email = data['email'],
+                         proxy_port = data['proxy_port'])
 
       if data['services'] and data['services'] != [None]:
         for x in data['services']:

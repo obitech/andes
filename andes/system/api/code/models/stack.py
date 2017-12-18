@@ -19,6 +19,7 @@ class StackModel(db.Model):
     description (str): The description of the stack.
     subdomain (str): The subdomain a stack is reachable under.
     email (str): The email needed for Caddy to create TLS certificates for this subdomain.
+    proxy_port (int): The port needed for Caddy's proxy statement.
     active (bool): The status if this stack is currently running or not.
     created_at (str): Indicating the creation of the stack.
     last_changed (str): Indictaion when this stack has been last modified.
@@ -32,24 +33,28 @@ class StackModel(db.Model):
   description = db.Column(db.String(256))
   subdomain = db.Column(db.String(128))
   email = db.Column(db.String(64))
+  proxy_port = db.Column(db.Integer)
   active = db.Column(db.Boolean)
   created_at = db.Column(db.DateTime, default=datetime.now())
   last_changed = db.Column(db.DateTime, default=datetime.now())
   services = db.relationship('ServiceModel', secondary=stack_service_table, backref="stacks", lazy=True)
 
-  def __init__(self, name, email= None, description=None, subdomain=None):
+  def __init__(self, name, proxy_port, email=None, description=None, subdomain=None):
     """Stack initializiation method
 
     Args:
       name (str): Name of the stack.
+      proxy_port (int): The port needed for Caddy's proxy statement. Defaults to None.
       description (str, optional): Description of the stack, defaults to None.
       subdomain (str, optional): Subdomain for this services, defaults to None.
+      email (str, optional): The Email required for TLS certifications. Defaults to None.
 
     """
     self.name = name
     self.active = False
     self.description = description
     self.email = email
+    self.proxy_port = proxy_port
     self.subdomain = subdomain
     self.created_at = datetime.now()
     self.last_changed = self.created_at
@@ -67,6 +72,7 @@ class StackModel(db.Model):
       'description': self.description,
       'subdomain': self.subdomain,
       'email': self.email,
+      'proxy_port': self.proxy_port,
       'services': [x.id for x in self.services],
       'active': self.active,
       'created_at': self.format_date(self.created_at),
