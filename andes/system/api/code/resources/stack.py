@@ -43,8 +43,10 @@ class StackCreate(Resource):
                       help = "The email for TLS certificate generation is optional.")
   parser.add_argument('proxy_port',
                       type = int,
-                      required = True,
-                      help = "The proxy_port is required so Caddy can forward requests to the container.")
+                      help = "The proxy_port so Caddy can forward requests to the service.")
+  parser.add_argument('proxy_service',
+                      type = int,
+                      help = "The proxy_service for Caddy to forward requests to")
 
   def check_args(self, data):
     """Helper method to check various passed payload arguments
@@ -65,15 +67,15 @@ class StackCreate(Resource):
         If one check fails, dict of type {'code': <error code>, 'error' <error message>}, where the code and
         message will be directly fed into a response.
 
-    """    
-
-    # Regex check for valid proxy_port
-    if not ServiceModel.valid_ports([data['proxy_port']]):
-      return {'code': 400, 'error': f"Invalid proxy_port {data['proxy_port']}"}
+    """ 
 
     # Regex check for valid name
     if not StackModel.valid_name(data['name']):
       return {'code': 400, 'error': f"Invalid stack name {data['name']}."}
+
+    # Regex check for valid proxy_port
+    if data['proxy_port'] and not ServiceModel.valid_ports([data['proxy_port']]):
+      return {'code': 400, 'error': f"Invalid proxy_port {data['proxy_port']}"}
 
     # Regex check for valid subdomain
     if data['subdomain'] and not StackModel.valid_subdomain(data['subdomain']):
@@ -113,6 +115,16 @@ class StackCreate(Resource):
           else:
             return response(400, None, f"Service with ID {x} cannot be found.", None), 400
 
+    # Check if proxy_serve is part of stack.services
+    if data['proxy_service']:
+      try:
+        if data['proxy_service'] not in [x.id for x in stack.services]:
+          return response(400, None, f"Service with ID {data['proxy_service']} is not part of Stack {stack.name}'s services.", None), 400
+        else:
+          stack.proxy_service = data['proxy_service']
+      except:
+        return response(500, None, f"An internal error occured while checking the proxy_service.", None), 500
+
     try:
       stack.save_to_db()
     except:
@@ -139,6 +151,7 @@ class StackCreate(Resource):
       stack.subdomain = data['subdomain']
       stack.email = data['email']
       stack.proxy_port = data['proxy_port']
+      stack.proxy_service = data['proxy_service']
       stack.last_changed = datetime.now()
 
       # Update m:n-Table for stacks:services
@@ -178,6 +191,16 @@ class StackCreate(Resource):
             stack.services.append(service)
           else:
             return response(400, None, f"Service with ID {x} cannot be found.", None), 400
+    
+    # Check if proxy_serve is part of stack.services
+    if data['proxy_service']:
+      try:
+        if data['proxy_service'] not in [x.id for x in stack.services]:
+          return response(400, None, f"Service with ID {data['proxy_service']} is not part of Stack {stack.name}'s services.", None), 400
+        else:
+          pass
+      except:
+        return response(500, None, f"An internal error occured while checking the proxy_service.", None), 500
 
     try:
       stack.save_to_db()
@@ -236,6 +259,12 @@ class StackApply(Resource):
 
     stack = StackModel.find_by_id(_id)
 
+    if not stack.proxy_service:
+      return response(400, None, f"Stack {stack.name} has no proxy_service defined.", None), 400
+
+    if not stack.proxy_port:
+      return response(400, None, f"Stack {stack.name} has no proxy_port defined.", None), 400
+
     stacks_folder = "../stacks"
     caddyconf_folder = stacks_folder + "/conf.d"
     project_folder = stacks_folder + f"/{stack.name}"
@@ -253,7 +282,7 @@ class StackApply(Resource):
     data_caddyconf = {
       'subdomain': stack.subdomain,
       'email': stack.email,
-      'proxy_service': "replace this!",
+      'proxy_service': ServiceModel.find_by_id(stack.proxy_service).name,
       'proxy_port': stack.proxy_port
     }
 
