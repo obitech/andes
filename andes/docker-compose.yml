@@ -1,7 +1,7 @@
 version: '3'
 services:
   andes:
-    image: obitech/andes:latest
+    image: obitech/andes:test
     expose:
       - "5000"
       - "5001"
@@ -22,6 +22,7 @@ services:
     volumes:
       - "./system/Caddyfile:/etc/Caddyfile"
       - "./system/certs:/root/.caddy"
+      - "./stacks:/andes/stacks"
       - "./stacks/conf.d:/etc/caddy/sites-enabled"
       - "./system/frontend:/srv/www"
     links:

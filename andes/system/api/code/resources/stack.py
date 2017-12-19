@@ -265,7 +265,7 @@ class StackApply(Resource):
     if not stack.proxy_port:
       return response(400, None, f"Stack {stack.name} has no proxy_port defined.", None), 400
 
-    stacks_folder = "../stacks"
+    stacks_folder = "../../../stacks"
     caddyconf_folder = stacks_folder + "/conf.d"
     project_folder = stacks_folder + f"/{stack.name}"
 

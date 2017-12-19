@@ -1,13 +1,14 @@
 FROM python:3.6-slim
 
+# 5000 for uWSGI, 5001 for monitoring - user wsgitop to connect to port
 EXPOSE 5000 5001
 
-COPY system/api/code /andes/api/code
-COPY system/api/requirements_container.txt /andes/api
-COPY system/api/templates /andes/api/templates
-COPY system/api/*.ini /andes/api
+COPY system/api/code /andes/system/api/code
+COPY system/api/requirements_container.txt /andes/system/api
+COPY system/api/templates /andes/system/api/templates
+COPY system/api/*.ini /andes/system/api
 
-WORKDIR /andes/api
+WORKDIR /andes/system/api
 
 RUN apt-get update \
     && apt-get install build-essential -y  \
