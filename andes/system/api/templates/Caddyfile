@@ -7,6 +7,6 @@
   proxy / {{ proxy_service }}:{{ proxy_port }} {
     transparent
   }
-  logs stdout
+  log stdout
   errors stderror
 }
