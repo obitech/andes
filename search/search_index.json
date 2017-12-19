@@ -122,7 +122,7 @@
         },
         {
             "location": "/endpoints/user/auth/post/",
-            "text": "POST /auth\n\n\nAuthenticates a user and returns a JWT token.\n\n\nHeaders\n\n\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\nKey | JSON Value type | Comment | Required\n---|---|---\nusername|String|The username to be authenticated|Yes\npassword|String|The password of the user|Yes\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nnull\n\n\nUser created successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nUsername already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /auth\n\n\nRequest body\n\n\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"User foo has been created.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "text": "POST /auth\n\n\nAuthenticates a user and returns a JWT token.\n\n\nHeaders\n\n\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nusername\n\n\nString\n\n\nThe username to be authenticated\n\n\nYes\n\n\n\n\n\n\npassword\n\n\nString\n\n\nThe password of the user\n\n\nYes\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nnull\n\n\nUser created successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nUsername already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /auth\n\n\nRequest body\n\n\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}\n\n\n\n\nResponse body\n\n\n{\n    \"access_token\": \"...\"\n}",
             "title": "POST"
         },
         {
@@ -137,7 +137,7 @@
         },
         {
             "location": "/endpoints/user/auth/post/#body",
-            "text": "Key | JSON Value type | Comment | Required\n---|---|---\nusername|String|The username to be authenticated|Yes\npassword|String|The password of the user|Yes",
+            "text": "Key  JSON Value type  Comment  Required      username  String  The username to be authenticated  Yes    password  String  The password of the user  Yes",
             "title": "Body"
         },
         {
@@ -162,7 +162,7 @@
         },
         {
             "location": "/endpoints/user/auth/post/#response-body",
-            "text": "{\n    \"status\": 201,\n    \"message\": \"User foo has been created.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "text": "{\n    \"access_token\": \"...\"\n}",
             "title": "Response body"
         },
         {

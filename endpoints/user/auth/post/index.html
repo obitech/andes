@@ -266,10 +266,30 @@
 <li><code>Content-Type: application/json</code></li>
 </ul>
 <h2 id="body">Body</h2>
-<p>Key | JSON Value type | Comment | Required
----|---|---
-username|String|The username to be authenticated|Yes
-password|String|The password of the user|Yes</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>JSON Value type</th>
+<th>Comment</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>username</td>
+<td>String</td>
+<td>The username to be authenticated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>password</td>
+<td>String</td>
+<td>The password of the user</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
 <h2 id="returns">Returns</h2>
 <table>
 <thead>
@@ -304,10 +324,7 @@ password|String|The password of the user|Yes</p>
 
 <h3 id="response-body">Response body</h3>
 <pre><code class="json">{
-    &quot;status&quot;: 201,
-    &quot;message&quot;: &quot;User foo has been created.&quot;,
-    &quot;error&quot;: null,
-    &quot;data&quot;: null
+    &quot;access_token&quot;: &quot;...&quot;
 }
 </code></pre></div>
         </div>
