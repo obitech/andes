@@ -667,7 +667,7 @@
         },
         {
             "location": "/endpoints/stacks/create/post/",
-            "text": "POST /stacks/create\n\n\nCreates a new stack.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nThe stack name\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nThe stack description\n\n\nNo\n\n\n\n\n\n\nsubdomain\n\n\nString\n\n\nThe subdomain this stack will be reachable under.\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been created successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /stacks/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"services\": [1]\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "text": "POST /stacks/create\n\n\nCreates a new stack.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nThe stack name\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nThe stack description\n\n\nNo\n\n\n\n\n\n\nsubdomain\n\n\nString\n\n\nThe subdomain this stack will be reachable under.\n\n\nNo\n\n\n\n\n\n\nemail\n\n\nString\n\n\nThe email to be put in the stack-specific Caddyfile. This is needed for automatic TLS encryption.\n\n\nNo\n\n\n\n\n\n\nproxy_service\n\n\nInteger\n\n\nThe service ID to which Caddy should forward requests to. Needs to be part of the stack\n\n\nNo\n\n\n\n\n\n\nproxy_port\n\n\nInteger\n\n\nThe port added to the service ID for Caddy to forward requests to. \nThis does not check if the service actually publishes the port.\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been created successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /stacks/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"email\": \"test@example.com\",\n    \"proxy_service\": 1,\n    \"proxy_port\": 80,    \n    \"services\": [1]\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"email\": \"test@example.com\",\n        \"proxy_service\": 1,\n        \"proxy_port\": 80,\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
             "title": "POST"
         },
         {
@@ -682,7 +682,7 @@
         },
         {
             "location": "/endpoints/stacks/create/post/#body",
-            "text": "Key  JSON Value type  Comment  Required      name  String  The stack name  Yes    description  String  The stack description  No    subdomain  String  The subdomain this stack will be reachable under.  No",
+            "text": "Key  JSON Value type  Comment  Required      name  String  The stack name  Yes    description  String  The stack description  No    subdomain  String  The subdomain this stack will be reachable under.  No    email  String  The email to be put in the stack-specific Caddyfile. This is needed for automatic TLS encryption.  No    proxy_service  Integer  The service ID to which Caddy should forward requests to. Needs to be part of the stack  No    proxy_port  Integer  The port added to the service ID for Caddy to forward requests to.  This does not check if the service actually publishes the port.  No",
             "title": "Body"
         },
         {
@@ -702,17 +702,17 @@
         },
         {
             "location": "/endpoints/stacks/create/post/#request-body",
-            "text": "{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"services\": [1]\n}",
+            "text": "{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"email\": \"test@example.com\",\n    \"proxy_service\": 1,\n    \"proxy_port\": 80,    \n    \"services\": [1]\n}",
             "title": "Request body"
         },
         {
             "location": "/endpoints/stacks/create/post/#response-body",
-            "text": "{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"email\": \"test@example.com\",\n        \"proxy_service\": 1,\n        \"proxy_port\": 80,\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
             "title": "Response body"
         },
         {
             "location": "/endpoints/stacks/create/put/",
-            "text": "PUT /stacks/create\n\n\nCreates or updates a stack.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nThe stack name\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nThe stack description\n\n\nNo\n\n\n\n\n\n\nsubdomain\n\n\nString\n\n\nThe subdomain this stack will be reachable under.\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been created successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPUT /stacks/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"services\": [1]\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "text": "PUT /stacks/create\n\n\nCreates or updates a stack.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nThe stack name\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nThe stack description\n\n\nNo\n\n\n\n\n\n\nsubdomain\n\n\nString\n\n\nThe subdomain this stack will be reachable under.\n\n\nNo\n\n\n\n\n\n\nemail\n\n\nString\n\n\nThe email to be put in the stack-specific Caddyfile. This is needed for automatic TLS encryption.\n\n\nNo\n\n\n\n\n\n\nproxy_service\n\n\nInteger\n\n\nThe service ID to which Caddy should forward requests to. Needs to be part of the stack\n\n\nNo\n\n\n\n\n\n\nproxy_port\n\n\nInteger\n\n\nThe port added to the service ID for Caddy to forward requests to. \nThis does not check if the service actually publishes the port.\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been created or updated successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPUT /stacks/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"email\": \"test@example.com\",\n    \"proxy_service\": 1,\n    \"proxy_port\": 80,    \n    \"services\": [1]\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"email\": \"test@example.com\",\n        \"proxy_service\": 1,\n        \"proxy_port\": 80,\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
             "title": "PUT"
         },
         {
@@ -727,12 +727,12 @@
         },
         {
             "location": "/endpoints/stacks/create/put/#body",
-            "text": "Key  JSON Value type  Comment  Required      name  String  The stack name  Yes    description  String  The stack description  No    subdomain  String  The subdomain this stack will be reachable under.  No",
+            "text": "Key  JSON Value type  Comment  Required      name  String  The stack name  Yes    description  String  The stack description  No    subdomain  String  The subdomain this stack will be reachable under.  No    email  String  The email to be put in the stack-specific Caddyfile. This is needed for automatic TLS encryption.  No    proxy_service  Integer  The service ID to which Caddy should forward requests to. Needs to be part of the stack  No    proxy_port  Integer  The port added to the service ID for Caddy to forward requests to.  This does not check if the service actually publishes the port.  No",
             "title": "Body"
         },
         {
             "location": "/endpoints/stacks/create/put/#returns",
-            "text": "Status code  Data  Comments      201  Stack  Stack has been created successfully.    400  null  Stack with passed name already exists.",
+            "text": "Status code  Data  Comments      201  Stack  Stack has been created or updated successfully.    400  null  Stack with passed name already exists.",
             "title": "Returns"
         },
         {
@@ -747,22 +747,22 @@
         },
         {
             "location": "/endpoints/stacks/create/put/#request-body",
-            "text": "{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"services\": [1]\n}",
+            "text": "{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"email\": \"test@example.com\",\n    \"proxy_service\": 1,\n    \"proxy_port\": 80,    \n    \"services\": [1]\n}",
             "title": "Request body"
         },
         {
             "location": "/endpoints/stacks/create/put/#response-body",
-            "text": "{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"email\": \"test@example.com\",\n        \"proxy_service\": 1,\n        \"proxy_port\": 80,\n        \"services\": [1],\n        \"active\": false,\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
             "title": "Response body"
         },
         {
             "location": "/endpoints/stacks/id/apply/post/",
-            "text": "POST /stacks/<_id>/create\n\n\nApplies a stack, generates a \ndocker-compose.yml\n and saves it to disc in \nandes/andes/stacks/<stack_name>\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been applied successfully.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /stacks/1/apply\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been applied.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "text": "POST /stacks/<_id>/create\n\n\nApplies a stack: \n\n\n\n\ngenerates a \ndocker-compose.yml\n and saves it to disc in \nandes/andes/stacks/<stack_name>/docker-compose.yml\n\n\ngenerates a \n<stack_name>.conf\n and saves it to dics in \nandes/andes/stacks/conf.d/<stack_name>.conf\n\n\n\n\nThe main Caddyfile will then import all \n.conf\n files in the \nconf.d/\n folder.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been applied successfully.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /stacks/1/apply\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been applied.\",\n    \"error\": null,\n    \"data\": null\n}\n\n\n\n\nExample stack used\n\n\n\"data\": {\n    \"id\": 1,\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"email\": \"test@example.com\",\n    \"proxy_service\": 1,\n    \"proxy_port\": 80,\n    \"services\": [1],\n    \"active\": false,\n    \"created_at\": \"2017-12-14T09:21:50.503274\",\n    \"last_changed\": \"2017-12-14T09:21:50.503274\"\n}\n\n\n\n\nExample proxy_service used\n\n\n\"data\": {\n    \"id\": 1,\n    \"blueprint\": 1,\n    \"name\": \"foo_service\",\n    \"description\": \"A test service\",\n    \"stacks\": [1],\n    \"exposed_ports\": [80,8080],\n    \"mapped_ports\": [\"80:80\"],\n    \"volumes\": [\"/srv/www:/\"],\n    \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n    \"ip\": \"172.42.0.11\"\n}\n\n\n\n\nCreated .conf file\n\n\n# andes/andes/stacks/conf.d/foo_stack.conf will have been created\ntest.example.com {\n  test@example.com\n  proxy / foo_service:80 {\n    transparent\n  }\n  logs stdout\n  errors stderror\n}",
             "title": "POST"
         },
         {
             "location": "/endpoints/stacks/id/apply/post/#post-stacks_idcreate",
-            "text": "Applies a stack, generates a  docker-compose.yml  and saves it to disc in  andes/andes/stacks/<stack_name>",
+            "text": "Applies a stack:    generates a  docker-compose.yml  and saves it to disc in  andes/andes/stacks/<stack_name>/docker-compose.yml  generates a  <stack_name>.conf  and saves it to dics in  andes/andes/stacks/conf.d/<stack_name>.conf   The main Caddyfile will then import all  .conf  files in the  conf.d/  folder.",
             "title": "POST /stacks/&lt;_id&gt;/create"
         },
         {
@@ -789,6 +789,21 @@
             "location": "/endpoints/stacks/id/apply/post/#response-body",
             "text": "{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been applied.\",\n    \"error\": null,\n    \"data\": null\n}",
             "title": "Response body"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/post/#example-stack-used",
+            "text": "\"data\": {\n    \"id\": 1,\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"email\": \"test@example.com\",\n    \"proxy_service\": 1,\n    \"proxy_port\": 80,\n    \"services\": [1],\n    \"active\": false,\n    \"created_at\": \"2017-12-14T09:21:50.503274\",\n    \"last_changed\": \"2017-12-14T09:21:50.503274\"\n}",
+            "title": "Example stack used"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/post/#example-proxy_service-used",
+            "text": "\"data\": {\n    \"id\": 1,\n    \"blueprint\": 1,\n    \"name\": \"foo_service\",\n    \"description\": \"A test service\",\n    \"stacks\": [1],\n    \"exposed_ports\": [80,8080],\n    \"mapped_ports\": [\"80:80\"],\n    \"volumes\": [\"/srv/www:/\"],\n    \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n    \"ip\": \"172.42.0.11\"\n}",
+            "title": "Example proxy_service used"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/post/#created-conf-file",
+            "text": "# andes/andes/stacks/conf.d/foo_stack.conf will have been created\ntest.example.com {\n  test@example.com\n  proxy / foo_service:80 {\n    transparent\n  }\n  logs stdout\n  errors stderror\n}",
+            "title": "Created .conf file"
         }
     ]
 }

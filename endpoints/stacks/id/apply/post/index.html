@@ -262,7 +262,12 @@
                 <div class="col-md-9" role="main">
 
 <h1 id="post-stacks_idcreate">POST /stacks/&lt;_id&gt;/create</h1>
-<p>Applies a stack, generates a <code>docker-compose.yml</code> and saves it to disc in <code>andes/andes/stacks/&lt;stack_name&gt;</code></p>
+<p>Applies a stack: </p>
+<ul>
+<li>generates a <code>docker-compose.yml</code> and saves it to disc in <code>andes/andes/stacks/&lt;stack_name&gt;/docker-compose.yml</code></li>
+<li>generates a <code>&lt;stack_name&gt;.conf</code> and saves it to dics in <code>andes/andes/stacks/conf.d/&lt;stack_name&gt;.conf</code></li>
+</ul>
+<p>The main Caddyfile will then import all <code>.conf</code> files in the <code>conf.d/</code> folder.</p>
 <h2 id="headers">Headers</h2>
 <ul>
 <li><code>Authorization: JWT &lt;JWT Token&gt;</code></li>
@@ -293,6 +298,49 @@
     &quot;message&quot;: &quot;Stack foo_stack has been applied.&quot;,
     &quot;error&quot;: null,
     &quot;data&quot;: null
+}
+</code></pre>
+
+<h3 id="example-stack-used">Example stack used</h3>
+<pre><code class="json">&quot;data&quot;: {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;foo_stack&quot;,
+    &quot;description&quot;: &quot;test stack&quot;,
+    &quot;subdomain&quot;: &quot;test.example.com&quot;,
+    &quot;email&quot;: &quot;test@example.com&quot;,
+    &quot;proxy_service&quot;: 1,
+    &quot;proxy_port&quot;: 80,
+    &quot;services&quot;: [1],
+    &quot;active&quot;: false,
+    &quot;created_at&quot;: &quot;2017-12-14T09:21:50.503274&quot;,
+    &quot;last_changed&quot;: &quot;2017-12-14T09:21:50.503274&quot;
+}
+</code></pre>
+
+<h3 id="example-proxy_service-used">Example proxy_service used</h3>
+<pre><code class="json">&quot;data&quot;: {
+    &quot;id&quot;: 1,
+    &quot;blueprint&quot;: 1,
+    &quot;name&quot;: &quot;foo_service&quot;,
+    &quot;description&quot;: &quot;A test service&quot;,
+    &quot;stacks&quot;: [1],
+    &quot;exposed_ports&quot;: [80,8080],
+    &quot;mapped_ports&quot;: [&quot;80:80&quot;],
+    &quot;volumes&quot;: [&quot;/srv/www:/&quot;],
+    &quot;env&quot;: [&quot;FOO=BAR&quot;,&quot;DEBUG=1&quot;],
+    &quot;ip&quot;: &quot;172.42.0.11&quot;
+}
+</code></pre>
+
+<h3 id="created-conf-file">Created .conf file</h3>
+<pre><code class="json"># andes/andes/stacks/conf.d/foo_stack.conf will have been created
+test.example.com {
+  test@example.com
+  proxy / foo_service:80 {
+    transparent
+  }
+  logs stdout
+  errors stderror
 }
 </code></pre></div>
         </div>

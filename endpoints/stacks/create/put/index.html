@@ -298,6 +298,24 @@
 <td>The subdomain this stack will be reachable under.</td>
 <td>No</td>
 </tr>
+<tr>
+<td>email</td>
+<td>String</td>
+<td>The email to be put in the stack-specific Caddyfile. This is needed for automatic TLS encryption.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>proxy_service</td>
+<td>Integer</td>
+<td>The service ID to which Caddy should forward requests to. Needs to be part of the stack</td>
+<td>No</td>
+</tr>
+<tr>
+<td>proxy_port</td>
+<td>Integer</td>
+<td>The port added to the service ID for Caddy to forward requests to. <strong>This does not check if the service actually publishes the port.</strong></td>
+<td>No</td>
+</tr>
 </tbody>
 </table>
 <h2 id="returns">Returns</h2>
@@ -313,7 +331,7 @@
 <tr>
 <td>201</td>
 <td>Stack</td>
-<td>Stack has been created successfully.</td>
+<td>Stack has been created or updated successfully.</td>
 </tr>
 <tr>
 <td>400</td>
@@ -330,6 +348,9 @@
     &quot;name&quot;: &quot;foo_stack&quot;,
     &quot;description&quot;: &quot;test stack&quot;,
     &quot;subdomain&quot;: &quot;test.example.com&quot;,
+    &quot;email&quot;: &quot;test@example.com&quot;,
+    &quot;proxy_service&quot;: 1,
+    &quot;proxy_port&quot;: 80,    
     &quot;services&quot;: [1]
 }
 </code></pre>
@@ -344,6 +365,9 @@
         &quot;name&quot;: &quot;foo_stack&quot;,
         &quot;description&quot;: &quot;test stack&quot;,
         &quot;subdomain&quot;: &quot;test.example.com&quot;,
+        &quot;email&quot;: &quot;test@example.com&quot;,
+        &quot;proxy_service&quot;: 1,
+        &quot;proxy_port&quot;: 80,
         &quot;services&quot;: [1],
         &quot;active&quot;: false,
         &quot;created_at&quot;: &quot;2017-12-14T09:21:50.503274&quot;,
