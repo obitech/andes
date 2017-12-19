@@ -38,6 +38,9 @@ services:
       - caddy
     networks:
       andes_default:
-        - ipv4_address: {{ service.ip }}
+        ipv4_address: {{ service.ip }}
     restart: always
   {% endfor %}
+netowrks:
+  andes_default:
+    external: true
