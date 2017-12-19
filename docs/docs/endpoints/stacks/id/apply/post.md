@@ -1,5 +1,11 @@
 # POST /stacks/<_id>/create
-Applies a stack, generates a `docker-compose.yml` and saves it to disc in `andes/andes/stacks/<stack_name>`
+Applies a stack: 
+
+* generates a `docker-compose.yml` and saves it to disc in `andes/andes/stacks/<stack_name>/docker-compose.yml`
+* generates a `<stack_name>.conf` and saves it to dics in `andes/andes/stacks/conf.d/<stack_name>.conf`
+
+The main Caddyfile will then import all `.conf` files in the `conf.d/` folder.
+
 ## Headers
 * `Authorization: JWT <JWT Token>`
 
@@ -19,5 +25,51 @@ Status code | Data | Comments
     "message": "Stack foo_stack has been applied.",
     "error": null,
     "data": null
+}
+```
+
+### Example stack used
+```json
+"data": {
+    "id": 1,
+    "name": "foo_stack",
+    "description": "test stack",
+    "subdomain": "test.example.com",
+    "email": "test@example.com",
+    "proxy_service": 1,
+    "proxy_port": 80,
+    "services": [1],
+    "active": false,
+    "created_at": "2017-12-14T09:21:50.503274",
+    "last_changed": "2017-12-14T09:21:50.503274"
+}
+```
+
+### Example proxy_service used
+```json
+"data": {
+    "id": 1,
+    "blueprint": 1,
+    "name": "foo_service",
+    "description": "A test service",
+    "stacks": [1],
+    "exposed_ports": [80,8080],
+    "mapped_ports": ["80:80"],
+    "volumes": ["/srv/www:/"],
+    "env": ["FOO=BAR","DEBUG=1"],
+    "ip": "172.42.0.11"
+}
+```
+
+### Created .conf file
+```json
+# andes/andes/stacks/conf.d/foo_stack.conf will have been created
+test.example.com {
+  test@example.com
+  proxy / foo_service:80 {
+    transparent
+  }
+  logs stdout
+  errors stderror
 }
 ```
