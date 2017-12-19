@@ -48,9 +48,6 @@
                     <li class="active">
                         <a href=".">Home</a>
                     </li>
-                    <li >
-                        <a href="overview/">Endpoint Overview</a>
-                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Endpoint Reference <b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -238,7 +235,7 @@
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="overview/">
+                        <a rel="prev" href="endpoints/user/register/post/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -256,6 +253,7 @@
         <li class="main active"><a href="#andes-api-documentation">Andes API Documentation</a></li>
             <li><a href="#general">General</a></li>
             <li><a href="#installation">Installation</a></li>
+            <li><a href="#endpoint-overview">Endpoint overview</a></li>
             <li><a href="#using-the-api">Using the API</a></li>
     </ul>
 </div></div>
@@ -348,6 +346,145 @@
 <li>Bring up the <code>docker-compose.yml</code> in <code>andes/andes/system</code>.</li>
 </ol>
 <p>Check with <code>docker container ls</code> if you have the andes and Caddy container up and running. The API will will be reachable under your specified hostname + <code>/api</code></p>
+<h2 id="endpoint-overview">Endpoint overview</h2>
+<h3 id="authentication">Authentication</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><a href="endpoints/user/register/post/">/register</a></td>
+<td>Registers new user</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><a href="endpoints/user/auth/post/">/auth</a></td>
+<td>Authenticates user</td>
+</tr>
+</tbody>
+</table>
+<h3 id="blueprints">Blueprints</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><a href="endpoints/blueprints/get/">/blueprints</a></td>
+<td>Retrieves list of blueprints</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><a href="endpoints/blueprints/id/get/">/blueprints/&lt;_id&gt;</a></td>
+<td>Retrieves single blueprint</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><a href="endpoints/blueprints/id/delete/">/blueprints/&lt;_id&gt;</a></td>
+<td>Deletes a single blueprint</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><a href="endpoints/blueprints/create/post/">/blueprints/create</a></td>
+<td>Creates a new blueprint</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><a href="endpoints/blueprints/create/put/">/blueprints/create</a></td>
+<td>Creates or updates a blueprint</td>
+</tr>
+</tbody>
+</table>
+<h3 id="services">Services</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><a href="endpoints/services/get/">/services</a></td>
+<td>Retrieves list of services</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><a href="endpoints/services/id/get/">/services/&lt;_id&gt;</a></td>
+<td>Retrieves single services</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><a href="endpoints/services/id/delete/">/services/&lt;_id&gt;</a></td>
+<td>Deletes single service</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><a href="endpoints/services/create/post/">/services/create</a></td>
+<td>Creates a new service</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><a href="endpoints/services/create/put/">/services/create</a></td>
+<td>Creates or updates a service</td>
+</tr>
+</tbody>
+</table>
+<h3 id="stacks">Stacks</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><a href="endpoints/stacks/get/">/stacks</a></td>
+<td>Retrieves list of stacks</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><a href="endpoints/stacks/id/get/">/stacks/&lt;_id&gt;</a></td>
+<td>Retrieves single stacks</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><a href="endpoints/stacks/id/delete/">/stacks/&lt;_id&gt;</a></td>
+<td>Deletes single service</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><a href="endpoints/stacks/id/apply/post/">/stacks/&lt;_id&gt;/apply</a></td>
+<td>Applies a stack and saves config files to disk</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><a href="endpoints/stacks/create/post/">/stacks/create</a></td>
+<td>Creates a new stack</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><a href="endpoints/stacks/create/put/">/stacks/create</a></td>
+<td>Creates or updates a stack</td>
+</tr>
+</tbody>
+</table>
 <h2 id="using-the-api">Using the API</h2>
 <p>Responses return, in general, a JSON object with metadata and (if applicable) the actual data or an error message in the following format:</p>
 <pre><code class="json"># Sample format
@@ -362,7 +499,7 @@ For more information on the response format, have a look at the endpoint referen
 
 </code></pre>
 
-<h3 id="authentication">Authentication</h3>
+<h3 id="authentication_1">Authentication</h3>
 <p>If you're starting from scratch you need to create a user first:</p>
 <pre><code># Endpoint
 POST /register
@@ -493,5 +630,5 @@ Authorization: JWT superSecretToken
 
 <!--
 MkDocs version : 0.17.2
-Build Date UTC : 2017-12-19 10:15:32
+Build Date UTC : 2017-12-19 11:21:28
 -->
