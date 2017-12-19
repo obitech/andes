@@ -5,6 +5,8 @@ Andes is a self-hosted management tool for creating and deploying simple contain
 
 * [Documentation](https://obitech.github.io/andes/)
 
+Please be aware that this project is still under development. Functionality is limited, things might not happen as expected or just break. 
+
 ## Getting started
 ### Using Vagrant
 For this you will need [Vagrant](https://www.vagrantup.com/downloads.html) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed.
