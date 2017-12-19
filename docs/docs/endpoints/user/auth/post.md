@@ -6,7 +6,7 @@ Authenticates a user and returns a JWT token.
 
 ## Body
 Key | JSON Value type | Comment | Required
----|---|---
+---|---|---|---
 username|String|The username to be authenticated|Yes
 password|String|The password of the user|Yes
 
@@ -29,9 +29,6 @@ Status code | Data | Comments
 ### Response body
 ```json
 {
-    "status": 201,
-    "message": "User foo has been created.",
-    "error": null,
-    "data": null
+    "access_token": "..."
 }
 ```

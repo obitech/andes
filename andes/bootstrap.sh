@@ -188,6 +188,7 @@ if [[ "$DOCKER_SETUP" = true ]]; then
 fi
 
 echo -e "$GREEN==> Setting up docker network andes_default... $NC"
+# TODO: Check if network exists
 sudo docker network create --subnet 172.42.0.0/16 andes_default
 
 #####################################################################
