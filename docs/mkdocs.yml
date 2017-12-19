@@ -9,7 +9,6 @@ edit_uri: ""
 
 pages:
   - Home: 'index.md'
-  - Endpoint Overview: 'overview.md'
   - Endpoint Reference: 
     - 'Authentication':
       - '/register':
