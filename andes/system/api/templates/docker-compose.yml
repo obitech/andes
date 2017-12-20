@@ -4,10 +4,12 @@ services:
   {{ service.name }}:
     image: {{ service.image }}
     container_name: {{ service.stack_name }}_{{ service.name }}
+    {% if service.exposed_ports %}
     expose:
       {% for port in service.exposed_ports %}
       - "{{ port }}"
       {% endfor %}
+    {% endif %}
     {% if service.mapped_ports %}
     ports:
       {% for port in service.mapped_ports %}
@@ -41,6 +43,6 @@ services:
         ipv4_address: {{ service.ip }}
     restart: always
   {% endfor %}
-netowrks:
+networks:
   andes_default:
     external: true

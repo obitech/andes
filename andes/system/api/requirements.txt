@@ -3,4 +3,4 @@ Flask-RESTful
 Flask-JWT
 Flask-SQLAlchemy
 mkdocs
-docker-py
+docker

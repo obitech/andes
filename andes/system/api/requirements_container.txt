@@ -3,3 +3,5 @@ Flask-RESTful
 Flask-JWT
 Flask-SQLAlchemy
 uWSGI
+docker
+docker-compose

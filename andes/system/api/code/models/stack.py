@@ -1,5 +1,6 @@
 import re
 from datetime import datetime
+from traceback import print_exc
 
 from db import db
 
@@ -21,10 +22,10 @@ class StackModel(db.Model):
     email (str): The email needed for Caddy to create TLS certificates for this subdomain.
     proxy_service (int): The service ID to which Caddy forwards requests.
     proxy_port (int): The port needed for Caddy's proxy statement.
-    active (bool): The status if this stack is currently running or not.
     created_at (str): Indicating the creation of the stack.
     last_changed (str): Indictaion when this stack has been last modified.
     services (:obj:`list` of :obj:`services`): List of services defined as this stack.
+    stacks_folder (str): The location on the file system where stacks are saved.
 
   """
   __tablename__ = 'stacks'
@@ -36,7 +37,6 @@ class StackModel(db.Model):
   email = db.Column(db.String(64))
   proxy_service = db.Column(db.Integer)
   proxy_port = db.Column(db.Integer)
-  active = db.Column(db.Boolean)
   created_at = db.Column(db.DateTime, default=datetime.now())
   last_changed = db.Column(db.DateTime, default=datetime.now())
   services = db.relationship('ServiceModel', secondary=stack_service_table, backref="stacks", lazy=True)
@@ -79,10 +79,17 @@ class StackModel(db.Model):
       'proxy_service': self.proxy_service,
       'proxy_port': self.proxy_port,
       'services': [x.id for x in self.services],
-      'active': self.active,
       'created_at': self.format_date(self.created_at),
       'last_changed': self.format_date(self.last_changed),
     }
+
+  def get_project_folder(self):
+    return self.get_stacks_folder() + f"/{self.name}"
+
+  # TODO: remove this dirty hack
+  @classmethod
+  def get_stacks_folder(cls):
+    return "../../../stacks"
 
   @classmethod
   def valid_email(cls, email):
@@ -100,6 +107,7 @@ class StackModel(db.Model):
       if re.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$").match(email):
         return True
     except:
+      print_exc()
       pass
 
     return False
@@ -124,6 +132,7 @@ class StackModel(db.Model):
       if re.compile("^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}$").match(domain):
         return True
     except:
+      print_exc()
       pass
 
     return False
@@ -145,6 +154,7 @@ class StackModel(db.Model):
       if re.compile("^\w+$").match(name):
         return True
     except:
+      print_exc()
       pass
 
     return False
@@ -163,6 +173,7 @@ class StackModel(db.Model):
     try:
       return date.isoformat()
     except:
+      print_exc()
       pass
 
     return None

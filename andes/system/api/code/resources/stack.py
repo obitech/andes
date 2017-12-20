@@ -3,6 +3,7 @@ from flask_jwt import jwt_required
 from datetime import datetime
 from os import path, makedirs
 from traceback import print_exc
+import subprocess
 
 from models.blueprint import BlueprintModel
 from models.service import ServiceModel
@@ -257,7 +258,6 @@ class StackApply(Resource):
 
   @jwt_required()
   def post(self, _id):
-    from os import getcwd
     """POST method to save the project files to the file system."""
 
     if not StackModel.find_by_id(_id):
@@ -272,9 +272,9 @@ class StackApply(Resource):
       return response(400, None, f"Stack {stack.name} has no proxy_port defined.", None), 400
 
     # Creating necessary folders
-    stacks_folder = "../../../stacks"
+    stacks_folder = StackModel.get_stacks_folder()
     caddyconf_folder = stacks_folder + "/conf.d"
-    project_folder = stacks_folder + f"/{stack.name}"
+    project_folder = stack.get_project_folder()
 
     compose_location = project_folder + "/docker-compose.yml"
     caddyconf_location = caddyconf_folder + f"/{stack.name}.conf"
@@ -306,5 +306,36 @@ class StackApply(Resource):
       return response(500, None, f"An error has occured while trying to assemble data for compose file", None), 500
 
 
+class StackUp(Resource):
+  """API resource to `docker-compose up` a specific stack configuration."""
+
+  @jwt_required()
+  def post(self, _id):
+    """Brings up a specific stack configuration
+
+    Runs `docker-compose up`
+
+    Args:
+      _id (int): The stack ID of the stack to be started.
+
+    """
+
+    stack = StackModel.find_by_id(_id)
+
+    if not stack:
+      return response(404, None, f"Stack with ID {_id} does not exist.", None), 404
+
+    project_folder = stack.get_project_folder()
+
+    # Check if folders exist
+    if not path.exists(project_folder):
+      return response(404, None, f"Project folder for stack {stack.name} doesn't exist.", None), 404
+
+    try:
+      subprocess.run(["docker-compose", "up", "-d"], check=True, cwd=project_folder)
+      return response(200, f"Stack {stack.name} has been started.", None, None), 200
+    except:
+      print_exc()
+      return response(500, None, f"An error occurbed while trying to start {stack.name}", None), 500
 
 

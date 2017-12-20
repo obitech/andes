@@ -1,13 +1,14 @@
 version: '3'
 services:
   andes:
-    image: obitech/andes:latest
+    image: obitech/andes:test
     expose:
       - "5000"
       - "5001"
     volumes:
       - "./system/api/data:/andes/system/api/data"
       - "./stacks:/andes/stacks"
+      - "/var/run/docker.sock:/var/run/docker.sock"
     networks:
       andes_default:
         ipv4_address: 172.42.0.2

@@ -81,7 +81,7 @@ class ServiceModel(db.Model):
       'name': self.name,
       'description': self.description,
       'stacks': [x.id for x in self.stacks],
-      'exposed_ports': [int(x) for x in self.exposed_ports.split(',')],
+      'exposed_ports': self.port_list(self.exposed_ports),
       'mapped_ports': self.split_string(self.mapped_ports),
       'volumes': self.split_string(self.volumes),
       'env': self.split_string(self.env),
