@@ -1,4 +1,5 @@
 import re
+from traceback import print_exc
 
 from db import db
 
@@ -105,6 +106,7 @@ class ServiceModel(db.Model):
     try:
       return [int(x) for x in ports.split(',')]
     except:
+      print_exc()
       pass
 
     return None
@@ -124,6 +126,7 @@ class ServiceModel(db.Model):
     try:
       return stuff.split(',')
     except:
+      print_exc()
       return None
 
     return None
@@ -149,6 +152,7 @@ class ServiceModel(db.Model):
         if not re.compile("^[\w_\.]+=[\w_\.]+$").match(var):
           return False
     except:
+      print_exc()
       return False
 
     return True
@@ -171,6 +175,7 @@ class ServiceModel(db.Model):
       if data['env'] in [None, [""], [], [None]]:
         pass
       else:
+        print_exc()
         return ','.join(data['env'])
     except:
       pass
@@ -203,6 +208,7 @@ class ServiceModel(db.Model):
           return False
         
     except:
+      print_exc()
       return False
 
     return True
@@ -225,8 +231,10 @@ class ServiceModel(db.Model):
       if data['volumes'] in [None, [""], [], [None]]:
         pass
       else:
+        print_exc()
         return ','.join(data['volumes'])
     except:
+      print_exc()
       pass
 
     return None
@@ -246,6 +254,7 @@ class ServiceModel(db.Model):
         if port < 0 or port > 65535:
           return False
     except:
+      print_exc()
       return False
 
     return True
@@ -284,6 +293,7 @@ class ServiceModel(db.Model):
                 if int(x) < 0 or int(x) > 65535:
                   return False
             except:
+              print_exc()
               return False
 
           else:
@@ -291,6 +301,7 @@ class ServiceModel(db.Model):
               if int(port) < 0 or int(port) > 65535:
                 return False
             except:
+              print_exc()
               return False
 
     return True
@@ -313,6 +324,7 @@ class ServiceModel(db.Model):
     try:
       return ','.join([str(x) for x in exposed_ports])
     except:
+      print_exc()
       pass
 
     return None

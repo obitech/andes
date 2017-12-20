@@ -1,4 +1,7 @@
+from traceback import print_exc
+
 from models.user import UserModel
+from util.response import response
 
 def authenticate(username, password):
   """Function handling user authentication
@@ -11,9 +14,14 @@ def authenticate(username, password):
     A user object if authentication was successful, None if not.
 
   """
-  user = UserModel.find_by_username(username)
-  if user and user.check_password(password):
-    return user
+
+  try:
+    user = UserModel.find_by_username(username)
+    if user and user.check_password(password):
+      return user
+  except:
+    print_exc()
+    return response(500, None, "An internal server error occured while trying to authenticate user.", None), 500
 
 def identity(payload):
   """Function retrieving user ID during authentication
@@ -25,5 +33,10 @@ def identity(payload):
     A user ID or None if user wasn't found.
     
   """
-  user_id = payload['identity']
-  return UserModel.find_by_id(user_id)
+
+  try:
+    user_id = payload['identity']
+    return UserModel.find_by_id(user_id)
+  except:
+    print_exc()
+    return response(500, None, "An internal server error occured while fetch user ID."), 500

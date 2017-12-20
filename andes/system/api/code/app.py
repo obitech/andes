@@ -15,6 +15,7 @@ app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../data/data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=3000)
 app.secret_key = "DEVELOPMENT_KEY"
 api = Api(app)

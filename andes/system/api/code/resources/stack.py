@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 from datetime import datetime
 from os import path, makedirs
+from traceback import print_exc
 
 from models.blueprint import BlueprintModel
 from models.service import ServiceModel
@@ -123,6 +124,7 @@ class StackCreate(Resource):
         else:
           stack.proxy_service = data['proxy_service']
       except:
+        print_exc()
         return response(500, None, f"An internal error occured while checking the proxy_service.", None), 500
 
     try:
@@ -200,11 +202,13 @@ class StackCreate(Resource):
         else:
           pass
       except:
+        print_exc()
         return response(500, None, f"An internal error occured while checking the proxy_service.", None), 500
 
     try:
       stack.save_to_db()
     except:
+      print_exc()
       return response(500, None, f"An error occured while trying to update stack {data['name']}.", None), 500
 
     return response(201, f"Stack {data['name']} has been updated.", None, stack.json()), 201
@@ -220,6 +224,7 @@ class Stack(Resource):
     try:
       stack = StackModel.find_by_id(_id)
     except:
+      print_exc()
       return response(500, None, f"An error occured while trying to retrieve stack {stack.name}.", None), 500
     if stack:
       return response(200, f"Stack {stack.name} has been retrieved.", None, stack.json()), 200
@@ -239,6 +244,7 @@ class Stack(Resource):
       try:
         stack.delete_from_db()
       except:
+        print_exc()
         return response(500, None, f"An error occured while trying to delete stack {stack.name}.", None), 500
         
       return response(200, f"Stack {stack.name} has been deleted.", None, None), 200
