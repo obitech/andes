@@ -308,7 +308,6 @@
     &quot;proxy_service&quot;: 1,
     &quot;proxy_port&quot;: 80,
     &quot;services&quot;: [1],
-    &quot;active&quot;: false,
     &quot;created_at&quot;: &quot;2017-12-14T09:21:50.503274&quot;,
     &quot;last_changed&quot;: &quot;2017-12-14T09:21:50.503274&quot;
 }
@@ -325,12 +324,14 @@
     &quot;mapped_ports&quot;: [&quot;80:80&quot;],
     &quot;volumes&quot;: [&quot;/srv/www:/&quot;],
     &quot;env&quot;: [&quot;FOO=BAR&quot;,&quot;DEBUG=1&quot;],
+    &quot;restart&quot;: &quot;always&quot;,
     &quot;ip&quot;: &quot;172.42.0.11&quot;
 }
 </code></pre>
 
 <h3 id="created-conf-file">Created .conf file</h3>
-<pre><code class="json"># andes/andes/stacks/conf.d/foo_stack.conf will have been created
+<pre><code># Location: andes/stacks/conf.d/&lt;foo_stack class=&quot;conf&quot;&gt;&lt;/foo_stack&gt;
+
 test.example.com {
   test@example.com
   proxy / foo_service:80 {
@@ -339,6 +340,35 @@ test.example.com {
   logs stdout
   errors stderror
 }
+</code></pre>
+
+<h3 id="create-docker-composeyml">Create docker-compose.yml</h3>
+<pre><code class="yaml"># Location: andes/stacks/foo_stack/docker-compose.yml
+
+version: '3'
+services:
+  foo_service:
+    image: abiosoft/caddy
+    container_name: foo_stack_foo_service
+    expose:
+      - &quot;80&quot;
+      - &quot;8080&quot;
+    ports:
+      - &quot;80:80&quot;
+    volumes:
+      - &quot;/srv/www:/&quot;
+    environment:
+      - &quot;FOO=BAR&quot;
+      - &quot;DEBUG=1&quot;
+    external_links:
+      - caddy
+    networks:
+      andes_default:
+        ipv4_address: 172.42.0.11
+    restart: always
+networks:
+  andes_default:
+    external: true
 </code></pre></div>
         </div>
 

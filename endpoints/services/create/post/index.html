@@ -319,6 +319,12 @@
 <td>Environment variables to be passed to service</td>
 <td>No</td>
 </tr>
+<tr>
+<td>restart</td>
+<td>String</td>
+<td>The restart flag for this service</td>
+<td>No</td>
+</tr>
 </tbody>
 </table>
 <h2 id="returns">Returns</h2>
@@ -355,6 +361,7 @@
     &quot;blueprint&quot;: 1,
     &quot;volumes&quot;: [&quot;/srv/www:/&quot;],
     &quot;env&quot;: [&quot;FOO=BAR&quot;,&quot;DEBUG=1&quot;],
+    &quot;restart&quot;: &quot;always&quot;,
     &quot;stacks&quot;: 1
 }
 </code></pre>
@@ -374,6 +381,7 @@
         &quot;mapped_ports&quot;: [&quot;80:80&quot;],
         &quot;volumes&quot;: [&quot;/srv/www:/&quot;],
         &quot;env&quot;: [&quot;FOO=BAR&quot;,&quot;DEBUG=1&quot;],
+        &quot;restart&quot;: &quot;always&quot;,
         &quot;ip&quot;: &quot;172.42.0.11&quot;
     }
 }
