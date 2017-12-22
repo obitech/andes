@@ -62,8 +62,9 @@ Status code | Data | Comments
 ```
 
 ### Created .conf file
-```json
-# andes/andes/stacks/conf.d/foo_stack.conf will have been created
+```
+# Location: andes/stacks/conf.d/<foo_stack class="conf"></foo_stack>
+
 test.example.com {
   test@example.com
   proxy / foo_service:80 {
@@ -74,8 +75,10 @@ test.example.com {
 }
 ```
 
-### Create docker-compose file
-```
+### Create docker-compose.yml
+```yaml
+# Location: andes/stacks/foo_stack/docker-compose.yml
+
 version: '3'
 services:
   foo_service:
