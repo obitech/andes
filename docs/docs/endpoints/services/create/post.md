@@ -15,6 +15,7 @@ exposed_ports|Array of integers|Ports to be [exposed](https://docs.docker.com/co
 mapped_ports|Array of strings|Ports to be [mapped](https://docs.docker.com/compose/compose-file/#ports) between host and service|No
 volumes|Array of strings|Volumes to be [mapped](https://docs.docker.com/compose/compose-file/#short-syntax-3) between host and service. Only supports file system mapping.|No
 env|Array of strings|Environment variables to be passed to service|No
+restart|String|The restart flag for this service|No
 
 
 ## Returns
@@ -36,6 +37,7 @@ Status code | Data | Comments
     "blueprint": 1,
     "volumes": ["/srv/www:/"],
     "env": ["FOO=BAR","DEBUG=1"],
+    "restart": "always",
     "stacks": 1
 }
 ```
@@ -55,6 +57,7 @@ Status code | Data | Comments
         "mapped_ports": ["80:80"],
         "volumes": ["/srv/www:/"],
         "env": ["FOO=BAR","DEBUG=1"],
+        "restart": "always",
         "ip": "172.42.0.11"
     }
 }

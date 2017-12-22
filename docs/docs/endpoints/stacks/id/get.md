@@ -24,7 +24,6 @@ Status code | Data | Comments
         "description": "test stack",
         "subdomain": "test.example.com",
         "services": [1],
-        "active": false,
         "created_at": "2017-12-14T09:21:50.503274",
         "last_changed": "2017-12-14T09:21:50.503274"
     }

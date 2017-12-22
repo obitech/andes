@@ -39,7 +39,6 @@ Status code | Data | Comments
     "proxy_service": 1,
     "proxy_port": 80,
     "services": [1],
-    "active": false,
     "created_at": "2017-12-14T09:21:50.503274",
     "last_changed": "2017-12-14T09:21:50.503274"
 }
@@ -57,6 +56,7 @@ Status code | Data | Comments
     "mapped_ports": ["80:80"],
     "volumes": ["/srv/www:/"],
     "env": ["FOO=BAR","DEBUG=1"],
+    "restart": "always",
     "ip": "172.42.0.11"
 }
 ```
@@ -72,4 +72,32 @@ test.example.com {
   logs stdout
   errors stderror
 }
+```
+
+### Create docker-compose file
+```
+version: '3'
+services:
+  foo_service:
+    image: abiosoft/caddy
+    container_name: foo_stack_foo_service
+    expose:
+      - "80"
+      - "8080"
+    ports:
+      - "80:80"
+    volumes:
+      - "/srv/www:/"
+    environment:
+      - "FOO=BAR"
+      - "DEBUG=1"
+    external_links:
+      - caddy
+    networks:
+      andes_default:
+        ipv4_address: 172.42.0.11
+    restart: always
+networks:
+  andes_default:
+    external: true
 ```

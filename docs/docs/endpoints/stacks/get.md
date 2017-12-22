@@ -26,7 +26,6 @@ Status code | Data | Comments
             "services": [
                 1
             ],
-            "active": false,
             "created_at": "2017-12-16T18:15:12.179471",
             "last_changed": "2017-12-16T18:15:12.179471"
         }

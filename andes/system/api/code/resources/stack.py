@@ -305,6 +305,11 @@ class StackApply(Resource):
     else:
       return response(500, None, f"An error has occured while trying to assemble data for compose file", None), 500
 
+  @jwt_required()
+  def delete(self, _id):
+    """API resource to delete project files."""
+    pass
+
 
 class StackUp(Resource):
   """API resource to `docker-compose up` a specific stack configuration."""

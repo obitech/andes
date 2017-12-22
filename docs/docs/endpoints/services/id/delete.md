@@ -1,5 +1,5 @@
 # DELETE /services/<_id>
-Deletes a specific Service according to passed ID.
+Deletes a specific service according to passed ID.
 ## Headers
 * `Authorization: JWT <JWT Token>`
 

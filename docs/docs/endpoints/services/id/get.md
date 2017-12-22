@@ -28,6 +28,7 @@ Status code | Data | Comments
         "mapped_ports": ["80:80"],
         "volumes": ["/srv/www:/"],
         "env": ["FOO=BAR","DEBUG=1"],
+        "restart": "always",
         "ip": "172.42.0.11"
     }
 }

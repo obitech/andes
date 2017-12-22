@@ -1,5 +1,5 @@
 # GET /services
-Retrieves a list of Services.
+Retrieves a list of services.
 ## Headers
 * `Authorization: JWT <JWT Token>`
 
@@ -38,6 +38,7 @@ Status code | Data | Comments
                 "FOO=BAR",
                 "DEBUG=1"
             ],
+            "restart": "always",
             "ip": "172.42.0.11"
         }
     ]
