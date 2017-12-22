@@ -209,7 +209,7 @@ class ServiceModel(db.Model):
 
     try:
       for volume in volumes:
-        if not re.compile("^(/[\w.]*/?)+:(/[\w.]*/?)+$").match(volume):
+        if not re.compile("^(/[\w.]*/?)+:(/[\w.]+/?)+$").match(volume):
           return False
         
     except:
