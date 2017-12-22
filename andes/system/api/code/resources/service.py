@@ -46,8 +46,11 @@ class ServiceCreate(Resource):
                       help = "The volumes your service needs mounted are option")
   parser.add_argument('env',
                       type= str,
-                      action= 'append',
+                      action = 'append',
                       help = "Environment variables are optional.")
+  parser.add_argument('restart',
+                      type = str,
+                      help = "The restart flag for this service is optional.")
   parser.add_argument('stacks',
                       type = int,
                       help = "Stacks are optional.")  
@@ -64,6 +67,7 @@ class ServiceCreate(Resource):
         data['mapped_ports'] (list of str): Ports to be mapped between host and container.
         data['volumes'](list of str): Volumes to be mapped between host and container.
         data['env'] (list of str): Environment variables for container.
+        data['restart'] (str): The restart flag for the container.
         data['stacks'] (list of int): Stack this service should be a part of.
 
     Returns:
@@ -100,6 +104,11 @@ class ServiceCreate(Resource):
       if not ServiceModel.valid_env(data['env']):
         return {'code': 400, 'error': f"Invalid environment variables."}
 
+    # Check if restart flag is part of allowed options:
+    if data['restart']:
+      if data['restart'].lower() not in ["no", "always"]:
+        return {'code': 400, 'error': f"Invalid restart flag."}
+
     # Check if passed stack exists.
     if data['stacks'] and data['stacks'] != [None]:
       for x in data['stacks']:
@@ -132,6 +141,7 @@ class ServiceCreate(Resource):
                            exposed_ports = exposed_ports,
                            mapped_ports = mapped_ports,
                            volumes = volumes,
+                           restart = data['restart'],
                            env = env)
 
     # Add stack to service table
@@ -173,6 +183,7 @@ class ServiceCreate(Resource):
       service.mapped_ports = mapped_ports
       service.volumes = volumes
       service.env = env
+      service.restart = data['restart']
       service.blueprint_id = data['blueprint']
 
       if data['stacks'] and data['stacks'] != [None]:
@@ -200,6 +211,7 @@ class ServiceCreate(Resource):
                              mapped_ports = mapped_ports,
                              volumes = volumes,
                              env = env,
+                             restart = data['restart'],
                              blueprint_id = data['blueprint'])
 
       if data['stacks'] and data['stacks'] != [None]:

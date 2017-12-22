@@ -25,6 +25,7 @@ def get_compose_data(services, stack_name):
         tmp['image'] = BlueprintModel.find_by_id(service.blueprint_id).image
         tmp['exposed_ports'] = ServiceModel.port_list(service.exposed_ports)
         tmp['ip'] = service.ip
+        tmp['restart'] = service.restart
 
         if service.volumes:
           tmp['volumes'] = ServiceModel.split_string(service.volumes)

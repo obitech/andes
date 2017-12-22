@@ -41,7 +41,9 @@ services:
     networks:
       andes_default:
         ipv4_address: {{ service.ip }}
-    restart: always
+    {% if service.restart %}
+    restart: {{ service.restart }}
+    {% endif %}
   {% endfor %}
 networks:
   andes_default:

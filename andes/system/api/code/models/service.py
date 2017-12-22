@@ -22,6 +22,7 @@ class ServiceModel(db.Model):
     volumes (str, optional): Mapped volumes from Host to service.
       This will be assembled by resources.service from ["/srv/www:/etc", "/path/to:/folder"] to 
       "/srv/www:/etc,/path/to:/folder".
+    restart (str, optional): The restart flag for this service. Defaults to None.
     env (str, optional): Passed environment variables.
       This will be assembled by resources.service from ["ENV_VAR=1", "ENV_VAR_2=2"] to 
       "ENV_VAR=1,ENV_VAR_2=2".
@@ -37,11 +38,13 @@ class ServiceModel(db.Model):
   mapped_ports = db.Column(db.String(512))
   volumes = db.Column(db.String(512))
   env = db.Column(db.String(512))
+  restart = db.Column(db.String(16))
   ip = db.Column(db.String(15))
+
 
   blueprint_id = db.Column(db.Integer, db.ForeignKey('blueprints.id'), nullable=False)
 
-  def __init__(self, name, blueprint_id, exposed_ports, mapped_ports, description=None, volumes=None, env=None):
+  def __init__(self, name, blueprint_id, restart=None, exposed_ports=None, mapped_ports=None, description=None, volumes=None, env=None):
     """Service initialization method
 
     Args:
@@ -64,6 +67,7 @@ class ServiceModel(db.Model):
     self.mapped_ports = mapped_ports
     self.exposed_ports = exposed_ports
     self.volumes = volumes
+    self.restart = restart
     self.env = env
     self.blueprint_id = blueprint_id
     self.ip = None
@@ -85,6 +89,7 @@ class ServiceModel(db.Model):
       'mapped_ports': self.split_string(self.mapped_ports),
       'volumes': self.split_string(self.volumes),
       'env': self.split_string(self.env),
+      'restart': self.restart,
       'ip': self.ip
     }
 
