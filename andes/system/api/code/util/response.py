@@ -39,4 +39,5 @@ def container_data(container):
 
   except:
     print_exc()
-    return response(500, None, f"An internal error occured while trying to retrieve container data.", None), 500
+    
+  return None

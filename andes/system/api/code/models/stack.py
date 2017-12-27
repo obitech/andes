@@ -129,8 +129,8 @@ class StackModel(db.Model):
     """
 
     try:
-      # or ((^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})|(localhost))$
-      if re.compile("^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}$").match(domain):
+      # old: ^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}$
+      if re.compile("((^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})|(([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.)?localhost))$").match(domain):
         return True
     except:
       print_exc()

@@ -15,7 +15,9 @@ def get_container(name):
 
   try:
     return client.containers.get(name)
-  except:
+  except docker.errors.NotFound:
+    pass
+  except docker.errors.APIError:
     print_exc()
 
   return None

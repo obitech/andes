@@ -333,6 +333,9 @@ class StackUp(Resource):
 
     project_folder = stack.get_project_folder()
 
+    if not stack.services:
+      return response(400, f"Stack {stack.name} has no services assigned.", None, None), 400      
+
     # Check if folders exist
     if not path.exists(project_folder):
       return response(404, None, f"Project folder for stack {stack.name} doesn't exist.", None), 404
@@ -382,3 +385,47 @@ class StackDown(Resource):
     except:
       print_exc()
       return response(500, None, f"An error occured while trying to shut down {stack.name}.", None), 500
+
+
+class StackStatus(Resource):
+  """API resource to retrieve information about a specific stack.
+
+  Checks if containers of a specific stack are running and returns information about them.
+  """
+
+  @jwt_required()
+  def get(self, _id):
+    """Shows information about a stack
+
+    Args:
+      _id (int): The stack ID.
+
+    """
+    stack = StackModel.find_by_id(_id)
+
+    if not stack:
+      return response(404, None, f"Stack with ID {_id} does not exist.", None), 404      
+
+    project_folder = stack.get_project_folder()
+
+    # Check if folders exist
+    if not path.exists(project_folder):
+      return response(404, None, f"Project folder for stack {stack.name} doesn't exist.", None), 404    
+
+    # Loop through assigned services and add container to list if possible
+    if stack.services:
+      container_list = []
+      for service in stack.services:
+        container = get_container(f"{stack.name}_{service.name}")
+        if container:
+          container_list.append(container)
+    else:
+      return response(400, f"Stack {stack.name} has no services assigned.", None, None), 400
+
+    # If containers are running, output information
+    if len(container_list) > 0:
+      return response(200, f"Data for services in stack {stack.name} has been retrieved.", None, [container_data(x) for x in container_list]), 200
+
+    # Else output that nothing is up
+    else:
+      return response(200, f"No service is in running or exited status.", None, None), 200
