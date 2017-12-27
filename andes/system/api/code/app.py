@@ -7,7 +7,7 @@ from security import authenticate, identity
 from resources.user import UserRegister
 from resources.blueprint import BlueprintList, BlueprintCreate, Blueprint
 from resources.service import ServiceList, ServiceCreate, Service
-from resources.stack import StackList, StackCreate, Stack, StackApply, StackUp, StackDown, StackStatus
+from resources.stack import StackList, StackCreate, Stack, StackApply, StackUp, StackDown, StackStatus, StackLogs
 
 
 app = Flask(__name__)
@@ -37,6 +37,7 @@ api.add_resource(StackApply, '/stacks/<int:_id>/apply')
 api.add_resource(StackUp, '/stacks/<int:_id>/up')
 api.add_resource(StackDown, '/stacks/<int:_id>/down')
 api.add_resource(StackStatus, '/stacks/<int:_id>/status')
+api.add_resource(StackLogs, '/stacks/<int:_id>/logs')
 
 if __name__ == "__main__":
   from db import db

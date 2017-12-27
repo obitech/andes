@@ -319,7 +319,7 @@ class StackUp(Resource):
   def post(self, _id):
     """Brings up a specific stack configuration
 
-    Runs `docker-compose up`
+    Runs `docker-compose up -d`
 
     Args:
       _id (int): The stack ID of the stack to be started.
@@ -347,11 +347,11 @@ class StackUp(Resource):
         return response(400, None, f"Service {service.name} is already running.", container_data(container)), 400
 
     try:
-      subprocess.run(["docker-compose", "up", "-d"], check=True, cwd=project_folder)
-      return response(200, f"Stack {stack.name} has been started.", None, None), 200
-    except:
+      cmd = subprocess.run(["docker-compose", "up", "-d"], check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=project_folder)
+      return response(200, f"Stack {stack.name} has been started.", None, {'stdout': cmd.stdout.decode("utf-8")}), 200
+    except subprocess.CalledProcessError as e:
       print_exc()
-      return response(500, None, f"An error occurbed while trying to start {stack.name}", None), 500
+      return response(500, None, f"An error occured while trying to start {stack.name}", {'stdout': e.stdout.decode("utf-8")}), 500
 
 
 class StackDown(Resource):
@@ -380,11 +380,11 @@ class StackDown(Resource):
       return response(404, None, f"Project folder for stack {stack.name} doesn't exist.", None), 404
 
     try:
-      subprocess.run(["docker-compose", "down"], check=True, cwd=project_folder)
-      return response(200, f"Stack {stack.name} has been shut down.", None, None), 200
-    except:
+      cmd = subprocess.run(["docker-compose", "down"], check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=project_folder)
+      return response(200, f"Stack {stack.name} has been shut down.", None, {'stdout': cmd.stdout.decode("utf-8")}), 200
+    except subprocess.CalledProcessError as e:
       print_exc()
-      return response(500, None, f"An error occured while trying to shut down {stack.name}.", None), 500
+      return response(500, None, f"An error occured while trying to stop {stack.name}", {'stdout': e.stdout.decode("utf-8")}), 500
 
 
 class StackStatus(Resource):
@@ -406,9 +406,8 @@ class StackStatus(Resource):
     if not stack:
       return response(404, None, f"Stack with ID {_id} does not exist.", None), 404      
 
-    project_folder = stack.get_project_folder()
-
     # Check if folders exist
+    project_folder = stack.get_project_folder()
     if not path.exists(project_folder):
       return response(404, None, f"Project folder for stack {stack.name} doesn't exist.", None), 404    
 
@@ -425,6 +424,52 @@ class StackStatus(Resource):
     # If containers are running, output information
     if len(container_list) > 0:
       return response(200, f"Data for services in stack {stack.name} has been retrieved.", None, [container_data(x) for x in container_list]), 200
+
+    # Else output that nothing is up
+    else:
+      return response(200, f"No service is in running or exited status.", None, None), 200
+
+
+class StackLogs(Resource):
+  """API resource to retrieve logs of services in stack"""
+
+  @jwt_required()
+  def get(self, _id):
+    """Displays STDOUT and STDERR of each container/service in a stack."""
+    stack = StackModel.find_by_id(_id)
+
+    if not stack:
+      return response(404, None, f"Stack with ID {_id} does not exist.", None), 404
+
+    # Check if folders exist
+    project_folder = stack.get_project_folder()
+    if not path.exists(project_folder):
+      return response(404, None, f"Project folder for stack {stack.name} doesn't exist.", None), 404
+
+    # Loop through assigned services and add container to list if possible
+    if stack.services:
+      container_list = []
+      for service in stack.services:
+        container = get_container(f"{stack.name}_{service.name}")
+        if container:
+          container_list.append(container)
+    else:
+      return response(400, f"Stack {stack.name} has no services assigned.", None, None), 400
+
+    if len(container_list) > 0:
+      logs = []
+      for container in container_list:
+        try:
+          logs.append({
+                        'id': container.short_id,
+                        'name': container.name,
+                        'logs': container.logs().decode("utf-8").split('\n')
+                      })
+        except:
+          print_exc()
+          return response(500, None, f"An error occured while trying to fetch container data.", None), 500
+
+      return response(200, f"Data for services in stack {stack.name} has been retrieved.", None, logs), 200
 
     # Else output that nothing is up
     else:
