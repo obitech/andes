@@ -8,8 +8,9 @@ import subprocess
 from models.blueprint import BlueprintModel
 from models.service import ServiceModel
 from models.stack import StackModel
-from util.response import response
+from util.response import response, container_data
 from util.confgen import get_compose, create_file, get_compose_data, get_caddyconf
+from util.managedocker import get_container
 
 
 class StackList(Resource):
@@ -326,6 +327,12 @@ class StackUp(Resource):
     """
 
     stack = StackModel.find_by_id(_id)
+
+    # Check if containers are already up
+    for service in stack.services:
+      container = get_container(f"{stack.name}_{service.name}")
+      if container:
+        return response(400, None, f"Service {service.name} is already running.", container_data(container)), 400
 
     if not stack:
       return response(404, None, f"Stack with ID {_id} does not exist.", None), 404

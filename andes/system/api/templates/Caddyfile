@@ -1,4 +1,8 @@
+{% if subdomain %}
 {{ subdomain }} {
+{% else %}
+localhost {
+{% endif %}
   {% if email != None %}
   {{ email }}
   {% else %}

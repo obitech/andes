@@ -17,3 +17,26 @@ def response(status, message, error, data):
     'error': error,
     'data': data
   }
+
+def container_data(container):
+  """Returns a dictionary with information about a container
+
+  Args:
+    The name of the container
+
+  Returns:
+    Dictionary with various information about the container.
+  """
+  from traceback import print_exc
+
+  try:
+    return {
+      'id': container.short_id,
+      'name': container.name,
+      'status': container.status,
+      'labels': container.labels
+    }
+
+  except:
+    print_exc()
+    return response(500, None, f"An internal error occured while trying to retrieve container data.", None), 500
