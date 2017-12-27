@@ -35,7 +35,7 @@ api.add_resource(StackList, '/stacks')
 api.add_resource(StackCreate, '/stacks/create')
 api.add_resource(Stack, '/stacks/<int:_id>')
 api.add_resource(StackApply, '/stacks/<int:_id>/apply')
-#api.add_resource(StackUp, '/stacks/<int:_id>/up')
+api.add_resource(StackUp, '/stacks/<int:_id>/up')
 
 if __name__ == "__main__":
   from db import db
