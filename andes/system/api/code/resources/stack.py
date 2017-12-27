@@ -328,20 +328,20 @@ class StackUp(Resource):
 
     stack = StackModel.find_by_id(_id)
 
-    # Check if containers are already up
-    for service in stack.services:
-      container = get_container(f"{stack.name}_{service.name}")
-      if container:
-        return response(400, None, f"Service {service.name} is already running.", container_data(container)), 400
-
     if not stack:
-      return response(404, None, f"Stack with ID {_id} does not exist.", None), 404
+      return response(404, None, f"Stack with ID {_id} does not exist.", None), 404      
 
     project_folder = stack.get_project_folder()
 
     # Check if folders exist
     if not path.exists(project_folder):
       return response(404, None, f"Project folder for stack {stack.name} doesn't exist.", None), 404
+
+    # Check if containers are already up
+    for service in stack.services:
+      container = get_container(f"{stack.name}_{service.name}")
+      if container:
+        return response(400, None, f"Service {service.name} is already running.", container_data(container)), 400
 
     try:
       subprocess.run(["docker-compose", "up", "-d"], check=True, cwd=project_folder)
@@ -351,3 +351,34 @@ class StackUp(Resource):
       return response(500, None, f"An error occurbed while trying to start {stack.name}", None), 500
 
 
+class StackDown(Resource):
+  """API resource to `docker-compose down` a specific stack configuration."""
+  
+  @jwt_required()
+  def post(self, _id):
+    """Shuts down a specific stack configurations
+
+    Runs `docker-compose down`
+
+    Args:
+      _id (int): The stack ID of the stack to be shut down.
+
+    """
+
+    stack = StackModel.find_by_id(_id)
+
+    if not stack:
+      return response(404, None, f"Stack with ID {_id} does not exist.", None), 404      
+
+    project_folder = stack.get_project_folder()
+
+    # Check if folders exist
+    if not path.exists(project_folder):
+      return response(404, None, f"Project folder for stack {stack.name} doesn't exist.", None), 404
+
+    try:
+      subprocess.run(["docker-compose", "down"], check=True, cwd=project_folder)
+      return response(200, f"Stack {stack.name} has been shut down.", None, None), 200
+    except:
+      print_exc()
+      return response(500, None, f"An error occured while trying to shut down {stack.name}.", None), 500

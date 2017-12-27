@@ -8,7 +8,7 @@ from security import authenticate, identity
 from resources.user import UserRegister
 from resources.blueprint import BlueprintList, BlueprintCreate, Blueprint
 from resources.service import ServiceList, ServiceCreate, Service
-from resources.stack import StackList, StackCreate, Stack, StackApply, StackUp
+from resources.stack import StackList, StackCreate, Stack, StackApply, StackUp, StackDown
 
 
 app = Flask(__name__)
@@ -36,6 +36,7 @@ api.add_resource(StackCreate, '/stacks/create')
 api.add_resource(Stack, '/stacks/<int:_id>')
 api.add_resource(StackApply, '/stacks/<int:_id>/apply')
 api.add_resource(StackUp, '/stacks/<int:_id>/up')
+api.add_resource(StackDown, '/stacks/<int:_id>/down')
 
 if __name__ == "__main__":
   from db import db
