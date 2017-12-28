@@ -48,6 +48,9 @@
                     <li >
                         <a href="../../../..">Home</a>
                     </li>
+                    <li >
+                        <a href="../../../../overview/">Endpoint Overview</a>
+                    </li>
                     <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Endpoint Reference <b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -215,6 +218,66 @@
 <li >
     <a href="../../id/apply/post/">POST</a>
 </li>
+            
+<li >
+    <a href="../../id/apply/delete/">DELETE</a>
+</li>
+    </ul>
+  </li>
+            
+  <li class="dropdown-submenu">
+    <a href="#">/stacks/<_id>/manage</a>
+    <ul class="dropdown-menu">
+            
+  <li class="dropdown-submenu">
+    <a href="#">./up</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../id/manage/up/post/">POST</a>
+</li>
+    </ul>
+  </li>
+            
+  <li class="dropdown-submenu">
+    <a href="#">./down</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../id/manage/down/post/">POST</a>
+</li>
+    </ul>
+  </li>
+            
+  <li class="dropdown-submenu">
+    <a href="#">./status</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../id/manage/status/get/">GET</a>
+</li>
+    </ul>
+  </li>
+            
+  <li class="dropdown-submenu">
+    <a href="#">./logs</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../id/manage/logs/get/">GET</a>
+</li>
+    </ul>
+  </li>
+            
+  <li class="dropdown-submenu">
+    <a href="#">./remove</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../../id/manage/remove/delete/">DELETE</a>
+</li>
+    </ul>
+  </li>
     </ul>
   </li>
     </ul>
@@ -260,7 +323,7 @@
                 <div class="col-md-9" role="main">
 
 <h1 id="put-stackscreate">PUT /stacks/create</h1>
-<p>Creates or updates a stack.</p>
+<p>Creates or updates a stack. Please be aware that if a stack is already <a href="../../id/apply/post/">applied</a>, those changes will not be propagated downstream, so you will have to apply the stack again to create its project files. It is also advised to shutdown and and remove a stack first.</p>
 <h2 id="headers">Headers</h2>
 <ul>
 <li><code>Authorization: JWT &lt;JWT Token&gt;</code></li>
@@ -292,7 +355,7 @@
 <tr>
 <td>subdomain</td>
 <td>String</td>
-<td>The subdomain this stack will be reachable under.</td>
+<td>The subdomain this stack will be reachable under. Defaults to localhost</td>
 <td>No</td>
 </tr>
 <tr>

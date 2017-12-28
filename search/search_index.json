@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/",
-            "text": "Andes API Documentation\n\n\nWelcome to Andes' API documentation. For information on classes and functions themselves, please refer to the source for now.\n\n\n\n\nGithub repo\n\n\nDocker image\n\n\n\n\nGeneral\n\n\nAndes offers an easy-to-use way to deploy multiple different container setups (stacks) on the same host. For this there are three parts:\n\n\n\n\nCaddy\n acting as a reverse proxy handling requests to your different stacks.\n\n\nAndes API to create and manage your stacks and build your docker-compose files.\n\n\nDocker-compose bringing up your previously defined stacks as docker-compose.yml files.\n\n\n\n\nNormally the workflow looks like that:\n\n\n\n\nYou register a blueprint, which is essentially a docker image on docker hub, or one you created locally.\n\n\nFrom a blueprint you create a service, which is defining your container environment\n\n\nYou add one or more services to a stack.\n\n\nYou apply a stack, which will create the \ndocker-compose.yml\n and specific \nCaddyfile\n for it.\n\n\nYou launch your stack and Caddy will serve it on your specified subdomain.\n\n\n\n\nNote that Andes' stacks have nothing to do with the \ndocker stack\n command in swarm mode.\n\n\nInstallation\n\n\nAfter you've cloned the github repo, the best way to setup andes is to run the bootstrap script. This installation has been tested on Debian, Ubuntu and macOS.\n\n\nbootstrap.sh\n\n\nThe script accepts the following arguments:\n\n\n\n\n\n\n\n\nArgument\n\n\nFunction\n\n\n\n\n\n\n\n\n\n\n-h\n\n\nDisplays usage information\n\n\n\n\n\n\n-c\n\n\nSkips Caddy installation and setup. Use this flag if you only want to install docker and docker-compose\n\n\n\n\n\n\n-d\n\n\nSkips docker and docker-compose installation. Use this flag if you have already docker installed and just want to setup Caddy for Andes.\n\n\n\n\n\n\n-H <hostname>\n\n\nSpecifies the hostname Caddy to be reached under. Defaults to localhost\n\n\n\n\n\n\n-e <email>\n\n\nYour email address which is required to setup Let's Encrypt TLS certificates. Without this, TLS can not be used.\n\n\n\n\n\n\n-V <version>\n\n\nThe docker-compose version to be installed. Defaults to 1.17.1\n\n\n\n\n\n\n\n\nDocker installation\n\n\nFor the docker installation, the script follows the procedure from the official docker documentation\n\n\n\n\nRemove deprecated docker packages\n\n\nInstall additional packages, namely\n\n\napt-transport-https\n\n\nca-certificates\n\n\ncurl\n\n\nsoftware-properties-common\n\n\nbash-completion\n\n\n\n\n\n\nAdd and verify docker's official GPG key\n\n\nAdd and install the \ndocker-ce\n repository.\n\n\nAdd your user to the docker group\n\n\nEnable the docker.service\n\n\nCurl and install docker-compose, plus add it to \nbash-completion\n\n\n\n\nBetween the docker and Caddy setup, the script will also create a user defined docker network with subnet \n172.42.0.0./16\n where Caddy and the deployed containers will run in.\n\n\nCaddy setup\n\n\n\n\nCreate a \nCaddyfile\n in \nandes/andes/system\n according to the previously passed arguments\n\n\nPull the \nCaddy container image\n\n\nPull the \nAndes API container image\n\n\nBring up the \ndocker-compose.yml\n in \nandes/andes/system\n.\n\n\n\n\nCheck with \ndocker container ls\n if you have the andes and Caddy container up and running. The API will will be reachable under your specified hostname + \n/api\n\n\nEndpoint overview\n\n\nAuthentication\n\n\n\n\n\n\n\n\nMethod\n\n\nEndpoint\n\n\nComments\n\n\n\n\n\n\n\n\n\n\nPOST\n\n\n/register\n\n\nRegisters new user\n\n\n\n\n\n\nPOST\n\n\n/auth\n\n\nAuthenticates user\n\n\n\n\n\n\n\n\nBlueprints\n\n\n\n\n\n\n\n\nMethod\n\n\nEndpoint\n\n\nComments\n\n\n\n\n\n\n\n\n\n\nGET\n\n\n/blueprints\n\n\nRetrieves list of blueprints\n\n\n\n\n\n\nGET\n\n\n/blueprints/<_id>\n\n\nRetrieves single blueprint\n\n\n\n\n\n\nDELETE\n\n\n/blueprints/<_id>\n\n\nDeletes a single blueprint\n\n\n\n\n\n\nPOST\n\n\n/blueprints/create\n\n\nCreates a new blueprint\n\n\n\n\n\n\nPUT\n\n\n/blueprints/create\n\n\nCreates or updates a blueprint\n\n\n\n\n\n\n\n\nServices\n\n\n\n\n\n\n\n\nMethod\n\n\nEndpoint\n\n\nComments\n\n\n\n\n\n\n\n\n\n\nGET\n\n\n/services\n\n\nRetrieves list of services\n\n\n\n\n\n\nGET\n\n\n/services/<_id>\n\n\nRetrieves single services\n\n\n\n\n\n\nDELETE\n\n\n/services/<_id>\n\n\nDeletes single service\n\n\n\n\n\n\nPOST\n\n\n/services/create\n\n\nCreates a new service\n\n\n\n\n\n\nPUT\n\n\n/services/create\n\n\nCreates or updates a service\n\n\n\n\n\n\n\n\nStacks\n\n\n\n\n\n\n\n\nMethod\n\n\nEndpoint\n\n\nComments\n\n\n\n\n\n\n\n\n\n\nGET\n\n\n/stacks\n\n\nRetrieves list of stacks\n\n\n\n\n\n\nGET\n\n\n/stacks/<_id>\n\n\nRetrieves single stacks\n\n\n\n\n\n\nDELETE\n\n\n/stacks/<_id>\n\n\nDeletes single service\n\n\n\n\n\n\nPOST\n\n\n/stacks/<_id>/apply\n\n\nApplies a stack and saves config files to disk\n\n\n\n\n\n\nPOST\n\n\n/stacks/create\n\n\nCreates a new stack\n\n\n\n\n\n\nPUT\n\n\n/stacks/create\n\n\nCreates or updates a stack\n\n\n\n\n\n\n\n\nUsing the API\n\n\nResponses return, in general, a JSON object with metadata and (if applicable) the actual data or an error message in the following format:\n\n\n# Sample format\n{\n    \"status\": <status code>,\n    \"message\": <...>,\n    \"error\": <...>,\n    \"data\": <...>\n}\n\nFor more information on the response format, have a look at the endpoint reference.\n\n\n\n\n\nAuthentication\n\n\nIf you're starting from scratch you need to create a user first:\n\n\n# Endpoint\nPOST /register\n\n# Header\nContent-Type: application/json\n\n# Body\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}\n\n\n\n\nNow you need to authenticate: \n\n\n# Endpoint\nPOST /auth\n\n# Header\nContent-Type: application/json\n\n# Body\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}\n\n\n\n\nWhich will return a JWT token:\n\n\n{\n  \"access_token\": superSecretToken\n}\n\n\n\n\nThis needs to be included in following requests as a header:\n\n\n# Endpoint\nGET /stacks\n\n# Header\nAuthorization: JWT superSecretToken\n\n# Response\n{\n    \"status\": 200,\n    \"message\": \"Stacks have been retrieved.\",\n    \"error\": null,\n    \"data\": []\n}",
+            "text": "Andes API Documentation\n\n\nWelcome to Andes' API documentation. For information on classes and functions themselves, please refer to the source for now.\n\n\n\n\nGithub repo\n\n\nDocker image\n\n\n\n\nGeneral\n\n\nAndes offers an easy-to-use way to deploy multiple different container setups (stacks) on the same host. For this there are three parts:\n\n\n\n\nCaddy\n acting as a reverse proxy handling requests to your different stacks.\n\n\nAndes API to create and manage your stacks and build your docker-compose files.\n\n\nDocker-compose bringing up your previously defined stacks as docker-compose.yml files.\n\n\n\n\nNormally the workflow looks like that:\n\n\n\n\nYou register a blueprint, which is essentially a docker image on docker hub, or one you created locally.\n\n\nFrom a blueprint you create a service, which is defining your container environment\n\n\nYou add one or more services to a stack.\n\n\nYou apply a stack, which will create the \ndocker-compose.yml\n and specific \nCaddyfile\n for it.\n\n\nYou launch your stack and Caddy will serve it on your specified subdomain.\n\n\n\n\nNote that Andes' stacks have nothing to do with the \ndocker stack\n command in swarm mode.\n\n\nInstallation\n\n\nAfter you've cloned the github repo, the best way to setup andes is to run the bootstrap script. This installation has been tested on Debian, Ubuntu and macOS.\n\n\nbootstrap.sh\n\n\nThe script accepts the following arguments:\n\n\n\n\n\n\n\n\nArgument\n\n\nFunction\n\n\n\n\n\n\n\n\n\n\n-h\n\n\nDisplays usage information\n\n\n\n\n\n\n-c\n\n\nSkips Caddy installation and setup. Use this flag if you only want to install docker and docker-compose\n\n\n\n\n\n\n-d\n\n\nSkips docker and docker-compose installation. Use this flag if you have already docker installed and just want to setup Caddy for Andes.\n\n\n\n\n\n\n-H <hostname>\n\n\nSpecifies the hostname Caddy to be reached under. Defaults to localhost\n\n\n\n\n\n\n-e <email>\n\n\nYour email address which is required to setup Let's Encrypt TLS certificates. Without this, TLS can not be used.\n\n\n\n\n\n\n-V <version>\n\n\nThe docker-compose version to be installed. Defaults to 1.17.1\n\n\n\n\n\n\n\n\nDocker installation\n\n\nFor the docker installation, the script follows the procedure from the official docker documentation\n\n\n\n\nRemove deprecated docker packages\n\n\nInstall additional packages, namely\n\n\napt-transport-https\n\n\nca-certificates\n\n\ncurl\n\n\nsoftware-properties-common\n\n\nbash-completion\n\n\n\n\n\n\nAdd and verify docker's official GPG key\n\n\nAdd and install the \ndocker-ce\n repository.\n\n\nAdd your user to the docker group\n\n\nEnable the docker.service\n\n\nCurl and install docker-compose, plus add it to \nbash-completion\n\n\n\n\nBetween the docker and Caddy setup, the script will also create a user defined docker network with subnet \n172.42.0.0./16\n where Caddy and the deployed containers will run in.\n\n\nCaddy setup\n\n\n\n\nCreate a \nCaddyfile\n in \nandes/andes/system\n according to the previously passed arguments\n\n\nPull the \nCaddy container image\n\n\nPull the \nAndes API container image\n\n\nBring up the \ndocker-compose.yml\n in \nandes/andes/system\n.\n\n\n\n\nCheck with \ndocker container ls\n if you have the andes and Caddy container up and running. The API will will be reachable under your specified hostname + \n/api\n\n\nUsing the API\n\n\nResponses return, in general, a JSON object with metadata and (if applicable) the actual data or an error message in the following format:\n\n\n# Sample format\n{\n    \"status\": <status code>,\n    \"message\": <...>,\n    \"error\": <...>,\n    \"data\": <...>\n}\n\nFor more information on the response format, have a look at the endpoint reference.\n\n\n\n\n\nAuthentication\n\n\nIf you're starting from scratch you need to create a user first:\n\n\n# Endpoint\nPOST /register\n\n# Header\nContent-Type: application/json\n\n# Body\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}\n\n\n\n\nNow you need to authenticate: \n\n\n# Endpoint\nPOST /auth\n\n# Header\nContent-Type: application/json\n\n# Body\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}\n\n\n\n\nWhich will return a JWT token:\n\n\n{\n  \"access_token\": superSecretToken\n}\n\n\n\n\nThis needs to be included in following requests as a header:\n\n\n# Endpoint\nGET /stacks\n\n# Header\nAuthorization: JWT superSecretToken\n\n# Response\n{\n    \"status\": 200,\n    \"message\": \"Stacks have been retrieved.\",\n    \"error\": null,\n    \"data\": []\n}",
             "title": "Home"
         },
         {
@@ -36,39 +36,54 @@
             "title": "Caddy setup"
         },
         {
-            "location": "/#endpoint-overview",
-            "text": "",
-            "title": "Endpoint overview"
-        },
-        {
-            "location": "/#authentication",
-            "text": "Method  Endpoint  Comments      POST  /register  Registers new user    POST  /auth  Authenticates user",
-            "title": "Authentication"
-        },
-        {
-            "location": "/#blueprints",
-            "text": "Method  Endpoint  Comments      GET  /blueprints  Retrieves list of blueprints    GET  /blueprints/<_id>  Retrieves single blueprint    DELETE  /blueprints/<_id>  Deletes a single blueprint    POST  /blueprints/create  Creates a new blueprint    PUT  /blueprints/create  Creates or updates a blueprint",
-            "title": "Blueprints"
-        },
-        {
-            "location": "/#services",
-            "text": "Method  Endpoint  Comments      GET  /services  Retrieves list of services    GET  /services/<_id>  Retrieves single services    DELETE  /services/<_id>  Deletes single service    POST  /services/create  Creates a new service    PUT  /services/create  Creates or updates a service",
-            "title": "Services"
-        },
-        {
-            "location": "/#stacks",
-            "text": "Method  Endpoint  Comments      GET  /stacks  Retrieves list of stacks    GET  /stacks/<_id>  Retrieves single stacks    DELETE  /stacks/<_id>  Deletes single service    POST  /stacks/<_id>/apply  Applies a stack and saves config files to disk    POST  /stacks/create  Creates a new stack    PUT  /stacks/create  Creates or updates a stack",
-            "title": "Stacks"
-        },
-        {
             "location": "/#using-the-api",
             "text": "Responses return, in general, a JSON object with metadata and (if applicable) the actual data or an error message in the following format:  # Sample format\n{\n    \"status\": <status code>,\n    \"message\": <...>,\n    \"error\": <...>,\n    \"data\": <...>\n}\n\nFor more information on the response format, have a look at the endpoint reference.",
             "title": "Using the API"
         },
         {
-            "location": "/#authentication_1",
+            "location": "/#authentication",
             "text": "If you're starting from scratch you need to create a user first:  # Endpoint\nPOST /register\n\n# Header\nContent-Type: application/json\n\n# Body\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}  Now you need to authenticate:   # Endpoint\nPOST /auth\n\n# Header\nContent-Type: application/json\n\n# Body\n{\n    \"username\": \"foo\",\n    \"password\": \"bar\"\n}  Which will return a JWT token:  {\n  \"access_token\": superSecretToken\n}  This needs to be included in following requests as a header:  # Endpoint\nGET /stacks\n\n# Header\nAuthorization: JWT superSecretToken\n\n# Response\n{\n    \"status\": 200,\n    \"message\": \"Stacks have been retrieved.\",\n    \"error\": null,\n    \"data\": []\n}",
             "title": "Authentication"
+        },
+        {
+            "location": "/overview/",
+            "text": "Endpoint overview\n\n\nAuthentication\n\n\n\n\n\n\n\n\nMethod\n\n\nEndpoint\n\n\nComments\n\n\n\n\n\n\n\n\n\n\nPOST\n\n\n/register\n\n\nRegisters new user\n\n\n\n\n\n\nPOST\n\n\n/auth\n\n\nAuthenticates user\n\n\n\n\n\n\n\n\nBlueprints\n\n\n\n\n\n\n\n\nMethod\n\n\nEndpoint\n\n\nComments\n\n\n\n\n\n\n\n\n\n\nGET\n\n\n/blueprints\n\n\nRetrieves list of blueprints\n\n\n\n\n\n\nGET\n\n\n/blueprints/<_id>\n\n\nRetrieves single blueprint\n\n\n\n\n\n\nDELETE\n\n\n/blueprints/<_id>\n\n\nDeletes a single blueprint\n\n\n\n\n\n\nPOST\n\n\n/blueprints/create\n\n\nCreates a new blueprint\n\n\n\n\n\n\nPUT\n\n\n/blueprints/create\n\n\nCreates or updates a blueprint\n\n\n\n\n\n\n\n\nServices\n\n\n\n\n\n\n\n\nMethod\n\n\nEndpoint\n\n\nComments\n\n\n\n\n\n\n\n\n\n\nGET\n\n\n/services\n\n\nRetrieves list of services\n\n\n\n\n\n\nGET\n\n\n/services/<_id>\n\n\nRetrieves single services\n\n\n\n\n\n\nDELETE\n\n\n/services/<_id>\n\n\nDeletes a single service\n\n\n\n\n\n\nPOST\n\n\n/services/create\n\n\nCreates a new service\n\n\n\n\n\n\nPUT\n\n\n/services/create\n\n\nCreates or updates a service\n\n\n\n\n\n\n\n\nStacks\n\n\nBasic Operations\n\n\n\n\n\n\n\n\nMethod\n\n\nEndpoint\n\n\nComments\n\n\n\n\n\n\n\n\n\n\nGET\n\n\n/stacks\n\n\nRetrieves list of stacks\n\n\n\n\n\n\nGET\n\n\n/stacks/<_id>\n\n\nRetrieves single stacks\n\n\n\n\n\n\nDELETE\n\n\n/stacks/<_id>\n\n\nDeletes single service\n\n\n\n\n\n\nPOST\n\n\n/stacks/<_id>/apply\n\n\nApplies a stack and saves config files to disk\n\n\n\n\n\n\nDELETE\n\n\n/stacks/<_id>/apply\n\n\nDeletes or purges the stack's config files\n\n\n\n\n\n\nPOST\n\n\n/stacks/create\n\n\nCreates a new stack\n\n\n\n\n\n\nPUT\n\n\n/stacks/create\n\n\nCreates or updates a stack\n\n\n\n\n\n\n\n\nContainer management\n\n\n\n\n\n\n\n\nMethod\n\n\nEndpoint\n\n\nComments\n\n\n\n\n\n\n\n\n\n\nPOST\n\n\n/stacks/<_id>/manage/up\n\n\nStarts a specific stack\n\n\n\n\n\n\nPOST\n\n\n/stacks/<_id>/manage/down\n\n\nShuts down a specific stack if it's running\n\n\n\n\n\n\nGET\n\n\n/stacks/<_id>/manage/status\n\n\nRetrieves status information about running or exited containers of a specific stack\n\n\n\n\n\n\nGET\n\n\n/stacks/<_id>/manage/logs\n\n\nRetrieves logs for specific stack\n\n\n\n\n\n\nDELETE\n\n\n/stacks/<_id>/manage/delete\n\n\nRemoves and deletes containers for a specific stack",
+            "title": "Endpoint Overview"
+        },
+        {
+            "location": "/overview/#endpoint-overview",
+            "text": "",
+            "title": "Endpoint overview"
+        },
+        {
+            "location": "/overview/#authentication",
+            "text": "Method  Endpoint  Comments      POST  /register  Registers new user    POST  /auth  Authenticates user",
+            "title": "Authentication"
+        },
+        {
+            "location": "/overview/#blueprints",
+            "text": "Method  Endpoint  Comments      GET  /blueprints  Retrieves list of blueprints    GET  /blueprints/<_id>  Retrieves single blueprint    DELETE  /blueprints/<_id>  Deletes a single blueprint    POST  /blueprints/create  Creates a new blueprint    PUT  /blueprints/create  Creates or updates a blueprint",
+            "title": "Blueprints"
+        },
+        {
+            "location": "/overview/#services",
+            "text": "Method  Endpoint  Comments      GET  /services  Retrieves list of services    GET  /services/<_id>  Retrieves single services    DELETE  /services/<_id>  Deletes a single service    POST  /services/create  Creates a new service    PUT  /services/create  Creates or updates a service",
+            "title": "Services"
+        },
+        {
+            "location": "/overview/#stacks",
+            "text": "",
+            "title": "Stacks"
+        },
+        {
+            "location": "/overview/#basic-operations",
+            "text": "Method  Endpoint  Comments      GET  /stacks  Retrieves list of stacks    GET  /stacks/<_id>  Retrieves single stacks    DELETE  /stacks/<_id>  Deletes single service    POST  /stacks/<_id>/apply  Applies a stack and saves config files to disk    DELETE  /stacks/<_id>/apply  Deletes or purges the stack's config files    POST  /stacks/create  Creates a new stack    PUT  /stacks/create  Creates or updates a stack",
+            "title": "Basic Operations"
+        },
+        {
+            "location": "/overview/#container-management",
+            "text": "Method  Endpoint  Comments      POST  /stacks/<_id>/manage/up  Starts a specific stack    POST  /stacks/<_id>/manage/down  Shuts down a specific stack if it's running    GET  /stacks/<_id>/manage/status  Retrieves status information about running or exited containers of a specific stack    GET  /stacks/<_id>/manage/logs  Retrieves logs for specific stack    DELETE  /stacks/<_id>/manage/delete  Removes and deletes containers for a specific stack",
+            "title": "Container management"
         },
         {
             "location": "/endpoints/user/register/post/",
@@ -627,12 +642,12 @@
         },
         {
             "location": "/endpoints/stacks/id/delete/",
-            "text": "DELETE /stacks/<_id>\n\n\nDeletes a specific stack according to passed ID.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nnull\n\n\nDeletion of stack has been successful.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name has not been found.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nDELETE /stacks/1\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been deleted.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "text": "DELETE /stacks/<_id>\n\n\nDeletes a specific stack according to passed ID. This will fail, if any containers are still in running or exited status.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nnull\n\n\nDeletion of stack has been successful.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name has not been found.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nDELETE /stacks/1\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been deleted.\",\n    \"error\": null,\n    \"data\": null\n}",
             "title": "DELETE"
         },
         {
             "location": "/endpoints/stacks/id/delete/#delete-stacks_id",
-            "text": "Deletes a specific stack according to passed ID.",
+            "text": "Deletes a specific stack according to passed ID. This will fail, if any containers are still in running or exited status.",
             "title": "DELETE /stacks/&lt;_id&gt;"
         },
         {
@@ -707,12 +722,12 @@
         },
         {
             "location": "/endpoints/stacks/create/put/",
-            "text": "PUT /stacks/create\n\n\nCreates or updates a stack.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nThe stack name\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nThe stack description\n\n\nNo\n\n\n\n\n\n\nsubdomain\n\n\nString\n\n\nThe subdomain this stack will be reachable under.\n\n\nNo\n\n\n\n\n\n\nemail\n\n\nString\n\n\nThe email to be put in the stack-specific Caddyfile. This is needed for automatic TLS encryption.\n\n\nNo\n\n\n\n\n\n\nproxy_service\n\n\nInteger\n\n\nThe service ID to which Caddy should forward requests to. Needs to be part of the stack\n\n\nNo\n\n\n\n\n\n\nproxy_port\n\n\nInteger\n\n\nThe port added to the service ID for Caddy to forward requests to. \nThis does not check if the service actually publishes the port.\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been created or updated successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPUT /stacks/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"email\": \"test@example.com\",\n    \"proxy_service\": 1,\n    \"proxy_port\": 80,    \n    \"services\": [1]\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"email\": \"test@example.com\",\n        \"proxy_service\": 1,\n        \"proxy_port\": 80,\n        \"services\": [1],\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
+            "text": "PUT /stacks/create\n\n\nCreates or updates a stack. Please be aware that if a stack is already \napplied\n, those changes will not be propagated downstream, so you will have to apply the stack again to create its project files. It is also advised to shutdown and and remove a stack first.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\nname\n\n\nString\n\n\nThe stack name\n\n\nYes\n\n\n\n\n\n\ndescription\n\n\nString\n\n\nThe stack description\n\n\nNo\n\n\n\n\n\n\nsubdomain\n\n\nString\n\n\nThe subdomain this stack will be reachable under. Defaults to localhost\n\n\nNo\n\n\n\n\n\n\nemail\n\n\nString\n\n\nThe email to be put in the stack-specific Caddyfile. This is needed for automatic TLS encryption.\n\n\nNo\n\n\n\n\n\n\nproxy_service\n\n\nInteger\n\n\nThe service ID to which Caddy should forward requests to. Needs to be part of the stack\n\n\nNo\n\n\n\n\n\n\nproxy_port\n\n\nInteger\n\n\nThe port added to the service ID for Caddy to forward requests to. \nThis does not check if the service actually publishes the port.\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been created or updated successfully.\n\n\n\n\n\n\n400\n\n\nnull\n\n\nStack with passed name already exists.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPUT /stacks/create\n\n\nRequest body\n\n\n{\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"email\": \"test@example.com\",\n    \"proxy_service\": 1,\n    \"proxy_port\": 80,    \n    \"services\": [1]\n}\n\n\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Stack foo_stack has been updated.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"description\": \"test stack\",\n        \"subdomain\": \"test.example.com\",\n        \"email\": \"test@example.com\",\n        \"proxy_service\": 1,\n        \"proxy_port\": 80,\n        \"services\": [1],\n        \"created_at\": \"2017-12-14T09:21:50.503274\",\n        \"last_changed\": \"2017-12-14T09:21:50.503274\"\n    }\n}",
             "title": "PUT"
         },
         {
             "location": "/endpoints/stacks/create/put/#put-stackscreate",
-            "text": "Creates or updates a stack.",
+            "text": "Creates or updates a stack. Please be aware that if a stack is already  applied , those changes will not be propagated downstream, so you will have to apply the stack again to create its project files. It is also advised to shutdown and and remove a stack first.",
             "title": "PUT /stacks/create"
         },
         {
@@ -722,7 +737,7 @@
         },
         {
             "location": "/endpoints/stacks/create/put/#body",
-            "text": "Key  JSON Value type  Comment  Required      name  String  The stack name  Yes    description  String  The stack description  No    subdomain  String  The subdomain this stack will be reachable under.  No    email  String  The email to be put in the stack-specific Caddyfile. This is needed for automatic TLS encryption.  No    proxy_service  Integer  The service ID to which Caddy should forward requests to. Needs to be part of the stack  No    proxy_port  Integer  The port added to the service ID for Caddy to forward requests to.  This does not check if the service actually publishes the port.  No",
+            "text": "Key  JSON Value type  Comment  Required      name  String  The stack name  Yes    description  String  The stack description  No    subdomain  String  The subdomain this stack will be reachable under. Defaults to localhost  No    email  String  The email to be put in the stack-specific Caddyfile. This is needed for automatic TLS encryption.  No    proxy_service  Integer  The service ID to which Caddy should forward requests to. Needs to be part of the stack  No    proxy_port  Integer  The port added to the service ID for Caddy to forward requests to.  This does not check if the service actually publishes the port.  No",
             "title": "Body"
         },
         {
@@ -752,13 +767,13 @@
         },
         {
             "location": "/endpoints/stacks/id/apply/post/",
-            "text": "POST /stacks/<_id>/create\n\n\nApplies a stack: \n\n\n\n\ngenerates a \ndocker-compose.yml\n and saves it to disc in \nandes/andes/stacks/<stack_name>/docker-compose.yml\n\n\ngenerates a \n<stack_name>.conf\n and saves it to dics in \nandes/andes/stacks/conf.d/<stack_name>.conf\n\n\n\n\nThe main Caddyfile will then import all \n.conf\n files in the \nconf.d/\n folder.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been applied successfully.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /stacks/1/apply\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been applied.\",\n    \"error\": null,\n    \"data\": null\n}\n\n\n\n\nExample stack used\n\n\n\"data\": {\n    \"id\": 1,\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"email\": \"test@example.com\",\n    \"proxy_service\": 1,\n    \"proxy_port\": 80,\n    \"services\": [1],\n    \"created_at\": \"2017-12-14T09:21:50.503274\",\n    \"last_changed\": \"2017-12-14T09:21:50.503274\"\n}\n\n\n\n\nExample proxy_service used\n\n\n\"data\": {\n    \"id\": 1,\n    \"blueprint\": 1,\n    \"name\": \"foo_service\",\n    \"description\": \"A test service\",\n    \"stacks\": [1],\n    \"exposed_ports\": [80,8080],\n    \"mapped_ports\": [\"80:80\"],\n    \"volumes\": [\"/srv/www:/\"],\n    \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n    \"restart\": \"always\",\n    \"ip\": \"172.42.0.11\"\n}\n\n\n\n\nCreated .conf file\n\n\n# Location: andes/stacks/conf.d/<foo_stack class=\"conf\"></foo_stack>\n\ntest.example.com {\n  test@example.com\n  proxy / foo_service:80 {\n    transparent\n  }\n  logs stdout\n  errors stderror\n}\n\n\n\n\nCreate docker-compose.yml\n\n\n# Location: andes/stacks/foo_stack/docker-compose.yml\n\nversion: '3'\nservices:\n  foo_service:\n    image: abiosoft/caddy\n    container_name: foo_stack_foo_service\n    expose:\n      - \"80\"\n      - \"8080\"\n    ports:\n      - \"80:80\"\n    volumes:\n      - \"/srv/www:/\"\n    environment:\n      - \"FOO=BAR\"\n      - \"DEBUG=1\"\n    external_links:\n      - caddy\n    networks:\n      andes_default:\n        ipv4_address: 172.42.0.11\n    restart: always\nnetworks:\n  andes_default:\n    external: true",
+            "text": "POST /stacks/<_id>/apply\n\n\nApplies a stack: \n\n\n\n\ngenerates a \ndocker-compose.yml\n and saves it to disc in \nandes/andes/stacks/<stack_name>/docker-compose.yml\n\n\ngenerates a \n<stack_name>.conf\n and saves it to dics in \nandes/andes/stacks/conf.d/<stack_name>.conf\n\n\n\n\nThe main Caddyfile will then import all \n.conf\n files in the \nconf.d/\n folder.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nStack\n\n\nStack has been applied successfully.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /stacks/1/apply\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been applied.\",\n    \"error\": null,\n    \"data\": null\n}\n\n\n\n\nExample stack used\n\n\n\"data\": {\n    \"id\": 1,\n    \"name\": \"foo_stack\",\n    \"description\": \"test stack\",\n    \"subdomain\": \"test.example.com\",\n    \"email\": \"test@example.com\",\n    \"proxy_service\": 1,\n    \"proxy_port\": 80,\n    \"services\": [1],\n    \"created_at\": \"2017-12-14T09:21:50.503274\",\n    \"last_changed\": \"2017-12-14T09:21:50.503274\"\n}\n\n\n\n\nExample proxy_service used\n\n\n\"data\": {\n    \"id\": 1,\n    \"blueprint\": 1,\n    \"name\": \"foo_service\",\n    \"description\": \"A test service\",\n    \"stacks\": [1],\n    \"exposed_ports\": [80,8080],\n    \"mapped_ports\": [\"80:80\"],\n    \"volumes\": [\"/srv/www:/\"],\n    \"env\": [\"FOO=BAR\",\"DEBUG=1\"],\n    \"restart\": \"always\",\n    \"ip\": \"172.42.0.11\"\n}\n\n\n\n\nCreated .conf file\n\n\n# Location: andes/stacks/conf.d/<foo_stack class=\"conf\"></foo_stack>\n\ntest.example.com {\n  test@example.com\n  proxy / foo_service:80 {\n    transparent\n  }\n  logs stdout\n  errors stderror\n}\n\n\n\n\nCreate docker-compose.yml\n\n\n# Location: andes/stacks/foo_stack/docker-compose.yml\n\nversion: '3'\nservices:\n  foo_service:\n    image: abiosoft/caddy\n    container_name: foo_stack_foo_service\n    expose:\n      - \"80\"\n      - \"8080\"\n    ports:\n      - \"80:80\"\n    volumes:\n      - \"/srv/www:/\"\n    environment:\n      - \"FOO=BAR\"\n      - \"DEBUG=1\"\n    external_links:\n      - caddy\n    networks:\n      andes_default:\n        ipv4_address: 172.42.0.11\n    restart: always\nnetworks:\n  andes_default:\n    external: true",
             "title": "POST"
         },
         {
-            "location": "/endpoints/stacks/id/apply/post/#post-stacks_idcreate",
+            "location": "/endpoints/stacks/id/apply/post/#post-stacks_idapply",
             "text": "Applies a stack:    generates a  docker-compose.yml  and saves it to disc in  andes/andes/stacks/<stack_name>/docker-compose.yml  generates a  <stack_name>.conf  and saves it to dics in  andes/andes/stacks/conf.d/<stack_name>.conf   The main Caddyfile will then import all  .conf  files in the  conf.d/  folder.",
-            "title": "POST /stacks/&lt;_id&gt;/create"
+            "title": "POST /stacks/&lt;_id&gt;/apply"
         },
         {
             "location": "/endpoints/stacks/id/apply/post/#headers",
@@ -804,6 +819,221 @@
             "location": "/endpoints/stacks/id/apply/post/#create-docker-composeyml",
             "text": "# Location: andes/stacks/foo_stack/docker-compose.yml\n\nversion: '3'\nservices:\n  foo_service:\n    image: abiosoft/caddy\n    container_name: foo_stack_foo_service\n    expose:\n      - \"80\"\n      - \"8080\"\n    ports:\n      - \"80:80\"\n    volumes:\n      - \"/srv/www:/\"\n    environment:\n      - \"FOO=BAR\"\n      - \"DEBUG=1\"\n    external_links:\n      - caddy\n    networks:\n      andes_default:\n        ipv4_address: 172.42.0.11\n    restart: always\nnetworks:\n  andes_default:\n    external: true",
             "title": "Create docker-compose.yml"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/delete/",
+            "text": "DELETE /stacks/<_id>/apply\n\n\nDeletes or purges a stack's project files. This will check if any service containers are running first and won't proceed if they are.\n\n\n\n\nDelete will remove the \ndocker-compose.yml\n and \n.conf\n file\n\n\nPurge will also delete the project folder under \nandes/stacks/<stack_name>\n\n\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\nContent-Type: application/json\n (optional)\n\n\n\n\nBody\n\n\n\n\n\n\n\n\nKey\n\n\nJSON Value type\n\n\nComment\n\n\nRequired\n\n\n\n\n\n\n\n\n\n\npurge\n\n\nString\n\n\nCan be true or false. If set to true, The project folder \nandes/stacks/<stack_name>\n will also be removed\n\n\nNo\n\n\n\n\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n201\n\n\nNull\n\n\nProject files have been deleted.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nDELETE /stacks/1/apply?purge=true\n\n\nResponse body\n\n\n{\n    \"status\": 201,\n    \"message\": \"Project files for stack foo_stack have been successfully removed.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "DELETE"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/delete/#delete-stacks_idapply",
+            "text": "Deletes or purges a stack's project files. This will check if any service containers are running first and won't proceed if they are.   Delete will remove the  docker-compose.yml  and  .conf  file  Purge will also delete the project folder under  andes/stacks/<stack_name>",
+            "title": "DELETE /stacks/&lt;_id&gt;/apply"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/delete/#headers",
+            "text": "Authorization: JWT <JWT Token>  Content-Type: application/json  (optional)",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/delete/#body",
+            "text": "Key  JSON Value type  Comment  Required      purge  String  Can be true or false. If set to true, The project folder  andes/stacks/<stack_name>  will also be removed  No",
+            "title": "Body"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/delete/#returns",
+            "text": "Status code  Data  Comments      201  Null  Project files have been deleted.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/delete/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/delete/#request",
+            "text": "DELETE /stacks/1/apply?purge=true",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/stacks/id/apply/delete/#response-body",
+            "text": "{\n    \"status\": 201,\n    \"message\": \"Project files for stack foo_stack have been successfully removed.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/up/post/",
+            "text": "POST /stacks/<_id>/manage/up\n\n\nLaunches a stack. This basically applies a \ndocker-compose up -d\n in the specific project folder \nandes/stacks/<stack_name>\n. Will fail if containers are already running. The STDOUT for the command will be passed to the data field.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nString of STDOUT\n\n\nStack has been started successfully.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /stacks/1/manage/up\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been started.\",\n    \"error\": null,\n    \"data\": {\n        \"stdout\": \"Creating foo_stack_foo_service ... \\r\\nCreating foo_stack_foo_service\\n\\u001b[1A\\u001b[2K\\rCreating foo_stack_foo_service ... \\u001b[32mdone\\u001b[0m\\r\\u001b[1B\"\n    }\n}",
+            "title": "POST"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/up/post/#post-stacks_idmanageup",
+            "text": "Launches a stack. This basically applies a  docker-compose up -d  in the specific project folder  andes/stacks/<stack_name> . Will fail if containers are already running. The STDOUT for the command will be passed to the data field.",
+            "title": "POST /stacks/&lt;_id&gt;/manage/up"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/up/post/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/up/post/#returns",
+            "text": "Status code  Data  Comments      200  String of STDOUT  Stack has been started successfully.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/up/post/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/up/post/#request",
+            "text": "POST /stacks/1/manage/up",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/up/post/#response-body",
+            "text": "{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been started.\",\n    \"error\": null,\n    \"data\": {\n        \"stdout\": \"Creating foo_stack_foo_service ... \\r\\nCreating foo_stack_foo_service\\n\\u001b[1A\\u001b[2K\\rCreating foo_stack_foo_service ... \\u001b[32mdone\\u001b[0m\\r\\u001b[1B\"\n    }\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/down/post/",
+            "text": "POST /stacks/<_id>/manage/down\n\n\nShuts down a running stack. This basically applies a \ndocker-compose down\n in the specific project folder \nandes/stacks/<stack_name>\n. The STDOUT for the command will be passed to the data field.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nString of STDOUT\n\n\nStack has been stopped successfully.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nPOST /stacks/1/manage/down\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been shut down.\",\n    \"error\": null,\n    \"data\": {\n        \"stdout\": \"Stopping foo_stack_foo_service ... \\r\\n\\u001b[1A\\u001b[2K\\rStopping foo_stack_foo_service ... \\u001b[32mdone\\u001b[0m\\r\\u001b[1BRemoving foo_stack_foo_service ... \\r\\n\\u001b[1A\\u001b[2K\\rRemoving foo_stack_foo_service ... \\u001b[32mdone\\u001b[0m\\r\\u001b[1BNetwork andes_default is external, skipping\\n\"\n    }\n}",
+            "title": "POST"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/down/post/#post-stacks_idmanagedown",
+            "text": "Shuts down a running stack. This basically applies a  docker-compose down  in the specific project folder  andes/stacks/<stack_name> . The STDOUT for the command will be passed to the data field.",
+            "title": "POST /stacks/&lt;_id&gt;/manage/down"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/down/post/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/down/post/#returns",
+            "text": "Status code  Data  Comments      200  String of STDOUT  Stack has been stopped successfully.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/down/post/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/down/post/#request",
+            "text": "POST /stacks/1/manage/down",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/down/post/#response-body",
+            "text": "{\n    \"status\": 200,\n    \"message\": \"Stack foo_stack has been shut down.\",\n    \"error\": null,\n    \"data\": {\n        \"stdout\": \"Stopping foo_stack_foo_service ... \\r\\n\\u001b[1A\\u001b[2K\\rStopping foo_stack_foo_service ... \\u001b[32mdone\\u001b[0m\\r\\u001b[1BRemoving foo_stack_foo_service ... \\r\\n\\u001b[1A\\u001b[2K\\rRemoving foo_stack_foo_service ... \\u001b[32mdone\\u001b[0m\\r\\u001b[1BNetwork andes_default is external, skipping\\n\"\n    }\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/status/get/",
+            "text": "GET /stacks/<_id>/manage/status\n\n\nRetrieves status information about running or exited containers of the specific stack. Will fail if no containers are running or exited.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nStatus information of stack and running services\n\n\nInfo has been retrieved successfully.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nGET /stacks/1/manage/status\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Data for services in stack foo_stack has been retrieved.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"subdomain\": \"localhost\",\n        \"port\": 2015,\n        \"services\": [\n            {\n                \"id\": \"1847b5a7f5\",\n                \"name\": \"foo_stack_foo_service\",\n                \"status\": \"running\",\n                \"labels\": {\n                    \"caddy_version\": \"0.10.10\",\n                    \"com.docker.compose.config-hash\": \"9b9eaac0e5419599dd382a6bab29a71ab4371bbdaa251d53de3de26543d93e12\",\n                    \"com.docker.compose.container-number\": \"1\",\n                    \"com.docker.compose.oneoff\": \"False\",\n                    \"com.docker.compose.project\": \"foostack\",\n                    \"com.docker.compose.service\": \"foo_service\",\n                    \"com.docker.compose.version\": \"1.17.1\",\n                    \"maintainer\": \"Abiola Ibrahim <abiola89@gmail.com>\"\n                }\n            }\n        ]\n    }\n}",
+            "title": "GET"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/status/get/#get-stacks_idmanagestatus",
+            "text": "Retrieves status information about running or exited containers of the specific stack. Will fail if no containers are running or exited.",
+            "title": "GET /stacks/&lt;_id&gt;/manage/status"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/status/get/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/status/get/#returns",
+            "text": "Status code  Data  Comments      200  Status information of stack and running services  Info has been retrieved successfully.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/status/get/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/status/get/#request",
+            "text": "GET /stacks/1/manage/status",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/status/get/#response-body",
+            "text": "{\n    \"status\": 200,\n    \"message\": \"Data for services in stack foo_stack has been retrieved.\",\n    \"error\": null,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"foo_stack\",\n        \"subdomain\": \"localhost\",\n        \"port\": 2015,\n        \"services\": [\n            {\n                \"id\": \"1847b5a7f5\",\n                \"name\": \"foo_stack_foo_service\",\n                \"status\": \"running\",\n                \"labels\": {\n                    \"caddy_version\": \"0.10.10\",\n                    \"com.docker.compose.config-hash\": \"9b9eaac0e5419599dd382a6bab29a71ab4371bbdaa251d53de3de26543d93e12\",\n                    \"com.docker.compose.container-number\": \"1\",\n                    \"com.docker.compose.oneoff\": \"False\",\n                    \"com.docker.compose.project\": \"foostack\",\n                    \"com.docker.compose.service\": \"foo_service\",\n                    \"com.docker.compose.version\": \"1.17.1\",\n                    \"maintainer\": \"Abiola Ibrahim <abiola89@gmail.com>\"\n                }\n            }\n        ]\n    }\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/logs/get/",
+            "text": "GET /stacks/<_id>/manage/logs\n\n\nRetrieves the logs of a specific stack. Will be posted in the data field of the response.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nLogs of stack as list of strings\n\n\nLogs have been retrieved successfully.\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nGET /stacks/1/manage/logs\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Data for services in stack foo_stack has been retrieved.\",\n    \"error\": null,\n    \"data\": [\n        {\n            \"id\": \"1847b5a7f5\",\n            \"name\": \"foo_stack_foo_service\",\n            \"logs\": [\n                \"Activating privacy features... done.\",\n                \"http://0.0.0.0:2015\",\n                \"2017/12/28 14:59:07 http://0.0.0.0:2015\"\n            ]\n        }\n    ]\n}",
+            "title": "GET"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/logs/get/#get-stacks_idmanagelogs",
+            "text": "Retrieves the logs of a specific stack. Will be posted in the data field of the response.",
+            "title": "GET /stacks/&lt;_id&gt;/manage/logs"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/logs/get/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/logs/get/#returns",
+            "text": "Status code  Data  Comments      200  Logs of stack as list of strings  Logs have been retrieved successfully.",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/logs/get/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/logs/get/#request",
+            "text": "GET /stacks/1/manage/logs",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/logs/get/#response-body",
+            "text": "{\n    \"status\": 200,\n    \"message\": \"Data for services in stack foo_stack has been retrieved.\",\n    \"error\": null,\n    \"data\": [\n        {\n            \"id\": \"1847b5a7f5\",\n            \"name\": \"foo_stack_foo_service\",\n            \"logs\": [\n                \"Activating privacy features... done.\",\n                \"http://0.0.0.0:2015\",\n                \"2017/12/28 14:59:07 http://0.0.0.0:2015\"\n            ]\n        }\n    ]\n}",
+            "title": "Response body"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/remove/delete/",
+            "text": "DELETE /stacks/<_id>/manage/remove\n\n\nRemoves the containers for a specific stack. Will force remove if containers are still running.\n\n\nHeaders\n\n\n\n\nAuthorization: JWT <JWT Token>\n\n\n\n\nReturns\n\n\n\n\n\n\n\n\nStatus code\n\n\nData\n\n\nComments\n\n\n\n\n\n\n\n\n\n\n200\n\n\nNull\n\n\nContainers have been succsessfully removed\n\n\n\n\n\n\n\n\nExample\n\n\nRequest\n\n\nDELETE /stacks/1/manage/down\n\n\nResponse body\n\n\n{\n    \"status\": 200,\n    \"message\": \"Container for stack foo_stack have been removed successfully.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "DELETE"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/remove/delete/#delete-stacks_idmanageremove",
+            "text": "Removes the containers for a specific stack. Will force remove if containers are still running.",
+            "title": "DELETE /stacks/&lt;_id&gt;/manage/remove"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/remove/delete/#headers",
+            "text": "Authorization: JWT <JWT Token>",
+            "title": "Headers"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/remove/delete/#returns",
+            "text": "Status code  Data  Comments      200  Null  Containers have been succsessfully removed",
+            "title": "Returns"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/remove/delete/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/remove/delete/#request",
+            "text": "DELETE /stacks/1/manage/down",
+            "title": "Request"
+        },
+        {
+            "location": "/endpoints/stacks/id/manage/remove/delete/#response-body",
+            "text": "{\n    \"status\": 200,\n    \"message\": \"Container for stack foo_stack have been removed successfully.\",\n    \"error\": null,\n    \"data\": null\n}",
+            "title": "Response body"
         }
     ]
 }

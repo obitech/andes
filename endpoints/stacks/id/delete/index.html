@@ -48,6 +48,9 @@
                     <li >
                         <a href="../../../..">Home</a>
                     </li>
+                    <li >
+                        <a href="../../../../overview/">Endpoint Overview</a>
+                    </li>
                     <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Endpoint Reference <b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -215,6 +218,66 @@
 <li >
     <a href="../apply/post/">POST</a>
 </li>
+            
+<li >
+    <a href="../apply/delete/">DELETE</a>
+</li>
+    </ul>
+  </li>
+            
+  <li class="dropdown-submenu">
+    <a href="#">/stacks/<_id>/manage</a>
+    <ul class="dropdown-menu">
+            
+  <li class="dropdown-submenu">
+    <a href="#">./up</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../manage/up/post/">POST</a>
+</li>
+    </ul>
+  </li>
+            
+  <li class="dropdown-submenu">
+    <a href="#">./down</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../manage/down/post/">POST</a>
+</li>
+    </ul>
+  </li>
+            
+  <li class="dropdown-submenu">
+    <a href="#">./status</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../manage/status/get/">GET</a>
+</li>
+    </ul>
+  </li>
+            
+  <li class="dropdown-submenu">
+    <a href="#">./logs</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../manage/logs/get/">GET</a>
+</li>
+    </ul>
+  </li>
+            
+  <li class="dropdown-submenu">
+    <a href="#">./remove</a>
+    <ul class="dropdown-menu">
+            
+<li >
+    <a href="../manage/remove/delete/">DELETE</a>
+</li>
+    </ul>
+  </li>
     </ul>
   </li>
     </ul>
@@ -259,7 +322,7 @@
                 <div class="col-md-9" role="main">
 
 <h1 id="delete-stacks_id">DELETE /stacks/&lt;_id&gt;</h1>
-<p>Deletes a specific stack according to passed ID.</p>
+<p>Deletes a specific stack according to passed ID. This will fail, if any containers are still in running or exited status.</p>
 <h2 id="headers">Headers</h2>
 <ul>
 <li><code>Authorization: JWT &lt;JWT Token&gt;</code></li>
