@@ -9,6 +9,7 @@ edit_uri: ""
 
 pages:
   - Home: 'index.md'
+  - Endpoint Overview: 'overview.md'
   - Endpoint Reference: 
     - 'Authentication':
       - '/register':
@@ -44,3 +45,15 @@ pages:
         - 'PUT': 'endpoints/stacks/create/put.md'
       - '/stacks/<_id>/apply':
         - 'POST': 'endpoints/stacks/id/apply/post.md'
+        - 'DELETE': 'endpoints/stacks/id/apply/delete.md'
+      - '/stacks/<_id>/manage':
+        - './up':
+          - 'POST': 'endpoints/stacks/id/manage/up/post.md'
+        - './down':
+          - 'POST': 'endpoints/stacks/id/manage/down/post.md'
+        - './status':
+          - 'GET': 'endpoints/stacks/id/manage/status/get.md'
+        - './logs':
+          - 'GET': 'endpoints/stacks/id/manage/logs/get.md'
+        - './remove':
+          - 'DELETE': 'endpoints/stacks/id/manage/remove/delete.md'

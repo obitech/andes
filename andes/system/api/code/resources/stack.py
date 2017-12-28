@@ -527,10 +527,16 @@ class StackLogs(Resource):
       logs = []
       for container in container_list:
         try:
+          tmp = None
+          try:
+            tmp = [x for x in container.logs().decode("utf-8").split('\n') if x]
+          except:
+            print_exc()
+
           logs.append({
                         'id': container.short_id,
                         'name': container.name,
-                        'logs': container.logs().decode("utf-8").split('\n')
+                        'logs': tmp
                       })
         except:
           print_exc()
@@ -563,4 +569,4 @@ class StackRemove(Resource):
           print_exc()
           return response(500, None, f"An error occured while trying to remove container of service {service.name}.", None), 500
 
-    return response(200, f"Container for stack {stack.name} have been removed successfully.", None, None), 200
+    return response(200, f"Containers for stack {stack.name} have been removed successfully.", None, None), 200

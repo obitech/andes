@@ -1,4 +1,4 @@
-# POST /stacks/<_id>/create
+# POST /stacks/<_id>/apply
 Applies a stack: 
 
 * generates a `docker-compose.yml` and saves it to disc in `andes/andes/stacks/<stack_name>/docker-compose.yml`
