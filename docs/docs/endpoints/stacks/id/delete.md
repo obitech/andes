@@ -1,5 +1,6 @@
 # DELETE /stacks/<_id>
-Deletes a specific stack according to passed ID.
+Deletes a specific stack according to passed ID. This will fail, if any containers are still in running or exited status.
+
 ## Headers
 * `Authorization: JWT <JWT Token>`
 

@@ -21,3 +21,22 @@ def get_container(name):
     print_exc()
 
   return None
+
+def container_is_up(name):
+  """Checks if a container is in running or exited status.
+
+  Args:
+    name (str): name of the service
+
+  Returns:
+    bool: True if container is running or in exited status, False if not.
+
+  """
+
+  container = get_container(name)
+
+  if container:
+    if container.status in ['running', 'exited']:
+      return True
+
+  return False

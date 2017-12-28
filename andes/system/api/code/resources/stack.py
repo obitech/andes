@@ -1,7 +1,8 @@
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 from datetime import datetime
-from os import path, makedirs
+from os import path, makedirs, remove
+from shutil import rmtree
 from traceback import print_exc
 import subprocess
 
@@ -10,7 +11,7 @@ from models.service import ServiceModel
 from models.stack import StackModel
 from util.response import response, container_data
 from util.confgen import get_compose, create_file, get_compose_data, get_caddyconf
-from util.managedocker import get_container
+from util.managedocker import get_container, container_is_up
 
 
 class StackList(Resource):
@@ -106,7 +107,7 @@ class StackCreate(Resource):
 
     stack = StackModel(name = data['name'],
                        description = data['description'],
-                       subdomain = data['subdomain'],
+                       subdomain = data['subdomain'] if data['subdomain'] else 'localhost',
                        email = data['email'],
                        proxy_port = data['proxy_port'])
 
@@ -149,10 +150,12 @@ class StackCreate(Resource):
 
     stack = StackModel.find_by_name(data['name'])
 
+
+
     if stack:
       stack.name = data['name']
       stack.description = data['description']
-      stack.subdomain = data['subdomain']
+      stack.subdomain = data['subdomain'] if data['subdomain'] else 'localhost',
       stack.email = data['email']
       stack.proxy_port = data['proxy_port']
       stack.proxy_service = data['proxy_service']
@@ -184,7 +187,7 @@ class StackCreate(Resource):
     else:
       stack = StackModel(name = data['name'],
                          description = data['description'],
-                         subdomain = data['subdomain'],
+                         subdomain = data['subdomain'] if data['subdomain'] else 'localhost',
                          email = data['email'],
                          proxy_port = data['proxy_port'])
 
@@ -196,7 +199,7 @@ class StackCreate(Resource):
           else:
             return response(400, None, f"Service with ID {x} cannot be found.", None), 400
     
-    # Check if proxy_serve is part of stack.services
+    # Check if proxy_service is part of stack.services
     if data['proxy_service']:
       try:
         if data['proxy_service'] not in [x.id for x in stack.services]:
@@ -241,6 +244,11 @@ class Stack(Resource):
       stack = StackModel.find_by_id(_id)
     except:
       return response(500, None, f"An error occured while trying to save stack {stack.name}.", None), 500
+
+    # Check if services are running first
+    for service in stack.services:
+      if container_is_up(f"{stack.name}_{service.name}"):
+        return response(400, None, f"Stack {stack.name} has services running or in exited status. Please remove them first.", None), 400
 
     if stack:
       try:
@@ -308,9 +316,61 @@ class StackApply(Resource):
 
   @jwt_required()
   def delete(self, _id):
-    """API resource to delete project files."""
-    pass
+    """DELETE method to remove project files of stack
 
+    purge=true will delete project folder as well.
+
+    """
+
+    parser = reqparse.RequestParser()
+    parser.add_argument('purge',
+                        type = str)
+
+    data = parser.parse_args()
+
+    if not StackModel.find_by_id(_id):
+      return response(404, None, f"Stack with ID {_id} does not exist.", None), 404
+
+    stack = StackModel.find_by_id(_id)
+
+    stacks_folder = StackModel.get_stacks_folder()
+    project_folder = stack.get_project_folder()
+    compose_location = f"{project_folder}/docker-compose.yml"
+    caddyconf_location = f"{StackModel.get_stacks_folder()}/conf.d/{stack.name}.conf"
+
+    # Check if services are running first
+    for service in stack.services:
+      if container_is_up(f"{stack.name}_{service.name}"):
+        return response(400, None, f"Stack {stack.name} has services running or in exited status. Please remove them first.", None), 400
+
+    # If purge = True, delete whole stack folder
+    if data['purge']:
+      if data['purge'].lower() == 'true':
+        if path.exists(project_folder):
+          try:
+            rmtree(project_folder)
+          except:
+            print_exc()
+            return response(500, None, f"An error occured while trying to purge project files for stack {stack.name}", None), 500
+    
+    # Else just docker-compose file
+    else:
+      if path.isfile(compose_location):
+        try:
+          remove(compose_location)
+        except:
+          print_exc()
+          return response(500, None, f"An error occured while trying to delete project files for stack {stack.name}", None), 500
+
+    # Remove Caddyfile
+    if path.isfile(caddyconf_location):
+      try:
+        remove(caddyconf_location)
+      except:
+        print_exc()
+        return response(500, None, f"An error occured while trying to delete project files for stack {stack.name}", None), 500
+
+    return response(201, f"Project files for stack {stack.name} have been successfully removed.", None, None), 201
 
 class StackUp(Resource):
   """API resource to `docker-compose up` a specific stack configuration."""
@@ -343,7 +403,7 @@ class StackUp(Resource):
     # Check if containers are already up
     for service in stack.services:
       container = get_container(f"{stack.name}_{service.name}")
-      if container:
+      if container and container.status is 'running':
         return response(400, None, f"Service {service.name} is already running.", container_data(container)), 400
 
     try:
@@ -411,7 +471,7 @@ class StackStatus(Resource):
     if not path.exists(project_folder):
       return response(404, None, f"Project folder for stack {stack.name} doesn't exist.", None), 404    
 
-    # Loop through assigned services and add container to list if possible
+    # Loop through assigned services and add container to list it's running
     if stack.services:
       container_list = []
       for service in stack.services:
@@ -423,7 +483,14 @@ class StackStatus(Resource):
 
     # If containers are running, output information
     if len(container_list) > 0:
-      return response(200, f"Data for services in stack {stack.name} has been retrieved.", None, [container_data(x) for x in container_list]), 200
+      info = {
+        'id': stack.id,
+        'name': stack.name,
+        'subdomain': stack.subdomain,
+        'port': stack.proxy_port,
+        'services': [container_data(x) for x in container_list]
+      }
+      return response(200, f"Data for services in stack {stack.name} has been retrieved.", None, info), 200
 
     # Else output that nothing is up
     else:
@@ -474,3 +541,26 @@ class StackLogs(Resource):
     # Else output that nothing is up
     else:
       return response(200, f"No service is in running or exited status.", None, None), 200
+
+
+class StackRemove(Resource):
+  """API resource to remove running or exited containers"""
+
+  @jwt_required()
+  def delete(self, _id):
+    stack = StackModel.find_by_id(_id)
+
+    if not stack:
+      return response(404, None, f"Stack with ID {_id} does not exist.", None), 404
+
+    for service in stack.services:
+      container = get_container(f"{stack.name}_{service.name}")
+
+      if container and container.status in ['running', 'exited']:
+        try:
+          container.remove(force=True)
+        except:
+          print_exc()
+          return response(500, None, f"An error occured while trying to remove container of service {service.name}.", None), 500
+
+    return response(200, f"Container for stack {stack.name} have been removed successfully.", None, None), 200

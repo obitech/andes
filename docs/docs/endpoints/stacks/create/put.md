@@ -1,5 +1,5 @@
 # PUT /stacks/create
-Creates or updates a stack.
+Creates or updates a stack. Please be aware that if a stack is already [applied](endpoints/stacks/id/apply/post.md), those changs will not be propagated downstream, so you will have to apply the stack again to create its project files. It is also advised to shutdown and and remove a stack first.
 
 ## Headers
 * `Authorization: JWT <JWT Token>`
@@ -10,7 +10,7 @@ Key | JSON Value type | Comment | Required
 ---|---|---|---
 name|String|The stack name|Yes
 description|String|The stack description|No
-subdomain|String|The subdomain this stack will be reachable under.|No
+subdomain|String|The subdomain this stack will be reachable under. Defaults to localhost|No
 email|String|The email to be put in the stack-specific Caddyfile. This is needed for automatic TLS encryption.|No
 proxy_service|Integer|The service ID to which Caddy should forward requests to. Needs to be part of the stack|No
 proxy_port|Integer|The port added to the service ID for Caddy to forward requests to. **This does not check if the service actually publishes the port.**|No

@@ -7,7 +7,7 @@ from security import authenticate, identity
 from resources.user import UserRegister
 from resources.blueprint import BlueprintList, BlueprintCreate, Blueprint
 from resources.service import ServiceList, ServiceCreate, Service
-from resources.stack import StackList, StackCreate, Stack, StackApply, StackUp, StackDown, StackStatus, StackLogs
+from resources.stack import StackList, StackCreate, Stack, StackApply, StackUp, StackDown, StackStatus, StackLogs, StackRemove
 
 
 app = Flask(__name__)
@@ -34,10 +34,12 @@ api.add_resource(StackList, '/stacks')
 api.add_resource(StackCreate, '/stacks/create')
 api.add_resource(Stack, '/stacks/<int:_id>')
 api.add_resource(StackApply, '/stacks/<int:_id>/apply')
-api.add_resource(StackUp, '/stacks/<int:_id>/up')
-api.add_resource(StackDown, '/stacks/<int:_id>/down')
-api.add_resource(StackStatus, '/stacks/<int:_id>/status')
-api.add_resource(StackLogs, '/stacks/<int:_id>/logs')
+
+api.add_resource(StackUp, '/stacks/<int:_id>/manage/up')
+api.add_resource(StackDown, '/stacks/<int:_id>/manage/down')
+api.add_resource(StackStatus, '/stacks/<int:_id>/manage/status')
+api.add_resource(StackLogs, '/stacks/<int:_id>/manage/logs')
+api.add_resource(StackRemove, '/stacks/<int:_id>/manage/remove')
 
 if __name__ == "__main__":
   from db import db
