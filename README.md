@@ -26,7 +26,7 @@ Inside your virtual machine do:
 
 ```
 cd /vagrant/andes
-bash bootstrap.sh -h 192.168.70.10
+bash bootstrap.sh -H 192.168.70.10
 ```
 #### Acess andes
 Vagrant set up your VM to run on a private network, so you can reach the frontend from your host on ``192.168.70.10`` and the api on ``192.168.70.10/api``. 
