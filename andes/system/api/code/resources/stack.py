@@ -408,6 +408,16 @@ class StackUp(Resource):
 
     try:
       cmd = subprocess.run(["docker-compose", "up", "-d"], check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=project_folder)
+
+      # Reload Caddy
+      caddy = get_container("andes_web_1")
+      if caddy:
+        try:
+          caddy.exec_run("kill -USR1 1")
+          print("Caddy has been reloaded.")
+        except:
+          print_exc()
+
       return response(200, f"Stack {stack.name} has been started.", None, {'stdout': cmd.stdout.decode("utf-8")}), 200
     except subprocess.CalledProcessError as e:
       print_exc()
