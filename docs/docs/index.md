@@ -68,6 +68,18 @@ Between the docker and Caddy setup, the script will also create a user defined d
 Check with `docker container ls` if you have the andes and Caddy container up and running. The API will will be reachable under your specified hostname + `/api`
 
 ## Using the API
+### Start & Stop
+
+If you're installing andes from the bootstrap script, andes will launch afterwards. There are also convenience scripts in the `andes/andes` directory to start and stop the API:
+
+Name|Translates to|Function
+---|---|---
+`start_andes.sh`|`docker-compose up -d`|Starts andes as daemonized process
+`stop_andes.sh`|`docker-compose down`|Stops andes
+`follow_logs.sh`|`docker-compose logs -f`|Streams andes logs to STDOUT. Exit with CTRL+C
+`show_logs.sh`|`docker-compose logs`|Shows andes logs
+
+## Response format
 Responses return, in general, a JSON object with metadata and (if applicable) the actual data or an error message in the following format:
 
 ```json
@@ -78,16 +90,14 @@ Responses return, in general, a JSON object with metadata and (if applicable) th
     "error": <...>,
     "data": <...>
 }
-
-For more information on the response format, have a look at the endpoint reference.
-
 ```
+For more information on the response format, have a look at the endpoint reference.
 
 ### Authentication
 
 If you're starting from scratch you need to create a user first:
 
-```
+```json
 # Endpoint
 POST /register
 
@@ -102,7 +112,8 @@ Content-Type: application/json
 ```
 
 Now you need to authenticate: 
-```
+
+```json
 # Endpoint
 POST /auth
 
@@ -117,14 +128,16 @@ Content-Type: application/json
 ```
 
 Which will return a JWT token:
-```
+
+```json
 {
   "access_token": superSecretToken
 }
 ```
 
 This needs to be included in following requests as a header:
-```
+
+```json
 # Endpoint
 GET /stacks
 
@@ -139,3 +152,207 @@ Authorization: JWT superSecretToken
     "data": []
 }
 ```
+
+## Creating a new blueprint
+Before we create a service, we have to create a blueprint first. This is essentially defining a Docker image, either built locally or from a registry. Please note that at this point there is no functionality to build the image with the andes API, or define a custom registry other than docker hub. If you want to change any of that, you will have to do it manually. 
+
+Let's create a simple Caddy blueprint:
+
+```json
+# Endpoint
+POST /blueprints/create
+
+# Headers (will be omitted for brevity in future examples)
+Content-Type: application/json
+Authorization: JWT superSecretToken
+
+# Body
+{
+	"name": "foo",
+	"description": "bar",
+	"image": "abiosoft/caddy"
+}
+
+# Response
+{
+    "status": 201,
+    "message": "Blueprint foo has been updated.",
+    "error": null,
+    "data": {
+        "id": 1,
+        "name": "foo",
+        "description": "bar",
+        "image": "abiosoft/caddy",
+        "services": []
+    }
+}
+```
+
+## Creating a new service
+From this newly created blueprint we can start to define services and attach them to stacks. While a blueprint only defines an image, a service holds information about exposed ports, mapped volumes, environment variables, etc.
+
+```json
+# Endpoint
+POST /services/create
+
+# Body
+{
+	"name": "foo_service",
+	"description": "A test service",
+	"mapped_ports": ["81:80", "2015:2015"],
+	"blueprint": 1
+}
+
+# Response
+{
+    "status": 201,
+    "message": "Service foo_service has been updated.",
+    "error": null,
+    "data": {
+        "id": 1,
+        "blueprint": 1,
+        "name": "foo_service",
+        "description": "A test service",
+        "stacks": [],
+        "exposed_ports": null,
+        "mapped_ports": [
+            "81:80",
+            "2015:2015"
+        ],
+        "volumes": null,
+        "env": null,
+        "restart": null,
+        "ip": "172.42.0.11"
+    }
+}
+```
+
+We can see here that the service has been created with [forwarded ports](https://docs.docker.com/compose/compose-file/#ports) defined and an IP automatically assigned.
+
+## Creating a new stack
+
+Next we use our created service and define it in a stack. You can define as many different services in a stack as you wish but for this example we will stick to just our newly created service.
+
+```json
+# Endpoint
+POST /stacks/create
+
+# Body
+{
+	"name": "foo_stack",
+	"description": "test stack",
+	"services": [1],
+	"proxy_service": 1,
+	"subdomain": "test.localhost",
+	"proxy_port": 2015
+}
+
+# Response
+{
+    "status": 201,
+    "message": "Stack foo_stack has been updated.",
+    "error": null,
+    "data": {
+        "id": 1,
+        "name": "foo_stack",
+        "description": "test stack",
+        "subdomain": "test.localhost",
+        "email": null,
+        "proxy_service": 1,
+        "proxy_port": 2015,
+        "services": [
+            1
+        ],
+        "created_at": "2018-01-08T14:33:27.671960",
+        "last_changed": "2018-01-08T14:33:27.671960"
+    }
+}
+
+```
+
+For the stack we have to define a service and a port to which our main Caddy will route the request to. In our case this is service 1 with port 2015. For demonstration purposes the subdomain will be test.localhost, you have to substitute this with your own domain. Also there is no email defined because in this case we're not using TLS encryption. If you want to use automatic TLS encryption, make sure to provide your email here.
+
+## Starting our stack
+
+Now that we have created our stack and saved it to the database, let's create the necessary config files in order to start the stack through docker-compose:
+
+```json
+# Endpoint
+POST /stacks/1/apply
+
+# Response
+{
+    "status": 200,
+    "message": "Stack foo_stack has been applied.",
+    "error": null,
+    "data": null
+}
+```
+
+If you look into your folder under `andes/andes/stacks` you will see two files:
+
+### `stacks/conf.d/foo_stack.conf`
+This file will be imported to our main Caddy with information about how to route traffic:
+
+```
+test.localhost {
+  tls off
+  proxy / foo_service:2015 {
+    transparent
+  }
+  log stdout
+  errors stderror
+}
+```
+
+### `stacks/foo_stack/docker-compose.yml`
+This file gets created from information in the stack with its specific services and will later be started with docker-compose:
+
+```yaml
+version: '3'
+services:
+  foo_service:
+    image: abiosoft/caddy
+    container_name: foo_stack_foo_service
+    ports:
+      - "81:80"
+      - "2015:2015"
+    external_links:
+      - caddy
+    networks:
+      andes_default:
+        ipv4_address: 172.42.0.11
+networks:
+  andes_default:
+    external: true
+```
+
+With those files created we can safely launch our stack:
+
+```json
+# Endpoint
+POST /stacks/1/manage/up
+
+# Response
+{
+    "status": 200,
+    "message": "Stack foo_stack has been started.",
+    "error": null,
+    "data": {
+        "stdout": "Creating foo_stack_foo_service ... \r\nCreating foo_stack_foo_service\n\u001b[1A\u001b[2K\rCreating foo_stack_foo_service ... \u001b[32mdone\u001b[0m\r\u001b[1B"
+    }
+}
+```
+
+We can now check on our command line if our service is running:
+
+```
+$ docker container ls
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                                 NAMES
+80743ddc0038        abiosoft/caddy         "/usr/bin/caddy --..."   49 seconds ago      Up 49 seconds       0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp, 2015/tcp    andes_web_1
+28bc4189d7f4        obitech/andes:latest   "uwsgi uwsgi.ini"        50 seconds ago      Up 50 seconds       5000-5001/tcp                                         andes_andes_1
+acc382a68636        abiosoft/caddy         "/usr/bin/caddy --..."   16 seconds ago      Up 16 seconds       443/tcp, 0.0.0.0:2015->2015/tcp, 0.0.0.0:81->80/tcp   foo_stack_foo_service
+```
+
+You can check via `test.localhost` (you might have to adjust your `/etc/hosts` beforehand) that your new service containing Caddy is indeed running and reachable.
+
