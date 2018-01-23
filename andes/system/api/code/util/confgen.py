@@ -11,7 +11,7 @@ def get_compose_data(services, stack_name):
       stack_name (str): The name of the stack defining the services.
 
     Returns:
-      dict: A dictionary with the necessary information, None if exception is thrown.
+      list: A list with the necessary information, None if exception is thrown.
 
     """
 
