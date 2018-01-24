@@ -169,7 +169,7 @@ if [[ "$DOCKER_SETUP" = true ]]; then
 
   echo -e "$GREEN==> Creating docker group and adding user '$USER'... $NC"
   sudo groupadd docker || true
-  sudo usermod -aG docker $USER
+  sudo usermod -aG docker $USER || true
 
   echo -e "$GREEN==> Adding docker to systemd... $NC"
   sudo systemctl enable docker
