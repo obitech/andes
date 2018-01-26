@@ -47,3 +47,6 @@ Verify with ``docker container ls`` if the Caddy and andes container are running
 
 ### Taking requests
 All endpoints take JSON requests, you can use [Postman](https://www.getpostman.com/) or good old curl for testing. Check the documentation for a reference on the API endpoints.
+
+# Acknowledgements
+This project has been created as a project at [TU Chemnitz](https://www.tu-chemnitz.de/index.html.en) and I want to thank Prof. Dr. Andres Müller and [osi8](https://osi8.net) for support. I also want to thank everyone over in the Docker and Caddy communities for creating and maintaing such amazing techologies (as well as documentation!).
